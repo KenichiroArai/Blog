@@ -3,6 +3,8 @@ package kmg.kaba.sample.java_fx;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -86,8 +88,7 @@ public class JavaFxSample extends Application {
     }
 
     /**
-     * 開始時間と終了時間の差を返す。
-     * <p>
+     * 開始時間と終了時間の差を返す。 <br>
      * 単位は時間に応じて設定する。
      *
      * @param startTime
@@ -181,9 +182,9 @@ public class JavaFxSample extends Application {
         final long startTime = System.nanoTime();
         try {
             // メイン処理
-            final File inputFile = new File(this.txtInputFile.getText());
-            final File outputFile = new File(this.txtOutputFile.getText());
-            this.mainProc(inputFile, outputFile);
+            final Path inputPath = Paths.get(this.txtInputFile.getText());
+            final Path outputPath = Paths.get(this.txtOutputFile.getText());
+            this.mainProc(inputPath, outputPath);
         } finally {
             final long endTime = System.nanoTime();
             final String[] time = JavaFxSample.getTime(startTime, endTime);
@@ -195,16 +196,16 @@ public class JavaFxSample extends Application {
     /**
      * メイン処理
      *
-     * @param inputFile
-     *            入力ファイル
-     * @param outputFile
-     *            出力ファイル
+     * @param inputPath
+     *            入力パス
+     * @param outputPath
+     *            出力パス
      */
     @SuppressWarnings("static-method")
-    protected void mainProc(final File inputFile, final File outputFile) {
+    protected void mainProc(final Path inputPath, final Path outputPath) {
 
-        System.out.println(String.format("入力ファイルパス：%s", inputFile.getAbsolutePath()));
-        System.out.println(String.format("出力ファイルパス：%s", outputFile.getAbsolutePath()));
+        System.out.println(String.format("入力ファイルパス：%s", inputPath.toAbsolutePath()));
+        System.out.println(String.format("出力ファイルパス：%s", outputPath.toAbsolutePath()));
 
     }
 }

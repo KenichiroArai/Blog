@@ -10,49 +10,53 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="85.0" prefWidth="303.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kmg.kaba.sample.java_fx.JavaFxSample">
-    <children>
-        <VBox prefHeight="118.0" prefWidth="662.0" spacing="5">
-            <children>
-                <HBox>
-                    <children>
-                        <Label prefWidth="80.0" text="入力ファイル：" />
-                        <TextField fx:id="txtInputFile" prefHeight="25.0" prefWidth="472.0" />
-                        <Button fx:id="btnInputFileOpen" onAction="#onCalcInputFileOpenClicked" prefHeight="25.0" prefWidth="98.0" text="ファイルを開く" />
-                    </children>
-                </HBox>
-                <HBox>
-                    <children>
-                        <Label prefWidth="80.0" text="出力ファイル：" />
-                        <TextField fx:id="txtOutputFile" prefHeight="25.0" prefWidth="472.0" />
-                        <Button fx:id="btnOutputFileOpen" onAction="#onCalcOutputFileOpenClicked" prefHeight="25.0" prefWidth="98.0" text="ファイルを開く" />
-                    </children>
-                </HBox>
-                <HBox>
-                    <children>
-                        <Label prefWidth="80.0" text="処理時間：" />
-                        <Label fx:id="lblProcTime" prefWidth="80.0" />
-                        <Label fx:id="lblProcTimeUnit" prefWidth="80.0" />
-                    </children>
-                </HBox>
-                <HBox prefHeight="156.0" prefWidth="662.0">
-                    <children>
-                        <GridPane prefHeight="36.0" prefWidth="756.0">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <Button fx:id="btnRun" mnemonicParsing="false" onAction="#onCalcRunClicked" prefHeight="25.0" prefWidth="98.0" text="実行" GridPane.columnIndex="1" />
-                            </children>
-                        </GridPane>
-                    </children>
-                </HBox>
-            </children>
-        </VBox>
-    </children>
+<AnchorPane prefHeight="85.0" prefWidth="303.0" xmlns="http://javafx.com/javafx/8.0.171"
+	xmlns:fx="http://javafx.com/fxml/1" fx:controller="kmg.kaba.sample.java_fx.JavaFxSample">
+	<children>
+		<VBox prefHeight="118.0" prefWidth="662.0" spacing="5">
+			<children>
+				<HBox>
+					<children>
+						<Label prefWidth="80.0" text="入力ファイル：" />
+						<TextField fx:id="txtInputFile" prefHeight="25.0" prefWidth="472.0" />
+						<Button fx:id="btnInputFileOpen" onAction="#onCalcInputFileOpenClicked"
+							prefHeight="25.0" prefWidth="98.0" text="ファイルを開く" />
+					</children>
+				</HBox>
+				<HBox>
+					<children>
+						<Label prefWidth="80.0" text="出力ファイル：" />
+						<TextField fx:id="txtOutputFile" prefHeight="25.0" prefWidth="472.0" />
+						<Button fx:id="btnOutputFileOpen" onAction="#onCalcOutputFileOpenClicked"
+							prefHeight="25.0" prefWidth="98.0" text="ファイルを開く" />
+					</children>
+				</HBox>
+				<HBox>
+					<children>
+						<Label prefWidth="80.0" text="処理時間：" />
+						<Label fx:id="lblProcTime" prefWidth="80.0" />
+						<Label fx:id="lblProcTimeUnit" prefWidth="80.0" />
+					</children>
+				</HBox>
+				<HBox prefHeight="156.0" prefWidth="662.0">
+					<children>
+						<GridPane prefHeight="36.0" prefWidth="756.0">
+							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+							</columnConstraints>
+							<rowConstraints>
+								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+							</rowConstraints>
+							<children>
+								<Button fx:id="btnRun" mnemonicParsing="false" onAction="#onCalcRunClicked"
+									prefHeight="25.0" prefWidth="98.0" text="実行" GridPane.columnIndex="1" />
+							</children>
+						</GridPane>
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+	</children>
 </AnchorPane>
