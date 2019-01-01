@@ -1,6 +1,3 @@
-/**
- *
- */
 package kmg.mukamuka.sample.service.sample.impl;
 
 import java.io.File;
