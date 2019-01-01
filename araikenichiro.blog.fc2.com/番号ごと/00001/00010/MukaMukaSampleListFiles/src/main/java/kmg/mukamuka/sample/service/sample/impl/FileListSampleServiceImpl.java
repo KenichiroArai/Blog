@@ -50,17 +50,22 @@ public class FileListSampleServiceImpl implements FileListSampleService {
     public void mainProc(final Path inputPath, final Path outputPath,
             final FileListExecuteMethodTypes fileListExecuteMethod) {
 
-        System.out.println(String.format("入力ファイルパス：%s", inputPath.toAbsolutePath()));
-        System.out.println(String.format("出力ファイルパス：%s", outputPath.toAbsolutePath()));
+        System.out.println(String.format("入力パス：%s", inputPath.toAbsolutePath()));
+        System.out.println(String.format("出力パス：%s", outputPath.toAbsolutePath()));
+
+        Path targetPath = inputPath;
+        if (!Files.isDirectory(targetPath)) {
+            targetPath = targetPath.getParent();
+        }
 
         switch (fileListExecuteMethod) {
             case NONE:
                 break;
             case NIO2:
-                this.listFileForNio2(inputPath, ConcurrentOfLevelTypes.SINGLE);
+                this.listFileForNio2(targetPath, ConcurrentOfLevelTypes.SINGLE);
                 break;
             case QUEUE:
-                this.listFileForQueue(inputPath);
+                this.listFileForQueue(targetPath);
                 break;
             default:
                 break;
