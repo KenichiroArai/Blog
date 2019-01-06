@@ -1,0 +1,45 @@
+jp
+„¤„Ÿco
+    „¤„Ÿself
+        „¥„Ÿcore
+        „   „¥„Ÿapplication
+        „   „   „¥„Ÿlogic
+        „   „   „¥„Ÿmodel
+        „   „   „¥„Ÿservice
+        „   „   „¥„Ÿtype
+        „   „   „¥„Ÿtypes
+        „   „   „¤„Ÿutil
+        „   „¥„Ÿdomain
+        „   „   „¥„Ÿdao
+        „   „   „¤„Ÿdto
+        „   „¤„Ÿpresentation
+        „       „¥„Ÿcui
+        „       „   „¤„Ÿbatch
+        „       „¥„Ÿgui
+        „       „   „¥„Ÿjavafx
+        „       „   „¤„Ÿswing
+        „       „¤„Ÿweb
+        „           „¥„Ÿaction
+        „           „¥„Ÿcontroller
+        „           „¤„Ÿform
+        „¤„Ÿxxcm
+            „¥„Ÿapplication
+            „   „¥„Ÿlogic
+            „   „¥„Ÿmodel
+            „   „¥„Ÿservice
+            „   „¥„Ÿtype
+            „   „¥„Ÿtypes
+            „   „¤„Ÿutil
+            „¥„Ÿdomain
+            „   „¥„Ÿdao
+            „   „¤„Ÿdto
+            „¤„Ÿpresentation
+                „¥„Ÿcui
+                „   „¤„Ÿbatch
+                „¥„Ÿgui
+                „   „¥„Ÿjavafx
+                „   „¤„Ÿswing
+                „¤„Ÿweb
+                    „¥„Ÿaction
+                    „¥„Ÿcontroller
+                    „¤„Ÿform
