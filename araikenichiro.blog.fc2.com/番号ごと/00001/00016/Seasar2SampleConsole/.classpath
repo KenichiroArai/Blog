@@ -5,7 +5,7 @@
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1-sources.jar"/>
@@ -22,10 +22,10 @@
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.4/junit-4.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/ognl/ognl/2.6.9-patch-20090427/ognl-2.6.9-patch-20090427.jar" sourcepath="M2_REPO/ognl/ognl/2.6.9-patch-20090427/ognl-2.6.9-patch-20090427-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.0-FINAL/poi-3.0-FINAL.jar" sourcepath="M2_REPO/org/apache/poi/poi/3.0-FINAL/poi-3.0-FINAL-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2-extension/2.4.46/s2-extension-2.4.46.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2-framework/2.4.46/s2-framework-2.4.46.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2-tiger/2.4.46/s2-tiger-2.4.46.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2jdbc-gen/2.4.46/s2jdbc-gen-2.4.46.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2-extension/2.4.48/s2-extension-2.4.48.jar" sourcepath="M2_REPO/org/seasar/container/s2-extension/2.4.48/s2-extension-2.4.48-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2-framework/2.4.48/s2-framework-2.4.48.jar" sourcepath="M2_REPO/org/seasar/container/s2-framework/2.4.48/s2-framework-2.4.48-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2-tiger/2.4.48/s2-tiger-2.4.48.jar" sourcepath="M2_REPO/org/seasar/container/s2-tiger/2.4.48/s2-tiger-2.4.48-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/seasar/container/s2jdbc-gen/2.4.48/s2jdbc-gen-2.4.48.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant/1.7.0/ant-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/tmatesoft/svnkit/svnkit/1.2.0.4949/svnkit-1.2.0.4949.jar"/>
