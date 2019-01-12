@@ -1,0 +1,8 @@
+DaoType=S2JDBC
+DefaultResourcePath=/Seasar2SampleConsole/src/main/resources
+DefaultRootPackage=kmg.sample.seasar2.console
+DefaultSrcPath=/Seasar2SampleConsole/src/main/java
+ServletPath=Seasar2SampleConsole
+ViewType=None
+WebContentsRoot=src/main/webapp
+eclipse.preferences.version=1
