@@ -8,5 +8,4 @@
 
   <component name="Sample"
       class="kmg.sample.seasar2.console.presentation.cui.console.Sample"/>
-
 </components>
