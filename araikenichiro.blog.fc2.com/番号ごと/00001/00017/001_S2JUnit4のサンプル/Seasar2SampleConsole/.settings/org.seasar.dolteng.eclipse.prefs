@@ -1,8 +1,0 @@
-DaoType=None
-DefaultResourcePath=/GeneralTool/src/main/resources
-DefaultRootPackage=kmg.im.stock.nsb.core.test
-DefaultSrcPath=/GeneralTool/src/main/java
-ServletPath=NsbCore
-ViewType=None
-WebContentsRoot=src/main/webapp
-eclipse.preferences.version=1
