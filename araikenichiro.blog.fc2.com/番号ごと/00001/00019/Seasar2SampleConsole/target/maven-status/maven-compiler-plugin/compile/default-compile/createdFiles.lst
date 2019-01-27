@@ -1,0 +1,6 @@
+kmg\sample\seasar2\console\application\logic\impl\SampleLogicImpl.class
+kmg\sample\seasar2\console\domain\dao\SampleDao.class
+kmg\sample\seasar2\console\application\service\SampleService.class
+kmg\sample\seasar2\console\presentation\cui\console\Sample.class
+kmg\sample\seasar2\console\application\service\impl\SampleServiceImpl.class
+kmg\sample\seasar2\console\application\logic\SampleLogic.class
