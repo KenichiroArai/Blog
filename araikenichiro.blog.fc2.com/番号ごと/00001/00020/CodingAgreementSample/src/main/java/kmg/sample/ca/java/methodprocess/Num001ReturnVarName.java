@@ -29,7 +29,7 @@ public class Num001ReturnVarName {
      * @return 計算結果
      */
     @SuppressWarnings("static-method")
-    public int BasicExample() {
+    public int basicExample() {
 
         int result = 0;             // 先頭にreturnの変数名「result」が宣言されている。
         result = 10 * 2;
@@ -45,12 +45,13 @@ public class Num001ReturnVarName {
      * エントリポイント
      *
      * @param args
-     *            引数
+     *                 引数
      */
     public static void main(final String[] args) {
 
         final Num001ReturnVarName proc = new Num001ReturnVarName();
         proc.badExample();
+        proc.basicExample();
 
     }
 
