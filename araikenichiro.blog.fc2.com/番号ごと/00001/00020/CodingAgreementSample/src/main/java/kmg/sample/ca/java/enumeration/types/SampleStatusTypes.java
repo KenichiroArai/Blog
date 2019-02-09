@@ -16,7 +16,7 @@ public enum SampleStatusTypes {
     NONE("指定無し", null),
 
     /** 致命的 */
-    FATAL("致命", -2),
+    FATAL("致命的", -2),
 
     /** エラー */
     ERROR("エラー", -1),
@@ -55,7 +55,7 @@ public enum SampleStatusTypes {
      * @param value
      *                  値
      */
-    private SampleStatusTypes(final String name, final Integer value) {
+    SampleStatusTypes(final String name, final Integer value) {
 
         this.name = name;
         this.value = value;
@@ -63,15 +63,43 @@ public enum SampleStatusTypes {
     }
 
     /**
-     * 値に該当する種類を返す。
+     * 値に該当する種類を返す。<br>
+     * 但し、値が存在しない場合は、指定無し（NONE）を返す。
      *
      * @param value
      *                  値
-     * @return 種類
+     * @return 種類。指定無し（NONE）：値が存在しない場合。
      */
     public static SampleStatusTypes getEnum(final Integer value) {
 
-        final SampleStatusTypes result = SampleStatusTypes.valuesMap.get(value);
+        SampleStatusTypes result = SampleStatusTypes.valuesMap.get(value);
+        if (result == null) {
+            result = NONE;
+            return result;
+        }
+        return result;
+    }
+
+    /**
+     * 初期値の種類を返す。
+     *
+     * @return 初期値
+     */
+    public static SampleStatusTypes getInitValue() {
+
+        final SampleStatusTypes result = NONE;
+        return result;
+
+    }
+
+    /**
+     * デフォルトの種類を返す。
+     *
+     * @return デフォルト値
+     */
+    public static SampleStatusTypes getDefault() {
+
+        final SampleStatusTypes result = NONE;
         return result;
     }
 

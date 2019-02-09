@@ -1,85 +1,92 @@
 package kmg.sample.ca.java.enumeration;
 
+import java.util.stream.IntStream;
+
+import kmg.sample.ca.java.enumeration.types.SampleStatusTypes;
+
 /**
- * 番号003：if文の階層
+ * 番号004：列挙型の使用
  *
  * @author KenichiroArai
  */
 public class Num004UseOfEnum {
 
-    /** 文字列 */
-    private final String str;
+    /** サンプルステータスの種類：致命的 */
+    private static final int SAMPLE_STATUS_TYPES_FATAL   = -2;
 
-    /**
-     * デフォルトコンストラクタ
-     */
-    public Num004UseOfEnum() {
+    /** サンプルステータスの種類：エラー */
+    private static final int SAMPLE_STATUS_TYPES_ERROR   = -1;
 
-        this.str = "ABC";
-    }
+    /** サンプルステータスの種類：警告 */
+    private static final int SAMPLE_STATUS_TYPES_WARN    = 0;
+
+    /** サンプルステータスの種類：成功 */
+    private static final int SAMPLE_STATUS_TYPES_SUCCESS = 1;
 
     /**
      * 悪い例<br>
-     * 文字列の結合<br>
-     * 文字列１と文字列２に値が設定されているかつ文字列１と文字列２が異なる場合のみ文字列の結合を行う。
+     * ステータスによる返却値の違い<br>
      *
-     * @param str1
-     *                 文字列１
-     * @param str2
-     *                 文字列２
-     * @return 文字列の結合。結合を行わい場合はnullを返す。
+     * @param status
+     *                   ステータス
+     * @return "成功":成功の場合、null：警告以上の場合
      */
-    public String badExample(final String str1, final String str2) {
+    @SuppressWarnings("static-method")
+    public String badExample(final int status) {
 
         String result = null;
 
-        // 文字列結合がメインの処理だが、メインの処理が分かりづらい。
-        // メインの処理が階層が深く、インデントも多く、読み取りづらい。
-        if ((str1 != null) && (str2 != null)) {
-            if (!str1.equals(str2)) {
-                result = this.str.concat(str1).concat(str2);
-            }
+        if (status < Num004UseOfEnum.SAMPLE_STATUS_TYPES_FATAL) {
+            System.out.print(String.valueOf("エラー"));
+            return result;
         }
+
+        if (status <= Num004UseOfEnum.SAMPLE_STATUS_TYPES_WARN) {
+            return result;
+        }
+
+        if (status > Num004UseOfEnum.SAMPLE_STATUS_TYPES_SUCCESS) {
+            System.out.print(String.valueOf("エラー"));
+            return result;
+        }
+
+        result = "成功";          // サンプルとしてハードコードで実装しているが、本来はこれも列挙型で行うこと。
         return result;
 
     }
 
     /**
-     * 原則の例 文字列の結合<br>
-     * 文字列１と文字列２に値が設定されているかつ文字列１と文字列２が異なる場合のみ文字列の結合を行う。
+     * 原則の例<br>
+     * ステータスによる返却値の違い<br>
      *
-     * @param str1
-     *                 文字列１
-     * @param str2
-     *                 文字列２
-     * @return 文字列の結合。結合を行わい場合はnullを返す。
+     * @param status
+     *                   ステータス
+     * @return "成功":成功の場合、null：警告以上の場合
      */
-    public String basicExample(final String str1, final String str2) {
+    @SuppressWarnings("static-method")
+    public String basicExample(final int status) {
 
         String result = null;
 
-        // 事前判定や例外チェックとしてメイン処理にふさわしくない場合はその場で処理を終わらせる。
+        final SampleStatusTypes sampleStatus = SampleStatusTypes.getEnum(status);
+        switch (sampleStatus) {
+            case NONE:
+                // 指定無しの場合は処理に応じて対応する。
+                System.out.print(String.valueOf("エラー"));
+                return result;
+            case FATAL:
+            case ERROR:
+            case WARN:
+                return result;
+            case SUCCESS:
+                result = "成功";          // サンプルとしてハードコードで実装しているが、本来はこれも列挙型で行うこと。
+                break;
+            default:
+                System.out.print(String.valueOf("エラー"));
+                // 本来であればエラー処理を記載する。
+                return result;
 
-        // 文字列１がnullか
-        if (str1 == null) {
-            // nullの場合
-            return result;
         }
-        // 文字列２がnullか
-        if (str2 == null) {
-            // nullの場合
-            return result;
-        }
-        // 文字列１＝文字列２か
-        if (str1.equals(str2)) {
-            // 一致する場合
-            return result;
-        }
-
-        // メインの処理は文字列の結合だとわかる。
-        // この例は、１行だが複数続いても階層の中ではなく、インデントもされていないので見やすい。
-        result = this.str.concat(str1).concat(str2);
-
         return result;
 
     }
@@ -93,16 +100,16 @@ public class Num004UseOfEnum {
     public static void main(final String[] args) {
 
         final Num004UseOfEnum proc = new Num004UseOfEnum();
-        System.out.println(proc.badExample(null, null));
-        System.out.println(proc.badExample("123", null));
-        System.out.println(proc.badExample(null, "456"));
-        System.out.println(proc.badExample("123", "456"));
-        System.out.println(proc.badExample("123", "123"));
-        System.out.println(proc.basicExample(null, null));
-        System.out.println(proc.basicExample("123", null));
-        System.out.println(proc.basicExample(null, "456"));
-        System.out.println(proc.basicExample("123", "456"));
-        System.out.println(proc.basicExample("123", "123"));
+        System.out.println("悪い例");
+        IntStream.rangeClosed(-3, 2).forEach(i -> {
+            System.out.println(String.format("%d:%s", i, proc.badExample(i)));
+        });
+        System.out.println();
+
+        System.out.println("原則の例");
+        IntStream.rangeClosed(-3, 2).forEach(i -> {
+            System.out.println(String.format("%d:%s", i, proc.basicExample(i)));
+        });
 
     }
 
