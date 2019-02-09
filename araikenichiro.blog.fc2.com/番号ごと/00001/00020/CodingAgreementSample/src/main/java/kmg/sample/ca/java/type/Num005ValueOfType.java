@@ -20,7 +20,7 @@ public class Num005ValueOfType {
     /**
      * 悪い例<br>
      *
-     * @return 悪い例の年月日
+     * @return 悪い例の年月
      */
     public String badExample() {
 
@@ -36,7 +36,7 @@ public class Num005ValueOfType {
     /**
      * 原則の例<br>
      *
-     * @return 原則の例の年月日
+     * @return 原則の例の年月
      */
     public String basicExample() {
 
