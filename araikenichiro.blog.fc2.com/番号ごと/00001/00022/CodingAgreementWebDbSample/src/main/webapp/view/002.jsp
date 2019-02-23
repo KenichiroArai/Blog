@@ -4,11 +4,11 @@
 <html>
     <head>
         <title>
-            HelloWorld!
+            002_1タグ1行
         </title>
     </head>
     <body>
-        HelloWorld!
+        002_1タグ1行
         <br>
         <%= LocalDateTime.now() %>      <%-- 本来はJavaの処理を直接埋め込まず、タグを使用すること。 --%>
         <table border="1">
