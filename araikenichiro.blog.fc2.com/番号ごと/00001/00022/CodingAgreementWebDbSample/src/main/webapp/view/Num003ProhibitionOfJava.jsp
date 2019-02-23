@@ -4,13 +4,13 @@
 <html>
     <head>
         <title>
-            HelloWorld!
+            003_Javaの禁止
         </title>
     </head>
     <body>
-        HelloWorld!
+        003_Javaの禁止
         <br>
-        <%= LocalDateTime.now() %>      <%-- 本来はJavaの処理を直接埋め込まず、タグを使用すること。 --%>
+        <%= LocalDateTime.now() %>      <%--悪い例：Javaの処理を直接埋め込み。良い例：タグを使用すること。 --%>
         <table border="1">
             <tr>
                 <th>
