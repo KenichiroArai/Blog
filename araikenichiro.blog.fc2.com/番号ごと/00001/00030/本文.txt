@@ -1,0 +1,31 @@
+# kmg-toolのJavadocタグ設定処理の置換処理の分割
+
+## 本文
+
+<a href="https://x.com/arai_kenichiro/status/1911336450672476332" target="_blank" title="昨日">昨日</a>の続き。
+
+昨日までは、Xで記録していたが、これからは本ブログで記録を残しておく。
+
+<a href="http://araikenichiro.blog.fc2.com/img/00030_001.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00030_001.png" alt="00030_001.png" border="0" width="1609" height="1425" /></a>
+
+今回から指示書のMDをちゃんと残しておこうとそれ用の<a href="https://github.com/KenichiroArai/kmg-doc/branches?branch_event=branch%2520%27feature%252Fmain%27%2520was%2520created" target="_blank" title="Gitのリポジトリ">Gitのリポジトリ</a>を用意した。
+
+<a href="http://araikenichiro.blog.fc2.com/img/00030_002.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00030_002s.png" alt="00030_002.png" border="0" /></a>
+
+画像のファイルはこちら「<a href="https://github.com/KenichiroArai/kmg-doc/blob/feature/main/kmg-tool/%E6%8C%87%E7%A4%BA%E6%9B%B8/00001/00001-Javadoc%E3%82%BF%E3%82%B0%E8%A8%AD%E5%AE%9A%E5%87%A6%E7%90%86%E3%81%AE%E6%94%B9%E5%96%84%E6%8C%87%E7%A4%BA.md" target="_blank" title="kmg-tool/指示書/00001/00001-Javadocタグ設定処理の改善指示.md">00001-Javadocタグ設定処理の改善指示.md</a>」。
+
+Cursor Composerでの実行の様子はこちら。
+
+<a href="http://araikenichiro.blog.fc2.com/img/00030_003.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00030_003.png" alt="00030_003.png" border="0" width="1054" height="1851" /></a>
+
+想定とは違っていたため、指示書を修正する。
+今回は、改修の指示書なのである程度までで良いが、新規での作成ならトライアンドエラーで指示書をブラッシュアップするのは理にかなっているだろう。
+
+ブラッシュアップした結果がこちら。
+
+<a href="http://araikenichiro.blog.fc2.com/img/00030_004.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00030_004.png" alt="00030_004.png" border="0" width="3010" height="1650" /></a>
+
+最終的には、指示書に書いてあるのに反映されていないものもあったため、それは手動で直した。
+途中で追加の指示をしたところようだ。
+
+修正されたコードはまだまだ自分の考えと違うが、ここからは手動で直した方がいいため、手動で直していく。
