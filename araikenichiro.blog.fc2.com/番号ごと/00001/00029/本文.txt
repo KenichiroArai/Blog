@@ -1,0 +1,11 @@
+# フロントエンド（TS、JS）の16日目
+
+## 本文
+
+昨日は、<a href="https://x.com/arai_kenichiro/status/1911275641556861186" target="_blank" title="フロントエンド（TS、JS）の15日目。">フロントエンド（TS、JS）の15日目。</a>で、今日からブログで記録する。
+
+今日のまとめ。
+
+主な学習内容は、SQLite3の利用で、<a href="http://sqlitebrowser.org" target="_blank" title="DB Browser for SQLite">DB Browser for SQLite</a>によるデータベース、テーブルの作成、sqlite3モジュールで取得。
+
+『Node.js 超入門』 　250/451=55.43%
