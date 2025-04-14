@@ -10,7 +10,7 @@
 
 今回から指示書（Markdown形式）をきちんと管理するために、専用の<a href="https://github.com/KenichiroArai/kmg-doc/branches?branch_event=branch%2520%27feature%252Fmain%27%2520was%2520created" target="_blank" title="Gitのリポジトリ">Gitリポジトリ</a>を用意した。
 
-<a href="http://araikenichiro.blog.fc2.com/img/00030_002.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00030_002s.png" alt="00030_002.png" border="0" /></a>
+<a href="http://araikenichiro.blog.fc2.com/img/00030_002.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00030_002.png" alt="00030_002.png" border="0" width="3840" height="2088" /></a>
 
 指示書のファイルはこちら：「<a href="https://github.com/KenichiroArai/kmg-doc/blob/feature/main/kmg-tool/%E6%8C%87%E7%A4%BA%E6%9B%B8/00001/00001-Javadoc%E3%82%BF%E3%82%B0%E8%A8%AD%E5%AE%9A%E5%87%A6%E7%90%86%E3%81%AE%E6%94%B9%E5%96%84%E6%8C%87%E7%A4%BA.md" target="_blank" title="kmg-tool/指示書/00001/00001-Javadocタグ設定処理の改善指示.md">00001-Javadocタグ設定処理の改善指示.md</a>」
 
