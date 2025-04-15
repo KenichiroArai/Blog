@@ -1,0 +1,17 @@
+# CodeSignalの記録_2025/04/15
+
+## 本文
+
+CodeSignalの記録
+
+今日からブログで記録を載せる。昨日のは<a href="https://x.com/arai_kenichiro/status/1911602148309422428" target="_blank" title="こちら">こちら</a>。
+
+<a href="https://codesignal.com/learn/paths/comprehensive-introduction-to-front-end-engineering" target="_blank" title="Comprehensive Introduction to Front-End Engineering">Comprehensive Introduction to Front-End Engineering</a>
+
+359 days
+Course 5 - 63%
+Communicating with APIs for Front-End Engineers
+Unit 4
+2/3
+
+<a href="http://araikenichiro.blog.fc2.com/img/00032_001.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00032_001.png" alt="00032_001.png" border="0" width="1846" height="199" /></a>
