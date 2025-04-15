@@ -1,0 +1,58 @@
+<p>
+    昨日は、生成AIをベースに作成したのがこちらの画像：
+</p>
+<br>
+
+<a href="http://araikenichiro.blog.fc2.com/img/00036_001.png/" target="_blank">
+    <img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00036_001.png" alt="00036_001.png" border="0"
+        width="640" height="720">
+</a>
+<br>
+
+<p>
+    今日は、ここから進めている。
+</p>
+<br>
+
+<p>
+    対象は、JdtsReplServiceImplとJdtsBlockReplLogicImplで、サービスとロジックの役割をちゃんと考えて分割する。
+    サービスは、ロジックの流れを制御し、ロジックは実際の処理を行うようにする。
+</p>
+<br>
+
+<p>
+    まず、気になるのは、ここで
+</p>
+<br>
+
+<pre class="brush: java">
+while ((tag = this.jdtsBlockReplLogic.getNextTag()) != null) {
+
+    if (!this.jdtsBlockReplLogic.hasExistingTag()) {
+
+        // タグが存在しない場合の処理
+        this.jdtsBlockReplLogic.processNewTag(tag);
+        continue;
+
+    }
+</pre>
+<br>
+
+<p>
+    whileのtagをここで受け取り、また、ロジックに渡しているが、tagを受け取る必要はなくロジック内部で処理されれば良いのでここを修正する。
+</p>
+<br>
+
+<p>
+    これを修正したのが、こちら：
+</p>
+
+<a href="http://araikenichiro.blog.fc2.com/img/00036_002.png/" target="_blank">
+    <img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00036_002.png" alt="00036_002.png" border="0"
+        width="2981" height="1421" />
+</a>
+
+<p>
+    これで、tagを受け取る必要がなくなる。この管理はロジックが行うことになる。<br>
+    ただ、まだ修正中で、ひとまずロジック内に収めて、変更前と同じ動作になることは確認した。
+</p>
