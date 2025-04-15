@@ -1,0 +1,9 @@
+# paizaラーニングの文字列処理メニューを全問クリア
+
+## 本文
+
+<a href="https://paiza.jp/works/mondai/string_primer/problem_index?language_uid=python3" target="_blank" title="paizaラーニングの文字列処理メニュー">paizaラーニングの文字列処理メニュー</a>を全問クリアした。
+
+前回以前は、<a href="https://x.com/arai_kenichiro/status/1873904000715940228" target="_blank" title="Xにポスト">Xにポスト</a>だったが、今回以降は本ブログに投稿していく。
+
+<a href="http://araikenichiro.blog.fc2.com/img/00035_001.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00035_001.png" alt="00035_001.png" border="0" width="1779" height="1539" /></a>
