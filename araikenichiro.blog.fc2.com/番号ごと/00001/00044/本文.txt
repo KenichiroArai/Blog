@@ -1,0 +1,46 @@
+# フロントエンド（TS、JS）の19日目
+
+## 本文
+
+今日のまとめ。
+
+主な学習内容は、WebアプリとDBとの連携でのCURDのRとUを試した。
+>生成AIに確認し、`db.run`の`${this.changes}`を知った。
+
+下記が生成AIとのやり取り。
+--------------------
+
+`this.changes`は、SQLite3のNode.jsドライバー（`sqlite3`モジュール）の`run`メソッドのコールバック関数内で利用できる特別なプロパティです。
+
+このプロパティについて、公式のドキュメントで確認してみましょう。
+
+Ran tool
+`db.run`メソッドのコールバック関数内で利用できる`this.changes`は、SQLite3のC APIの`sqlite3_changes64()`関数の結果を返すプロパティです。
+
+このプロパティは、最後に実行された`INSERT`、`UPDATE`、または`DELETE`文によって変更された行数を示します。
+
+例えば、あなたのコードの場合：
+```
+db.run(q, nm, ml, ag, id, function(err) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(`Row(s) updated: ${this.changes}`);
+});
+```
+
+`this.changes`が0を返す場合は、以下のような理由が考えられます：
+
+1. WHERE句の条件に一致するレコードが存在しなかった
+2. UPDATEする値が既存の値と同じだった（実質的な変更がなかった）
+
+一方、`this.changes`が1を返す場合は：
+
+1. WHERE句の条件に一致するレコードが見つかり
+2. かつ実際にデータが更新された
+
+ということを示しています。
+--------------------
+
+『Node.js 超入門』 　267/451=59.20%
