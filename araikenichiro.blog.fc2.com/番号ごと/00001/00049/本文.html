@@ -1,0 +1,47 @@
+<h2>前回</h2>
+<br>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-46.html" title="kmg-toolのJavadocタグ設定処理の開発記録その4"
+    target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その4</a>
+
+<h2>開発記録</h2>
+<br>
+今日はここを中心に整理していく。<br>
+<a href="http://araikenichiro.blog.fc2.com/img/00049_001.png/" target="_blank">
+    <img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00049_001.png" alt="00049_001.png" width="1632"
+        height="1954" border="0">
+</a>
+<br>
+<a href="http://araikenichiro.blog.fc2.com/img/00049_003.png/" target="_blank">
+    <img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00049_003.png" alt="00049_003.png" width="563"
+        height="775" border="0">
+</a>
+<br>
+<a href="http://araikenichiro.blog.fc2.com/img/00049_002.png/" target="_blank">
+    <img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00049_002.png" alt="00049_002.png" width="1593"
+        height="1945" border="0">
+</a>
+<br>
+途中経過。<br>
+<a href="http://araikenichiro.blog.fc2.com/img/00049_004.png/" target="_blank"><img
+        src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00049_004.png" alt="00049_004.png" width="1460"
+        height="882" border="0"></a>
+<br>
+サービスの呼び出しているJdtsBlockReplLogicImplを整理した。<br>
+特に、先頭と末尾に追加するStringBuilderを「先頭タグの位置オフセット」に変更した。最後に追加するのではなく、随時追加していくようにした。<br>
+処理は、置換や削除もあり、これは随時行っていたが、ファイルの先頭と末尾の追加だけ後で一気に使いするようになっており、一貫性がなかったため。<br>
+<br>
+StringBuilderのindexOfとinsertの部分をChatGPTで確認したので、共有して置く。<br>
+<a href="https://t.co/XUX8qp59BB" title="ChatGPTの回答" target="_blank">ChatGPTの回答</a>
+<br>
+<h2>リポジトリ</h2>
+<br>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
