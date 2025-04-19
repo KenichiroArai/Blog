@@ -32,7 +32,9 @@ async function loadExcelFile() {
             ...record,
             記録日: formatDate(record.記録日),
             進捗率: parseFloat(record.進捗率) || 0,
-            成功率: calculateSuccessRate(record.成功数, record.実践数)
+            実施数: parseInt(record.実施数) || 0,
+            成功数: parseInt(record.成功数) || 0,
+            成功率: calculateSuccessRate(parseInt(record.成功数) || 0, parseInt(record.実施数) || 0)
         }));
     } catch (error) {
         throw new Error('Excelファイルの読み込みに失敗しました');
@@ -48,6 +50,7 @@ function initializeDataTable() {
         columns: [
             { data: '番号' },
             { data: '記録日' },
+            { data: 'days' },
             {
                 data: 'パス名',
                 render: (data, type, row) => {
@@ -78,8 +81,10 @@ function initializeDataTable() {
                 }
             },
             {
-                data: null,
-                render: (data) => `${data.成功数}/${data.実践数}`
+                data: '成功数',
+            },
+            {
+                data: '実施数',
             }
         ],
         order: [[0, 'desc']],
@@ -105,7 +110,7 @@ function updateLatestRecord() {
 
     document.getElementById('latest-days').textContent = latest.days;
     document.getElementById('latest-success-rate').textContent =
-        `${calculateSuccessRate(latest.成功数, latest.実践数)}%`;
+        `${calculateSuccessRate(latest.成功数, latest.実施数)}%`;
 }
 
 // ユーティリティ関数
