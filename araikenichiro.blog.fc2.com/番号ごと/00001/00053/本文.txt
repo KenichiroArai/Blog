@@ -1,0 +1,24 @@
+# フロントエンド（TS、JS）の21日目
+
+## 本文
+
+<h2>今日のまとめ</h2>
+<br>
+<p>
+主な学習内容は、WebアプリとDBとの連携でのレコード検索の条件を試した。
+</p>
+<br>
+
+<h2>今日の成果</h2>
+<br>
+<p>
+『Node.js 超入門』 　289/451=64.08%<br>
+</p>
+<br>
+
+<h2>前回のリンク</h2>
+<br>
+<p>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-50.html" target="_blank">フロントエンド（TS、JS）の20日目</a>
+</p>
+<br>
