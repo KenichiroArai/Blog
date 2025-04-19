@@ -1,0 +1,22 @@
+# CodeSignalの記録_2025/04/18
+
+## 本文
+
+<h2>CodeSignalの記録_2025/04/18</h2>
+<br>
+<a href="https://codesignal.com/learn/paths/comprehensive-introduction-to-front-end-engineering" target="_blank" title="Comprehensive Introduction to Front-End Engineering">Comprehensive Introduction to Front-End Engineering</a>
+<br>
+363 days<br>
+Course 6 - 46%<br>
+Introduction to Responsive Web Development<br>
+Unit 2<br>
+5/5<br>
+<br>
+<div>
+<a href="http://araikenichiro.blog.fc2.com/img/00052_001.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00052_001.png" alt="00052_001.png" width="1838" height="215" border="0"></a>
+</div>
+<br>
+<h2>前回のリンク</h2>
+<p>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-48.html" target="_blank">CodeSignalの記録_2025/04/17</a>
+</p>
