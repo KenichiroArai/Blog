@@ -13,3 +13,7 @@
 ## CodeSignal
 
 - [CodeSignal学習記録](./CodeSignal/index.html) - CodeSignalの学習進捗と記録を管理するページです。
+
+## Cursor
+
+- [Cursor使用記録](./Cursor/index.html) - Cursorの使用記録を管理するページです。
