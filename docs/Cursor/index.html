@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor使用記録</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .latest-record {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">Cursor使用記録</span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- ローディング表示 -->
+        <div id="loading" class="text-center d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">読み込み中...</span>
+            </div>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+
+        <!-- 最新の使用記録 -->
+        <div id="latest-record" class="card latest-record mb-4">
+            <div class="card-body">
+                <h2 class="card-title">最新の使用記録</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 id="latest-date" class="h4"></h3>
+                        <p id="latest-days" class="lead"></p>
+                        <div class="progress mb-3">
+                            <div id="latest-progress" class="progress-bar" role="progressbar"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5>Premium models</h5>
+                                        <p id="latest-premium" class="h2"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5>gpt-4o-mini</h5>
+                                        <p id="latest-mini" class="h2"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5>Fast requests</h5>
+                                        <p id="latest-fast" class="h2"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 記録一覧 -->
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">使用記録一覧</h2>
+                <div class="table-responsive">
+                    <table id="records-table" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>番号</th>
+                                <th>記録日</th>
+                                <th>日数</th>
+                                <th>Premium models</th>
+                                <th>gpt-4o-mini or cursor-small</th>
+                                <th>Fast requests will refresh in X day</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
