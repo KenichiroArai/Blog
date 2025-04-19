@@ -68,20 +68,31 @@ function updateLatestRecord() {
     const latest = recordsData[recordsData.length - 1];
     if (!latest) return;
 
-    document.getElementById('latest-date').textContent = latest.記録日;
-    document.getElementById('latest-days').textContent = `使用日数: ${latest.日数}日`;
-
-    // 進捗バーの更新（Fast requestsの残り日数に基づく）
+    const days = latest.日数;
+    const premiumModels = latest['Premium models'];
+    const miniModels = latest['gpt-4o-mini or cursor-small'];
     const fastRequestsDays = latest['Fast requests will refresh in X day'];
-    const progressBar = document.getElementById('latest-progress');
-    progressBar.style.width = `${(fastRequestsDays / 30) * 100}%`;
-    progressBar.style.backgroundColor = getProgressColor(fastRequestsDays);
-    progressBar.textContent = `${fastRequestsDays}日`;
 
-    // 各種数値の更新
-    document.getElementById('latest-premium').textContent = latest['Premium models'];
-    document.getElementById('latest-mini').textContent = latest['gpt-4o-mini or cursor-small'];
-    document.getElementById('latest-fast').textContent = fastRequestsDays;
+    // 固定値
+    const totalDays = 30;
+    const totalPremiumModels = 500;
+
+    // パーセンテージ計算
+    const daysPercentage = (days / totalDays * 100).toFixed(2);
+    const premiumPercentage = (premiumModels / totalPremiumModels * 100).toFixed(2);
+    const remainingPremium = totalPremiumModels - premiumModels;
+
+    // 使用情報のテキスト作成
+    const usageInfo = `Cursor Usageの記録用　${days}/${totalDays}日 = ${daysPercentage}%。
+Premium models ${premiumModels} / ${totalPremiumModels} = ${premiumPercentage}%, 残${remainingPremium}
+gpt-4o-mini or cursor-small ${miniModels} / No Limit
+Fast requests will refresh in ${fastRequestsDays} day`;
+
+    // 表示
+    const usageInfoElement = document.getElementById('latest-usage-info');
+    if (usageInfoElement) {
+        usageInfoElement.textContent = usageInfo;
+    }
 }
 
 // ユーティリティ関数

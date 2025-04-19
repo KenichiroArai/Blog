@@ -25,6 +25,11 @@
         .latest-record {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
+
+        .usage-info {
+            font-family: monospace;
+            white-space: pre-line;
+        }
     </style>
 </head>
 
@@ -51,40 +56,8 @@
             <div class="card-body">
                 <h2 class="card-title">最新の使用記録</h2>
                 <div class="row">
-                    <div class="col-md-6">
-                        <h3 id="latest-date" class="h4"></h3>
-                        <p id="latest-days" class="lead"></p>
-                        <div class="progress mb-3">
-                            <div id="latest-progress" class="progress-bar" role="progressbar"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h5>Premium models</h5>
-                                        <p id="latest-premium" class="h2"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h5>gpt-4o-mini</h5>
-                                        <p id="latest-mini" class="h2"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <h5>Fast requests</h5>
-                                        <p id="latest-fast" class="h2"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-12">
+                        <div class="usage-info" id="latest-usage-info"></div>
                     </div>
                 </div>
             </div>
