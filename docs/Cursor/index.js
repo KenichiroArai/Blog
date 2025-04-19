@@ -45,6 +45,12 @@ async function loadExcelFile() {
 
 // DataTablesの初期化
 function initializeDataTable() {
+    const tableElement = document.getElementById('records-table');
+    if (!tableElement) {
+        console.error('テーブル要素が見つかりません');
+        return;
+    }
+
     dataTable = $('#records-table').DataTable({
         data: recordsData,
         columns: [
@@ -92,6 +98,8 @@ Fast requests will refresh in ${fastRequestsDays} day`;
     const usageInfoElement = document.getElementById('latest-usage-info');
     if (usageInfoElement) {
         usageInfoElement.textContent = usageInfo;
+    } else {
+        console.error('使用情報表示要素が見つかりません');
     }
 }
 
@@ -110,11 +118,20 @@ function getProgressColor(days) {
 }
 
 function showLoading(show) {
-    document.getElementById('loading').classList.toggle('d-none', !show);
+    const loadingElement = document.getElementById('loading');
+    if (loadingElement) {
+        loadingElement.classList.toggle('d-none', !show);
+    } else {
+        console.error('ローディング要素が見つかりません');
+    }
 }
 
 function showError(message) {
     const errorElement = document.getElementById('error-message');
-    errorElement.textContent = message;
-    errorElement.classList.remove('d-none');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('d-none');
+    } else {
+        console.error('エラーメッセージ要素が見つかりません');
+    }
 }
