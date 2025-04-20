@@ -1,8 +1,10 @@
 <h2>前回</h2>
 <br>
-<a href="http://araikenichiro.blog.fc2.com/blog-entry-54.html" title="kmg-toolのJavadocタグ設定処理の開発記録その6"
-    target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その6</a>
-
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-54.html" title="kmg-toolのJavadocタグ設定処理の開発記録その6"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その6</a>
+</div>
+<br>
 <h2>開発記録</h2>
 <br>
 <p>
@@ -29,6 +31,33 @@
             src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00059_002.png" alt="00059_002.png" width="1341"
             height="1194" border="0"></a>
 </div>
+<br>
+<p>
+    普段、動作確認しているコードの差分を載せる。
+</p>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00059_003.png/" target="_blank"><img
+            src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00059_003.png" alt="00059_003.png" width="2103"
+            height="1138" border="0"></a>
+</div>
+<p>
+    「@since 0.1.0」がないJavadocに追加されているのがわかる。既にある「0.2.0」は上書きしない設定のため、正しく動作している。<br>
+    この場合の使用用途は、既にバージョン0.2.0だが、「@since 0.1.0」を付け忘れた場合に、実行すると既に設定されている0.2.0は上書きされず、0.1.0を追加してくれる。<br>
+</p>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00059_004.png/" target="_blank"><img
+            src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00059_004.png" alt="00059_004.png" width="1241"
+            height="974" border="0"></a>
+</div>
+<br>
+<p>
+    この設定ファイルの、「上書き設定（overwrite）」で「always: 常に上書き」指定すると常に上書きされる。<br>
+    新規でコードなどをコピペしていて場合などは、この設定を使用するとよい。<br>
+    0.1.0の場合であれば、「ifLower:
+    既存のバージョンより小さい場合のみ上書き」で全て上書きされるので、どちらかと言えば、「0.2.0」に統一とかの利用方法だろう。フォルダパスやファイルパスは指定できるため、特定のファイルのみをターゲットにすれば活用方法がある。
+</p>
 <br>
 <h2>リポジトリ</h2>
 <br>
