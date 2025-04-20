@@ -10,28 +10,32 @@ li {
 }
 
 #page {
-    width: 1130px;
+    width: 100%;
+    min-width: 1130px;
     margin: 0 auto;
 }
 
 #main {
-    display: table;
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
 }
 
 #left,
 #center,
 #right {
-    display: table-cell;
-    vertical-align: top;
+    display: block;
 }
 
 #left,
 #right {
-    width: 195px;
+    flex: 0 0 195px;
 }
 
 #center {
-    width: 730px;
+    flex: 1;
+    min-width: 730px;
+    padding: 0 10px;
 }
 
 /* 構造 */
@@ -119,9 +123,6 @@ h5 {
     margin-bottom: 10px;
 }
 #blog-desc {
-}
-#center {
-    padding: 0 5px;
 }
 #footer {
     padding: 10px;
@@ -214,9 +215,8 @@ h5 {
 /* 装飾 */
 
 /* 画像 */
-
 .content-wrapper img {
-    max-width: 550px;
+    max-width: 100%;
     height: auto;
 }
 
