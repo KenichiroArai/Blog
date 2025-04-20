@@ -1,0 +1,43 @@
+<h2>前回</h2>
+<br>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-54.html" title="kmg-toolのJavadocタグ設定処理の開発記録その5"
+    target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その6</a>
+
+<h2>開発記録</h2>
+<br>
+<p>
+    今日は、昨日の続き。
+</p>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00059_001.png/" target="_blank"><img
+            src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00059_001.png" alt="00059_001.png" width="1341"
+            height="1194" border="0"></a>
+</div>
+<br>
+<p>
+    配置箇所がタグの先頭や末尾の場合は、削除してから追加する必要があるが、位置を変更せず上書きする場合は、そのまま追加するだけでよい。<br>
+    それが出来ていない。また、バージョンの場合は、指定方法があり、バージョンが小さい場合のみ上書きする設定ができるようになっているが、それも機能しておらず、上書きされる。
+</p>
+<br>
+<p>
+    ただ、結果は呼び出し元のサービスの順番が違っていたためだ、先に上書きするかをチェックしていて、上書き対象の時だけ削除処理を呼べばできるようになる。
+</p>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00059_002.png/" target="_blank"><img
+            src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00059_002.png" alt="00059_002.png" width="1341"
+            height="1194" border="0"></a>
+</div>
+<h2>リポジトリ</h2>
+<br>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
