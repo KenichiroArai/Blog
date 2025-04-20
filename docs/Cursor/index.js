@@ -45,19 +45,37 @@ async function loadExcelFile() {
 
 // DataTablesの初期化
 function initializeDataTable() {
-    const tableElement = document.getElementById('records-table');
-    if (!tableElement) {
-        console.error('テーブル要素が見つかりません');
-        return;
-    }
-
     dataTable = $('#records-table').DataTable({
         data: recordsData,
         columns: [
             { data: '番号' },
             { data: '記録日' },
-            { data: '日数' },
-            { data: 'Premium models' },
+            {
+                data: '日数',
+                render: (data) => {
+                    const percentage = (data / 30 * 100).toFixed(2);
+                    const color = getProgressColor(percentage);
+                    return `<div class="progress">
+                        <div class="progress-bar" role="progressbar"
+                            style="width: ${percentage}%; background-color: ${color}">
+                            ${data}日
+                        </div>
+                    </div>`;
+                }
+            },
+            {
+                data: 'Premium models',
+                render: (data) => {
+                    const percentage = (data / 500 * 100).toFixed(2);
+                    const color = getProgressColor(percentage);
+                    return `<div class="progress">
+                        <div class="progress-bar" role="progressbar"
+                            style="width: ${percentage}%; background-color: ${color}">
+                            ${data}
+                        </div>
+                    </div>`;
+                }
+            },
             { data: 'gpt-4o-mini or cursor-small' },
             { data: 'Fast requests will refresh in X day' }
         ],
@@ -86,21 +104,34 @@ function updateLatestRecord() {
     // パーセンテージ計算
     const daysPercentage = (days / totalDays * 100).toFixed(2);
     const premiumPercentage = (premiumModels / totalPremiumModels * 100).toFixed(2);
+    const remainingDays = totalDays - days;
     const remainingPremium = totalPremiumModels - premiumModels;
 
+    // プログレスバーの更新
+    updateProgressBar('days-progress', daysPercentage, `${days}日 / ${totalDays}日`);
+    updateProgressBar('premium-progress', premiumPercentage, `${premiumModels} / ${totalPremiumModels}`);
+
+    // 残り日数と残りPremiumの更新
+    document.getElementById('remaining-days').textContent = `${remainingDays}日`;
+    document.getElementById('remaining-premium').textContent = remainingPremium;
+
     // 使用情報のテキスト作成
-    const usageInfo = `Cursor Usageの記録用　${days}/${totalDays}日 = ${daysPercentage}%。
-Premium models ${premiumModels} / ${totalPremiumModels} = ${premiumPercentage}%, 残${remainingPremium}
-gpt-4o-mini or cursor-small ${miniModels} / No Limit
+    const usageInfo = `追加情報：
+gpt-4o-mini or cursor-small: ${miniModels} / No Limit
 Fast requests will refresh in ${fastRequestsDays} day`;
 
     // 表示
-    const usageInfoElement = document.getElementById('latest-usage-info');
-    if (usageInfoElement) {
-        usageInfoElement.textContent = usageInfo;
-    } else {
-        console.error('使用情報表示要素が見つかりません');
-    }
+    document.getElementById('latest-usage-info').textContent = usageInfo;
+}
+
+// プログレスバーの更新
+function updateProgressBar(elementId, percentage, text) {
+    const progressBar = document.getElementById(elementId);
+    if (!progressBar) return;
+
+    progressBar.style.width = `${percentage}%`;
+    progressBar.style.backgroundColor = getProgressColor(percentage);
+    progressBar.textContent = text;
 }
 
 // ユーティリティ関数
@@ -110,28 +141,19 @@ function formatDate(serial) {
     return date.toLocaleDateString('ja-JP');
 }
 
-function getProgressColor(days) {
-    if (days >= 20) return '#28a745'; // 緑
-    if (days >= 10) return '#17a2b8'; // 青
-    if (days >= 5) return '#ffc107'; // 黄
+function getProgressColor(percentage) {
+    if (percentage >= 80) return '#28a745'; // 緑
+    if (percentage >= 60) return '#17a2b8'; // 青
+    if (percentage >= 40) return '#ffc107'; // 黄
     return '#dc3545'; // 赤
 }
 
 function showLoading(show) {
-    const loadingElement = document.getElementById('loading');
-    if (loadingElement) {
-        loadingElement.classList.toggle('d-none', !show);
-    } else {
-        console.error('ローディング要素が見つかりません');
-    }
+    document.getElementById('loading').classList.toggle('d-none', !show);
 }
 
 function showError(message) {
     const errorElement = document.getElementById('error-message');
-    if (errorElement) {
-        errorElement.textContent = message;
-        errorElement.classList.remove('d-none');
-    } else {
-        console.error('エラーメッセージ要素が見つかりません');
-    }
+    errorElement.textContent = message;
+    errorElement.classList.remove('d-none');
 }
