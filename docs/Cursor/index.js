@@ -55,11 +55,14 @@ function initializeDataTable() {
                 render: (data) => {
                     const percentage = (data / 30 * 100).toFixed(2);
                     const color = getProgressColor(percentage);
-                    return `<div class="progress">
+                    return `<div class="progress" style="height: 25px;">
                         <div class="progress-bar" role="progressbar"
-                            style="width: ${percentage}%; background-color: ${color}">
-                            ${data}日
+                            style="width: ${percentage}%; background-color: ${color}; font-size: 0.9rem; line-height: 25px;">
+                            ${percentage}%
                         </div>
+                    </div>
+                    <div class="text-end mt-1">
+                        <small>${data}日 / 30日</small>
                     </div>`;
                 }
             },
@@ -68,11 +71,14 @@ function initializeDataTable() {
                 render: (data) => {
                     const percentage = (data / 500 * 100).toFixed(2);
                     const color = getProgressColor(percentage);
-                    return `<div class="progress">
+                    return `<div class="progress" style="height: 25px;">
                         <div class="progress-bar" role="progressbar"
-                            style="width: ${percentage}%; background-color: ${color}">
-                            ${data}
+                            style="width: ${percentage}%; background-color: ${color}; font-size: 0.9rem; line-height: 25px;">
+                            ${percentage}%
                         </div>
+                    </div>
+                    <div class="text-end mt-1">
+                        <small>${data} / 500</small>
                     </div>`;
                 }
             },
@@ -127,11 +133,20 @@ Fast requests will refresh in ${fastRequestsDays} day`;
 // プログレスバーの更新
 function updateProgressBar(elementId, percentage, text) {
     const progressBar = document.getElementById(elementId);
-    if (!progressBar) return;
+    const label = document.getElementById(`${elementId.replace('-progress', '-label')}`);
+    const value = document.getElementById(`${elementId.replace('-progress', '-value')}`);
 
+    if (!progressBar || !label || !value) return;
+
+    // プログレスバーの更新
     progressBar.style.width = `${percentage}%`;
     progressBar.style.backgroundColor = getProgressColor(percentage);
-    progressBar.textContent = text;
+    progressBar.textContent = `${percentage}%`;
+
+    // ラベルと値の更新
+    const [current, total] = text.split(' / ');
+    label.textContent = '使用状況';
+    value.textContent = `${current} / ${total}`;
 }
 
 // ユーティリティ関数
