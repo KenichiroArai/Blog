@@ -50,22 +50,8 @@ function initializeDataTable() {
         columns: [
             { data: '番号' },
             { data: '記録日' },
-            {
-                data: '日数',
-                render: (data) => {
-                    return `<div class="text-end mt-1">
-                        <small>${data}日 / 30日</small>
-                    </div>`;
-                }
-            },
-            {
-                data: 'Premium models',
-                render: (data) => {
-                    return `<div class="text-end mt-1">
-                        <small>${data} / 500</small>
-                    </div>`;
-                }
-            },
+            { data: '日数' },
+            { data: 'Premium models' },
             { data: 'gpt-4o-mini or cursor-small' },
             { data: 'Fast requests will refresh in X day' }
         ],
