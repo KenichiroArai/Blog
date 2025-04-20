@@ -11,14 +11,16 @@ li {
 
 #page {
     width: 100%;
-    min-width: 1130px;
     margin: 0 auto;
+    padding: 0 40px;
+    box-sizing: border-box;
 }
 
 #main {
     display: flex;
     width: 100%;
     margin: 0 auto;
+    flex-wrap: wrap;
 }
 
 #left,
@@ -34,7 +36,7 @@ li {
 
 #center {
     flex: 1;
-    min-width: 730px;
+    min-width: 300px;
     padding: 0 10px;
 }
 
@@ -329,3 +331,28 @@ h4 {
 }
 
 /* ページャー */
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 1200px) {
+    #page {
+        min-width: auto;
+        padding: 0 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #main {
+        flex-direction: column;
+    }
+
+    #left,
+    #right {
+        flex: 1 1 100%;
+        margin-bottom: 20px;
+    }
+
+    #center {
+        flex: 1 1 100%;
+        min-width: auto;
+    }
+}
