@@ -31,7 +31,7 @@ async function loadExcelFile() {
         recordsData = recordsData.map(record => ({
             ...record,
             記録日: formatDate(record.記録日),
-            進捗率: parseFloat(record.進捗率) || 0,
+            進捗率: parseFloat(record.進捗率) * 100 || 0,
             実施数: parseInt(record.実施数) || 0,
             成功数: parseInt(record.成功数) || 0,
             成功率: calculateSuccessRate(parseInt(record.成功数) || 0, parseInt(record.実施数) || 0)
