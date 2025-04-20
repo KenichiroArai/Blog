@@ -53,15 +53,7 @@ function initializeDataTable() {
             {
                 data: '日数',
                 render: (data) => {
-                    const percentage = (data / 30 * 100).toFixed(2);
-                    const color = getProgressColor(percentage);
-                    return `<div class="progress" style="height: 25px;">
-                        <div class="progress-bar" role="progressbar"
-                            style="width: ${percentage}%; background-color: ${color}; font-size: 0.9rem; line-height: 25px;">
-                            ${percentage}%
-                        </div>
-                    </div>
-                    <div class="text-end mt-1">
+                    return `<div class="text-end mt-1">
                         <small>${data}日 / 30日</small>
                     </div>`;
                 }
@@ -69,15 +61,7 @@ function initializeDataTable() {
             {
                 data: 'Premium models',
                 render: (data) => {
-                    const percentage = (data / 500 * 100).toFixed(2);
-                    const color = getProgressColor(percentage);
-                    return `<div class="progress" style="height: 25px;">
-                        <div class="progress-bar" role="progressbar"
-                            style="width: ${percentage}%; background-color: ${color}; font-size: 0.9rem; line-height: 25px;">
-                            ${percentage}%
-                        </div>
-                    </div>
-                    <div class="text-end mt-1">
+                    return `<div class="text-end mt-1">
                         <small>${data} / 500</small>
                     </div>`;
                 }
