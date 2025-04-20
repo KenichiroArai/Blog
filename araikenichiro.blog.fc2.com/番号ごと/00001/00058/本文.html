@@ -1,0 +1,27 @@
+<h2>ブログのテンプレートを変更した</h2>
+<br>
+<p>
+    ブログの幅がせっかくの大画面でも固定されていて、大きくならないのでテンプレートを変更した。
+</p>
+<br>
+<h2>変更前と変更後の差分</h2>
+<br>
+<h3>CSSのテンプレート</h3>
+<br>
+<p>
+    変更は、CSSのみ。
+</p>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00058_001.png/" target="_blank"><img
+            src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00058_001.png" alt="00058_001.png" width="1062"
+            height="1958" border="0"></a>
+</div>
+<br>
+<p>
+    まずは、全体の幅の「#page」を100%にした。<br>
+    「#main」をtableからflexにし、フレキシブルに対応するようにした。<br>
+    「#center」が中央にある記事の部分だが、mini-widthだけを設定し、ブラウザの幅に合わせるようにした。<br>
+    「@media」でブラウザの幅が小さければ、中央の記事だけを表示するようにした。<br>
+    ただ、これだと、画面解像度が小さい場合は、使いづらくなるので、別途修正しているかも。<br>
+</p>
