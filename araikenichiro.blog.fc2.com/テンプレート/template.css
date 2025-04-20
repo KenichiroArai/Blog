@@ -347,12 +347,12 @@ h4 {
 
     #left,
     #right {
-        flex: 1 1 100%;
-        margin-bottom: 20px;
+        display: none;
     }
 
     #center {
         flex: 1 1 100%;
         min-width: auto;
+        padding: 0;
     }
 }
