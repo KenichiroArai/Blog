@@ -21,6 +21,65 @@
             src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00061_001.png" alt="00061_001.png" width="1515"
             height="1162" border="0"></a>
 </div>
+<br>
+<p>
+    これで漸く機能が出そろい、サービスやロジックなどの役割分担も分かりやすくなったので、次は、一つ一つ整理していこう思う。<br>
+    何週間ぶりに、メッセージリソースの設定をすることになる。かなり想定外にここまで時間がかかったな。<br>
+</p>
+<br>
+<p>
+    まずは、<a
+        href="https://github.com/KenichiroArai/kmg-tool/blob/features/0.1.0/src/main/java/kmg/tool/presentation/ui/cli/JavadocTagSetterTool.java">JavadocTagSetterTool.java</a>を整理する。
+</p>
+<br>
+<p>
+    メッセージリソース設定だが、今実装中の「Javadocタグ設定ツール」以外でログと例外処理で設定しているメッセージリソースが不要なところがあるので、それを先に削除する。<br>
+</p>
+<p>
+    以前、ログについて下記のXでポストしたが、見直したところ重複したエラーになるので、それを削除する。
+</p>
+<br>
+<div>
+    <blockquote class="twitter-tweet">
+        <p lang="ja" dir="ltr">RP。<br>業務ロジックにログを出力しないのは賛成で、過激派ではないと思う。 <br>今僕が作成中のはツールのため、一部でロギングしているが、基本はデバッグレベルのはず。
+            <br>また、出力する場合もサービスやコントローラ部分だ。 <br>Webならコントローラでもcatchは不要にするかな。
+        </p>&mdash; 新井健一朗@want to (@arai_kenichiro) <a
+            href="https://twitter.com/arai_kenichiro/status/1909790889230422439?ref_src=twsrc%5Etfw">April 9, 2025</a>
+    </blockquote>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<br>
+<p>
+    例えば、下記の画像の部分である。
+</p>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00061_002.png/" target="_blank">
+        <img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00061_002.png" alt="00061_002.png" width="2173"
+            height="1385" border="0">
+    </a>
+</div>
+<br>
+<pre class="brush:java">
+} catch (final KmgToolException e) {
+
+    final KmgToolLogMessageTypes logMsgTypes = KmgToolLogMessageTypes.KMGTOOL_LOG12005;
+    final Object[]               logMsgArgs  = {
+        this.getOutputPath().toString(),
+    };
+    final String                 logMsg      = this.messageSource.getLogMessage(logMsgTypes, logMsgArgs);
+    this.logger.error(logMsg, e);
+
+    throw e;
+</pre>
+<br>
+<p>
+    「throw e;」をしているのに、「this.logger.error(logMsg, e);」もすると重複してログが出力されるため、削除する。<br>
+    ログを出力するのであれば、この場面に沿ったメッセージでログを出し、「error」メソッドの引数に「e」を渡す必要はないだろう。<br>
+    今回は、わざわざ、中間というか、ここでの処理で改めてログを出力する必要ないので削る。<br>
+    メッセージリソースID「KMGTOOL_LOG12005」は、ユニークで割り振っているのと、まだ、リリース前のため、削除して別に割り当てる。
+</p>
+<br>
 <h2>リポジトリ</h2>
 <br>
 <ul>
