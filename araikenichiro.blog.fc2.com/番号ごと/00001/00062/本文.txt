@@ -1,0 +1,22 @@
+# フロントエンド（TS、JS）の24日目
+
+## 本文
+
+<h2>今日のまとめ</h2>
+<br>
+<p>
+主な学習内容は、今日に引き続き、Prismaの学習を行い、特に、Prisma Studioでレコードの作成を行いました。
+</p>
+<br>
+<h3>今日の成果</h2>
+<br>
+<p>
+『Node.js 超入門』 　318/451=70.51%<br>
+</p>
+<br>
+<h2>前回のリンク</h2>
+<br>
+<p>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-60.html" target="_blank">フロントエンド（TS、JS）の23日目</a>
+</p>
+<br>
