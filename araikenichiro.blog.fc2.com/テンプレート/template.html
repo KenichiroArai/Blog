@@ -36,6 +36,18 @@
             } else if (size === 'small') {
                 page.style.width = '700px';
             }
+
+            // すべてのボタンからactiveクラスを削除
+            const buttons = document.querySelectorAll('.width-controls button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // クリックされたボタンにactiveクラスを追加
+            const activeButton = document.querySelector(`.width-controls button[onclick="changeWidth('${size}')"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
         }
 
         function toggleArticleOnly() {
@@ -52,6 +64,14 @@
                 right.style.display = 'block';
             }
         }
+
+        // ページ読み込み時にデフォルトのボタン（自動）をアクティブにする
+        document.addEventListener('DOMContentLoaded', function () {
+            const autoButton = document.querySelector('.width-controls button[onclick="changeWidth(\'auto\')"]');
+            if (autoButton) {
+                autoButton.classList.add('active');
+            }
+        });
     </script>
 </head>
 

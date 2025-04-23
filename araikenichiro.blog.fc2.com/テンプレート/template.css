@@ -71,10 +71,17 @@ body {
   border-radius: 3px;
   cursor: pointer;
   font-weight: bold;
+  transition: all 0.3s ease;
 }
 
 .width-controls button:hover {
   background-color: #6b8c37;
+}
+
+.width-controls button.active {
+  background-color: #e83929;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
 }
 
 .width-controls label {
