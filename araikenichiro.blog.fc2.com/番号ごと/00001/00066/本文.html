@@ -1,0 +1,37 @@
+<h2>前回</h2>
+<br>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-63.html" title="kmg-toolのJavadocタグ設定処理の開発記録その8"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その9</a>
+</div>
+<br>
+<h2>開発記録</h2>
+<br>
+<p>
+    今日は、昨日の続きのメッセージリソース関連であるログと例外処理を対応した。<br>
+    DIエラーは、デフォルトのコンストラクタがないだけだった。<br>
+    下記のようにログ、例外処理を整理している。
+</p>
+<br>
+<a href="http://araikenichiro.blog.fc2.com/img/00066_001.png/" target="_blank">
+    <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00066_001.png" alt="00066_001.png" width="2989"
+        height="1199" border="0">
+</a>
+<br>
+<p>
+    エントリポイントとなるクラスで最後、例外をキャッチしてそこでログを出力している。<br>
+    Exceptionもキャッチが必要かな。
+</p>
+<br>
+<h2>リポジトリ</h2>
+<br>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
