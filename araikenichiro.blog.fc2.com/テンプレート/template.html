@@ -24,6 +24,55 @@
 
         gtag('config', 'G-SWQW95J6HG');
     </script>
+    <script>
+        function changeWidth(size) {
+            const page = document.getElementById('page');
+            if (size === 'auto') {
+                page.style.width = '100%';
+            } else if (size === 'large') {
+                page.style.width = '1200px';
+            } else if (size === 'medium') {
+                page.style.width = '900px';
+            } else if (size === 'small') {
+                page.style.width = '700px';
+            }
+
+            // すべてのボタンからactiveクラスを削除
+            const buttons = document.querySelectorAll('.width-controls button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // クリックされたボタンにactiveクラスを追加
+            const activeButton = document.querySelector(`.width-controls button[onclick="changeWidth('${size}')"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+
+        function toggleArticleOnly() {
+            const main = document.getElementById('main');
+            const left = document.getElementById('left');
+            const right = document.getElementById('right');
+            const articleOnly = document.getElementById('article-only');
+
+            if (articleOnly.checked) {
+                left.style.display = 'none';
+                right.style.display = 'none';
+            } else {
+                left.style.display = 'block';
+                right.style.display = 'block';
+            }
+        }
+
+        // ページ読み込み時にデフォルトのボタン（自動）をアクティブにする
+        document.addEventListener('DOMContentLoaded', function () {
+            const autoButton = document.querySelector('.width-controls button[onclick="changeWidth(\'auto\')"]');
+            if (autoButton) {
+                autoButton.classList.add('active');
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -66,6 +115,13 @@
             <!--header-->
         </div>
 
+        <div class="width-controls">
+            <button onclick="changeWidth('auto')">自動</button>
+            <button onclick="changeWidth('large')">大</button>
+            <button onclick="changeWidth('medium')">中</button>
+            <button onclick="changeWidth('small')">小</button>
+            <label><input type="checkbox" id="article-only" onchange="toggleArticleOnly()"> 記事のみ</label>
+        </div>
 
         <div id="main">
 

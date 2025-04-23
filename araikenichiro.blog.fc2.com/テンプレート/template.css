@@ -51,6 +51,50 @@ body {
   border-radius: 5px;
 }
 
+/* 幅調整ボタン */
+.width-controls {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.width-controls button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #86ae46;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.width-controls button:hover {
+  background-color: #6b8c37;
+}
+
+.width-controls button.active {
+  background-color: #e83929;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.width-controls label {
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+.width-controls input[type="checkbox"] {
+  margin-right: 5px;
+}
+
 /* 構造 */
 
 /* 文字装飾 */
