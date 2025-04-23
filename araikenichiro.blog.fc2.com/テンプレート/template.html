@@ -38,62 +38,51 @@
             // クリックされたボタンにアクティブクラスを追加
             document.getElementById('width-' + size).classList.add('active');
 
-            // 記事のみチェックボックスをリセット
-            articleOnlyCheckbox.checked = false;
+            // 幅の設定クラスをすべて削除（article-onlyは除く）
+            mainElement.classList.remove('width-auto', 'width-large', 'width-medium', 'width-small');
 
-            // 幅の設定
-            if (size === 'auto') {
-                mainElement.classList.remove('width-large', 'width-medium', 'width-small', 'width-article-only');
-                mainElement.classList.add('width-auto');
-            } else if (size === 'large') {
-                mainElement.classList.remove('width-auto', 'width-medium', 'width-small', 'width-article-only');
-                mainElement.classList.add('width-large');
-            } else if (size === 'medium') {
-                mainElement.classList.remove('width-auto', 'width-large', 'width-small', 'width-article-only');
-                mainElement.classList.add('width-medium');
-            } else if (size === 'small') {
-                mainElement.classList.remove('width-auto', 'width-large', 'width-medium', 'width-article-only');
-                mainElement.classList.add('width-small');
-            }
+            // 選択された幅のクラスを追加
+            mainElement.classList.add('width-' + size);
 
             // 設定をローカルストレージに保存
             localStorage.setItem('blogWidth', size);
-            localStorage.setItem('articleOnly', false);
+
+            // 記事のみ表示が有効な場合は、そのクラスを維持
+            if (articleOnlyCheckbox.checked) {
+                mainElement.classList.add('width-article-only');
+            }
         }
 
         // 記事のみ表示の切り替え
         function toggleArticleOnly() {
             const mainElement = document.getElementById('main');
             const articleOnlyCheckbox = document.getElementById('article-only-checkbox');
+            const savedWidth = localStorage.getItem('blogWidth') || 'auto';
 
             if (articleOnlyCheckbox.checked) {
-                mainElement.classList.remove('width-auto', 'width-large', 'width-medium', 'width-small');
                 mainElement.classList.add('width-article-only');
                 localStorage.setItem('articleOnly', true);
             } else {
-                // チェックが外れた場合は、保存されている幅設定を適用
-                const savedWidth = localStorage.getItem('blogWidth') || 'auto';
-                changeWidth(savedWidth);
+                mainElement.classList.remove('width-article-only');
+                localStorage.setItem('articleOnly', false);
             }
+
+            // 現在の幅設定を再適用
+            changeWidth(savedWidth);
         }
 
         // ページ読み込み時に保存された設定を適用
         window.onload = function () {
             const savedWidth = localStorage.getItem('blogWidth') || 'auto';
             const articleOnly = localStorage.getItem('articleOnly') === 'true';
-
-            // 幅の設定を適用
-            changeWidth(savedWidth);
+            const mainElement = document.getElementById('main');
+            const articleOnlyCheckbox = document.getElementById('article-only-checkbox');
 
             // 記事のみ表示の設定を適用
-            const articleOnlyCheckbox = document.getElementById('article-only-checkbox');
             articleOnlyCheckbox.checked = articleOnly;
 
-            if (articleOnly) {
-                const mainElement = document.getElementById('main');
-                mainElement.classList.remove('width-auto', 'width-large', 'width-medium', 'width-small');
-                mainElement.classList.add('width-article-only');
-            }
+            // 幅の設定を適用（これにより記事のみの状態も適切に設定される）
+            changeWidth(savedWidth);
         }
     </script>
 </head>
