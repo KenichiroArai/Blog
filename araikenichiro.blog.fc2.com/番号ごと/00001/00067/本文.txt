@@ -1,0 +1,22 @@
+# フロントエンド（TS、JS）の26日目
+
+## 本文
+
+<h2>今日のまとめ</h2>
+<br>
+<p>
+主な学習内容は、今日に引き続き、Prismaの学習を行い、特に、検索条件とCreateの学習を学びました。
+</p>
+<br>
+<h3>今日の成果</h2>
+<br>
+<p>
+『Node.js 超入門』 　344/451=76.27%<br>
+</p>
+<br>
+<h2>前回のリンク</h2>
+<br>
+<p>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-65.html" target="_blank">フロントエンド（TS、JS）の25日目</a>
+</p>
+<br>
