@@ -1,23 +1,76 @@
-<article class="article-body">
-    <h2>前回</h2>
-    <br>
-    <div>
-        <a href="http://araikenichiro.blog.fc2.com/blog-entry-70.html" title="kmg-toolのJavadocタグ設定処理の開発記録その12"
-            target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その12</a>
-    </div>
-    <br>
-    <h2>開発記録</h2>
-    <br>
-    <h2>リポジトリ</h2>
-    <br>
-    <ul>
-        <li>
-            <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
-                target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
-        </li>
-        <li>
-            <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
-                target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
-        </li>
-    </ul>
-</article>
+<h2>前回</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-70.html" title="kmg-toolのJavadocタグ設定処理の開発記録その12"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その12</a>
+</div>
+<h2>開発記録</h2>
+<p>
+    今日は、下記の部分を対応する。<br>
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00072_001.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00072_001.png" alt="00072_001.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    これは、Javadocの配置場所からJava区分を決めるものである。<br>
+    Javadocの配置場所は設定情報で、ここでクラスと指定するとクラスに指定したJavadocのタグを設定する。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00072_002.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00072_002.png" alt="00072_002.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    上記の設定部分である。<br>
+    それをJava区分から判定して返す処理である。<br>
+    Java区分とは、このブロックがどの区分に属するを表す列挙型である。<br>
+    例えば、
+</p>
+<pre class="brush:java">
+    /**
+     * Javadoc
+     * @version 1.0
+     */
+     public class JavaClass {
+</pre>
+<p>
+    この場合、Java区分はクラスとして判定するということだ。他にもメソッドやフィールドの種類がある。
+</p>
+<p>
+    続いて、利用している場所を見ていく。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00072_003.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00072_003.png" alt="00072_003.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    Javadocタグを設定するかを判定するためのisProperlyPlacedメソッドで使っている。<br>
+    解析中のブロック（Javadocから次のJavadocまで）が、タグの配置するJava区分かを判断しているということだ。<br>
+    ここはとりあず生成AIで作成している個所のため、見直しが必要そうだ。<br>
+    一度、KmgJavadocLocationTypesに値を渡しているのが、微妙である。<br>
+    それは、下記の画像の通り、キーが文字列指定で、JavaClassificationTypesのキーも文字列指定であるためだ。<br>
+    ここは同じ情報を指しているわけで、というよりもJavaClassificationTypes自身であるので、KmgJavadocLocationTypesのキーをJavaClassificationTypesにすればいいと考えている。<br>
+    JavaClassificationTypesの要素（フィールド）にJavadocの指定かなタグを持っておいてもいいし、Javadocタグの種類（KmgJavadocTagTypes）に指定可能なJava区分を持っておいても良さそうだ。<br>
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00072_004.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00072_004.png" alt="00072_004.png" width="2920"
+            height="1931" border="0">
+    </a>
+</div>
+<h2>リポジトリ</h2>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
