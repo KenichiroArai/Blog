@@ -221,19 +221,36 @@ h5 {
 }
 
 .content-wrapper h2 {
-    font-size: 1.5em;
-    border-bottom: 2px solid #9cbe66;
-    padding-bottom: 5px;
+    font-size: 1.8em;
+    border-bottom: 3px solid #86ae46;
+    padding: 10px 15px;
+    color: #3a8ac0;
+    font-weight: bold;
+    background-color: #f0f7fc;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
 .content-wrapper h3 {
-    font-size: 1.3em;
-    border-left: 4px solid #9cbe66;
-    padding-left: 10px;
+    font-size: 1.5em;
+    border-left: 5px solid #e67e22;
+    padding: 8px 15px;
+    color: #4a4a4a;
+    font-weight: bold;
+    background-color: #fff9f0;
+    border-radius: 3px;
+    margin-left: 5px;
 }
 
 .content-wrapper h4 {
-    font-size: 1.1em;
+    font-size: 1.2em;
+    border-bottom: 1px dashed #9cbe66;
+    padding: 5px 10px;
+    color: #666;
+    font-weight: bold;
+    background-color: #f5faf0;
+    border-radius: 3px;
+    display: inline-block;
 }
 
 .content-wrapper ul,
