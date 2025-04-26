@@ -208,6 +208,67 @@ h5 {
     font-size: 16px;
     line-height: 1.8;
 }
+
+.content-wrapper p {
+    margin-bottom: 1.2em;
+}
+
+.content-wrapper h2,
+.content-wrapper h3,
+.content-wrapper h4 {
+    margin: 1.5em 0 0.8em;
+    color: #333;
+}
+
+.content-wrapper h2 {
+    font-size: 1.5em;
+    border-bottom: 2px solid #9cbe66;
+    padding-bottom: 5px;
+}
+
+.content-wrapper h3 {
+    font-size: 1.3em;
+    border-left: 4px solid #9cbe66;
+    padding-left: 10px;
+}
+
+.content-wrapper h4 {
+    font-size: 1.1em;
+}
+
+.content-wrapper ul,
+.content-wrapper ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+}
+
+.content-wrapper li {
+    margin-bottom: 0.5em;
+}
+
+.content-wrapper blockquote {
+    margin: 1em 0;
+    padding: 10px 15px;
+    border-left: 4px solid #9cbe66;
+    background-color: #f5f5f5;
+    color: #555;
+}
+
+.content-wrapper code {
+    background-color: #f5f5f5;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.content-wrapper pre {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
 .plugin-wrapper {
     margin-bottom: 20px;
 }
@@ -495,70 +556,6 @@ h4 {
 .read-more:hover {
     background-color: #86ae46;
     text-decoration: none;
-}
-
-.article-body {
-    line-height: 1.8;
-}
-
-.article-body p {
-    margin-bottom: 1.2em;
-}
-
-.article-body h2,
-.article-body h3,
-.article-body h4 {
-    margin: 1.5em 0 0.8em;
-    color: #333;
-}
-
-.article-body h2 {
-    font-size: 1.5em;
-    border-bottom: 2px solid #9cbe66;
-    padding-bottom: 5px;
-}
-
-.article-body h3 {
-    font-size: 1.3em;
-    border-left: 4px solid #9cbe66;
-    padding-left: 10px;
-}
-
-.article-body h4 {
-    font-size: 1.1em;
-}
-
-.article-body ul,
-.article-body ol {
-    margin: 1em 0;
-    padding-left: 1.5em;
-}
-
-.article-body li {
-    margin-bottom: 0.5em;
-}
-
-.article-body blockquote {
-    margin: 1em 0;
-    padding: 10px 15px;
-    border-left: 4px solid #9cbe66;
-    background-color: #f5f5f5;
-    color: #555;
-}
-
-.article-body code {
-    background-color: #f5f5f5;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-family: monospace;
-}
-
-.article-body pre {
-    background-color: #f5f5f5;
-    padding: 10px;
-    border-radius: 5px;
-    overflow-x: auto;
-    margin: 1em 0;
 }
 
 .article-more {
