@@ -1,0 +1,22 @@
+# フロントエンド（TS、JS）の29日目
+
+## 本文
+
+<h2>今日のまとめ</h2>
+<br>
+<p>
+主な学習内容は、モデル連携とDB版メッセージボードの作成を行った。<br>
+</p>
+<br>
+<h3>今日の成果</h2>
+<br>
+<p>
+『Node.js 超入門』 　401/451=88.91%<br>
+</p>
+<br>
+<h2>前回のリンク</h2>
+<br>
+<p>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-70.html" target="_blank">フロントエンド（TS、JS）の28日目</a>
+</p>
+<br>
