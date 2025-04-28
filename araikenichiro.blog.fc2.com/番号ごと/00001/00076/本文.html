@@ -1,0 +1,49 @@
+<h2>前回</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-72.html" title="kmg-toolのJavadocタグ設定処理の開発記録その13"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その13</a>
+</div>
+<h2>開発記録</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00076_001.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00076_001.png" alt="00076_001.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    画像の通り、KmgJavadocLocationTypes.javaとJavaClassificationTypes.javaは統一できそうだ。<br>
+    KmgJavadocLocationTypes.javaは、設定ファイルであるJavadocTagSetterTool.ymlで「2.
+    配置設定（location）」で使われているもである。だが、そこで指定できるのは、JavaClassificationTypes.javaと同じにできる。<br>
+    JavaClassificationTypes.javaは、Java区分で、クラス、メソッド、フィールドなどの種類を表すが、それは、Javadocの配置と一致するからだ。<br>
+    それでは、この2つを統一する。参照元を確認すると、KmgJavadocLocationTypes.javaを削除し、JavaClassificationTypes.javaに置き換えれば問題なさそうだった。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00076_002.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00076_002.png" alt="00076_002.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    上記が、KmgJavadocLocationTypesからJavaClassificationTypesに置換するときの画像だ。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00076_003.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00076_003.png" alt="00076_003.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    Javadocの配置場所の指定なしと全ての設定が明確ではなく微妙だが、とりあずこれでいく。<br>
+    今日は他にもJavaClassificationTypesのキーをKmgJavaKeywordTypesに変更している。
+</p>
+<h2>リポジトリ</h2>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>

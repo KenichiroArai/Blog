@@ -1,22 +1,45 @@
-<h2>PIC#002：PIC学習を始める</h2>
-
-<h3>前回</h3>
+<h2>前回</h2>
 
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-71.html">PIC#001：PIC学習を始める</a>
 
-<h3>以前使っていたのが見つかった</h3>
+<h2>以前使っていたのが見つかった</h2>
 <p>
     <a
         href="https://adwinshop.com/i/ECB-500T?srsltid=AfmBOorX8uWbD6c66jwaE1K_ihmNig7zzo3Ifykw3D9U_GHy0bhIiMZd">キットで遊ぼう電子回路シリーズ05：PIC入門アセンブラ編</a>をやっている途中を見つけた。
 </p>
-<br>
+
 <div>
     <a href="http://araikenichiro.blog.fc2.com/img/00075_001.jpg/" target="_blank">
-        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00075_001.jpg" alt="00075_001.jpg" width="3390"
-            height="1907" border="0">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00075_001.jpg" alt="00075_001.jpg" width="300"
+            height="auto" border="0">
     </a>
 </div>
-<br>
+
 <p>
-    一式残っていた。PICライターもあってよかった。これは比較的最近の1シリーズ（F1、1万）
+    一式残っていた。PICライターもあってよかった。これは比較的最近の1シリーズ（F1、1万番台）には対応していないが、まずは、PIC16F84Aなどで学んでいこうと思っているので問題ない。
+</p>
+
+<h2>環境構築</h2>
+<p>
+    以前撮った写真を見ていたらどうやら、2014年ごろみたいなので、今使っているPCには入っていない。まずは環境構築を整える。<br>
+</p>
+<p>
+    生成AIで確認し、<a href="">#001_回答_PICの環境構築の仕方</a>の回答に基づいて進めていく。<br>
+    書籍のMPLAB IDEは、v8.84だが、現在の最新版は、<a href=https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide">MPLAB X
+        IDE v6.25</a>である。だが、手持ちのPICライターは「PIC PROGRAMMER A+」で、これはv6.25に対応していないらしい。<br>
+    生成AIで確認してみると、最後のバージョンであるMPLAB IDE
+    v8.92だと使えるとのことで、これをインストールする。<a
+        href="https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem">ダウンロードページはこちら。</a><br>
+    MPLAB IDE Archivesで調べると32bit版だが、使えそうなのでそれをインストールする。<a
+        href="https://ww1.microchip.com/downloads/en/DeviceDoc/MPLAB_IDE_8_92.zip">MPLAB X IDE v8.92のリンクはこちら。</a><br>
+    setup.exeの実行は、そのままだとインストールが進まなかったので、互換性モード（Windows 7）で実行したら、インストールが進んだ。<br>
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00075_002.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00075_002.png" alt="00075_002.png" width="300"
+            border="0">
+    </a>
+</div>
+<p>
+    起動は出来た。実行するからはこれからだ。
 </p>
