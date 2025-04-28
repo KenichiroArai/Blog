@@ -5,6 +5,12 @@
 </div>
 <h2>開発記録</h2>
 <h2>リポジトリ</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_001.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_001.png" alt="00077_001.png" width="1599"
+            height="1385" border="0">
+    </a>
+</div>
 <p>
     次は「Java区分のキーワードを取得する」（クラスならクラス名、フィールドならフィールド名のように）対応を行う。<br>
     これは、Javadocを配置するJava区分と一緒に、そのキーワードも取得できるようにするため、TODOにしていた。<br>
@@ -14,11 +20,21 @@
     そのため、Java区分だけでなく、キーワードも保持したいというわけだ。
 </p>
 <div>
-    <a href="http://araikenichiro.blog.fc2.com/img/00077_001.png/" target="_blank">
-        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_001.png" alt="00077_001.png" width="1599"
-            height="1385" border="0">
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_002.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_002.png" alt="00077_002.png" width="3232"
+            height="1496" border="0">
     </a>
 </div>
+<p>
+    Java区分の列挙型にある判別するための正規表現を修正し、そこにキーワード（要素名）を取得する処理を追加した。<br>
+    生成AIで確認したら、キーワードはJavaの予約語の意味で捉えられるため、要素名に変更している。<br>
+    Java区分を決定するときに、要素名も決まるため、一緒に取得したが、列挙型のため、マップやモデルにして返すことも考えたが、とりあず、別メソッドにしている。メソッド名も「get」としているため、これも見直すかも。
+</p>
+<p>
+    デバッグ時（トレース時）の情報も載せている。結局、デバッグ時に細かな情報を知りたい場合は、コードが冗長になるが、デバッグ時を考えると分けた方が結局いい。<br>
+    例えば、「codeLines」もfor文に書くこともできる。Javaだとあまりしないが、他の言語であれば十分あり得る。JavaならStreamを使えば一気にできるが、その途中結果をそのまま見ることはできなくなる。<br>
+    また、僕が拘っている列挙型もデバッグ情報を見ると分かりやすいと分かるだろう。単なる文字列や数値だけではなく、名称なども一緒に見れるため分かりやすく、メリットを感じられたと思う。
+</p>
 <ul>
     <li>
         <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
