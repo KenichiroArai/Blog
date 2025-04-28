@@ -1,0 +1,31 @@
+<h2>前回</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-76.html" title="kmg-toolのJavadocタグ設定処理の開発記録その14"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その14</a>
+</div>
+<h2>開発記録</h2>
+<h2>リポジトリ</h2>
+<p>
+    次は、「Java区分のキーワードを取得する。クラスならクラス名、フィールドならフィールド名のように。」を対応する。<br>
+    これは、Javadocを配置するJava区分と一緒にそのキーワードを取得したいために、TODOにしている。<br>
+    Java区分というのは、クラス、メソッド、フィールドなどの種類を表していて、Javadocと紐づいている。Java区分を見れば、これはどの区分のJavadocが分かる。<br>
+    一方、Java区分のキーワードというのは、クラスならクラス名、メソッドならメソッド名、他にもコンストラクタ名、列挙値、インタフェース名などを指す。<br>
+    これが分かるようになると、ログ出力時やデバッグ時に、このJavadocタグの配置はどこのJava区分でキーワードが何か分かるようになり、進捗やトレースが楽なる。<br>
+    そのため、Java区分のキーワードも保持したいということだ。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_001.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_001.png" alt="00077_001.png" width="1599"
+            height="1385" border="0">
+    </a>
+</div>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
