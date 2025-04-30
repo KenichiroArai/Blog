@@ -1,0 +1,73 @@
+<h2>前回</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-77.html" title="kmg-toolのJavadocタグ設定処理の開発記録その15"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その15</a>
+</div>
+<h2>開発記録</h2>
+<p>
+    次のタスクは、Javaブロックモデルを作成するメソッドのコードを整理する。<br>
+    生成AIでの生成のため、気になる実装になっており見直しが必要だ。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_003.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_003.png" alt="00077_003.png" width="800"
+            border="0">
+    </a>
+</div>
+<p>
+    修正後のコードとの差分は、上記の画像の通りである。<br>
+    コード量は増加しているが、処理を分割し、フラグを排除することで if 文の数を減らしている。<br>
+    変更前の実装でも問題ないため、好みの問題といえるだろう。コード量や処理の重複は増えているものの処理回数自体は変わっておらず、可読性を重視した結果として変更後の実装のほうが望ましいと判断して修正を行った。
+</p>
+<p>
+    次は、下記の画像のログを出力するを実装する。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_004.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_004.png" alt="00077_004.png" width="800"
+            border="0"></a>
+</div>
+<p>
+    下記の画像が、対応後のコードである。<br>
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_005.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_005.png" alt="00077_005.png" width="800"
+            border="0">
+    </a>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_006.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_006.png" alt="00077_006.png" width="800"
+            border="0">
+    </a>
+</div>
+<p>
+    ログは下記の画像の通りである。まだ、ロガーではなくコンソールに出力のままである。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00077_007.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00077_007.png" alt="00077_007.png" width="800"
+            border="0">
+    </a>
+</div>
+<p>
+    現在出力しているのは、変更と追加である。
+</p>
+<pre>
+タグの位置を変更します。区分：[クラス], 要素名：[KmgPfaMeasServiceImpl], 元の対象行:[* @author KenichiroArai], 元のタグ:[著者], 元の指定値:[KenichiroArai], 元の説明:[], 変更後のタグの内容:[ * @author KenichiroArai ], 変更後のタグ:[著者], 変更後の指定値:[KenichiroArai], 変更後の説明:[]
+タグ存在しないため、タグを追加しました。追加先の区分：[メソッド], 追加先の要素名：[getName], 追加したタグ：[シンス]
+タグ存在しないため、タグを追加しました。追加先の区分：[メソッド], 追加先の要素名：[createKmgPfaMeasModel], 追加したタグ：[シンス]
+</pre>
+<p>
+    また、「最終合計行数」にはなっているが正しくは「最終変更数」である。ここも直す必要がある。
+</p>
+<h2>リポジトリ</h2>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
