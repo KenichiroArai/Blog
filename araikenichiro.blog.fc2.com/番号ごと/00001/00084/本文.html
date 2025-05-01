@@ -1,0 +1,41 @@
+<h2>前回</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-82.html" title="kmg-toolのJavadocタグ設定処理の開発記録その17"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その17</a>
+</div>
+<h2>開発記録</h2>
+<p>
+    次は、下記の画像の
+<pre class="brush: java">
+    final List&lt;Map&lt;String, Object&gt;&gt; javadocTags = (List&lt;Map&lt;String, Object&gt;&gt;) yamlData.get(&quot;JdtsConfigs&quot;);
+</pre>
+を対応する。List&lt;Map&lt;String, Object&gt;&gt;の型変換を直接クラスで行うようにする。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00084_001.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00084_001.png" alt="00084_001.png" width="800"
+            border="0">
+    </a>
+</div>
+<p>
+    とりあず、今日は下記の画像の修正まで。ObjectMapperとYAMLFactoryで型変換するようにしている。<br>
+    Listの中身のMap&lt;String, Object&gt;はこれから。今はListで一度変換しているが、呼び出し元のJdtsConfigsModelImplを渡して一括で変換する予定である。<br>
+    そのためには、コンストラクタでyamlDataを受け取るのではなく、クラスメソッドからJdtsConfigsModelImplのインスタンスを生成して返す予定だ。検証できていないため、出来なければ個別にObjectMapperとYAMLFactoryを使って変換する。
+</p>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/img/00084_002.png/" target="_blank">
+        <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00084_002.png" alt="00084_002.png" width="800"
+            border="0">
+    </a>
+</div>
+<h2>リポジトリ</h2>
+<ul>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0</a>
+    </li>
+</ul>
