@@ -1,0 +1,20 @@
+# フロントエンド（TS、JS）の33日目：『ノンプログラマのためのJavaScriptはじめの一歩』をサラッと読み始める
+
+## 本文
+
+<h2>前回のリンク</h2>
+<p>
+<a href="http://araikenichiro.blog.fc2.com/blog-entry-81.html" target="_blank">フロントエンド（TS、JS）の32日目</a>
+</p>
+
+<h2>今日のまとめ</h2>
+<p>
+今日から、<a href="https://amzn.asia/d/erAGAwl" target="_blank">『ノンプログラマのためのJavaScriptはじめの一歩』</a>を読み始める。以降、「JavaScriptはじめの一歩」とする。<br>
+これは、2014年に買ってJavaScriptを改めて学びたいと思って購入している。購入当時も内容で知らないものはなく今でもそうだが、次に進めるためにサラッとだが一通り読もうと思う。<br>
+実際に手を動かして書くまでもなく、サラッと第1章、第2章を読んだ。この調子で早く読み、区切りをつけて次ぐに進める。
+</p>
+
+<h2>今日の成果</h2>
+<p>
+<a href="https://amzn.asia/d/erAGAwl" target="_blank">『ノンプログラマのためのJavaScriptはじめの一歩』</a> 92/248=37.10%
+</p>
