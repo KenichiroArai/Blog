@@ -87,10 +87,21 @@
 
                 // 変換したHTMLを挿入するdiv要素を作成
                 const div = document.createElement('div');
-                div.className = 'markdown-content';
+                div.className = 'markdown-content markdown-embedded';
                 div.innerHTML = html;
 
                 // 元のpre要素を変換した内容で置き換え
+                element.parentNode.replaceChild(div, element);
+            });
+
+            // メインコンテンツとしてのマークダウンを処理
+            const mainMarkdownElements = document.querySelectorAll('pre.markdown-main');
+            mainMarkdownElements.forEach(function (element) {
+                const markdown = element.textContent;
+                const html = marked.parse(markdown);
+                const div = document.createElement('div');
+                div.className = 'markdown-content markdown-main';
+                div.innerHTML = html;
                 element.parentNode.replaceChild(div, element);
             });
         });
