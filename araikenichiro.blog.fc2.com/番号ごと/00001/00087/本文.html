@@ -1,0 +1,114 @@
+<h2>前回のリンク</h2>
+<p>
+  <a href="http://araikenichiro.blog.fc2.com/blog-entry-86.html" target="_blank">フロントエンド（TS、JS）の34日目</a>
+</p>
+
+<h2>学習記録</h2>
+<p>
+  DOMの操作で、「onload」が必要とあるが、2012年の書籍で古すぎるので生成AIで確認してみた。<br>
+  ただ、「onload」とかのDOMなどを読み込むタイミングの概念は重要でし、今でも「onload」を使っているのもあるため、JavaScriptを本格的に学ぶなら原点を知ることも重要である。非エンジニアでただJavaScriptを使うだけなら不要だが。<br>
+  <a href="https://chatgpt.com/share/68158c3b-3b84-800c-989e-b19fb191fe83" target="_blank">生成AIで確認した結果</a>
+</p>
+
+<pre class="markdown-view">
+  いいえ、**JavaScriptでDOMを操作する際に必ずしも `onload` は必須ではありません**。ただし、**「いつ」DOMを操作するかは非常に重要**です。DOMがまだ読み込まれていない状態で操作しようとすると、エラーになります。
+
+  以下に主な方法を紹介します：
+
+  ---
+
+  ### ✅ `window.onload`（古典的な方法）
+
+  ```javascript
+  window.onload = function() {
+    document.getElementById(&quot;myDiv&quot;).textContent = &quot;Hello!&quot;;
+  };
+  ```
+
+  - **すべてのリソース（画像・CSSなど）を読み込んだ後**に実行されます。
+  - 安全だが、タイミングが遅くなることもある。
+
+  ---
+
+  ### ✅ `DOMContentLoaded`（推奨されるモダンな方法）
+
+  ```javascript
+  document.addEventListener(&quot;DOMContentLoaded&quot;, function() {
+    document.getElementById(&quot;myDiv&quot;).textContent = &quot;Hello!&quot;;
+  });
+  ```
+
+  - **HTMLの構造（DOM）だけが読み込まれた時点**で実行される。
+  - より早く実行できる。
+
+  ---
+
+  ### ❌ DOMの準備前にスクリプトを実行するとどうなる？
+
+  ```html
+  &lt;script&gt;
+    document.getElementById(&quot;myDiv&quot;).textContent = &quot;Hello!&quot;;
+  &lt;/script&gt;
+  &lt;div id=&quot;myDiv&quot;&gt;&lt;/div&gt;
+  ```
+
+  - これは**エラーになる可能性が高い**です。スクリプト実行時に`#myDiv`がまだ存在していないため。
+
+  ---
+
+  ### ✅ `&lt;script defer&gt;` を使う方法
+
+  ```html
+  &lt;script src=&quot;script.js&quot; defer&gt;&lt;/script&gt;
+  ```
+
+  - `defer`を使うと、**DOMの読み込み完了後にスクリプトが実行**される。
+  - 外部スクリプトでよく使われる手法。
+  - これを使えば、`onload`や`DOMContentLoaded`を省略しても安全にDOMを操作できます。
+
+  ---
+
+  ### 結論
+
+  - **`onload`は必須ではないが、DOMが準備できてからスクリプトを実行することは必須。**
+  - 最も推奨されるのは：
+    - モダンJS：`DOMContentLoaded`イベントを使う
+    - HTML上で：`&lt;script defer&gt;` を使う
+
+  ---
+
+  どんな環境や構成を想定していますか？（HTML内スクリプト or 外部JSなど）
+---
+
+### ✅ `&lt;script defer&gt;` を使う方法
+
+```html
+    & lt;script src = & quot; script.js & quot; defer & gt;& lt;/script&gt;
+  ```
+
+- `defer`を使うと、**DOMの読み込み完了後にスクリプトが実行**される。
+- 外部スクリプトでよく使われる手法。
+- これを使えば、`onload`や`DOMContentLoaded`を省略しても安全にDOMを操作できます。
+
+---
+
+### 結論
+
+- **`onload`は必須ではないが、DOMが準備できてからスクリプトを実行することは必須。**
+- 最も推奨されるのは：
+  - モダンJS：`DOMContentLoaded`イベントを使う
+  - HTML上で：`& lt;script defer & gt; ` を使う
+
+---
+
+どんな環境や構成を想定していますか？（HTML内スクリプト or 外部JSなど）
+</pre>
+
+<h2>今日のまとめ</h2>
+<p>
+</p>
+
+<h2>今日の成果</h2>
+<p>
+  <a href="https://amzn.asia/d/erAGAwl" target="_blank">『ノンプログラマのためのJavaScriptはじめの一歩』</a> 105/248=42.34%
+</p>
