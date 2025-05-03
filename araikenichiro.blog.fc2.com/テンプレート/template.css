@@ -767,13 +767,37 @@ table th:nth-child(3) {
 }
 
 .markdown-content h1 {
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+  font-size: 1.4em;
+  color: #555;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  margin: 1.2em 0 0.8em;
 }
 
 .markdown-content h2 {
+  font-size: 1.3em;
+  color: #666;
   border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
+  margin: 1.1em 0 0.7em;
+}
+
+.markdown-content h3 {
+  font-size: 1.2em;
+  color: #777;
+  margin: 1em 0 0.6em;
+}
+
+.markdown-content h4 {
+  font-size: 1.1em;
+  color: #888;
+  margin: 0.9em 0 0.5em;
+}
+
+.markdown-content h5 {
+  font-size: 1em;
+  color: #999;
+  margin: 0.8em 0 0.4em;
 }
 
 .markdown-content code {
