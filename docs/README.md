@@ -20,4 +20,4 @@
 
 ## ツール
 
-- [数値変換ツール](./Tool/convert_large_number.html) - 大きな数値を日本の単位に変換するツールです。
+- [数の単位変換ツール](./Tool/convert_large_number.html) - 大きな数値を日本の単位に変換するツールです。
