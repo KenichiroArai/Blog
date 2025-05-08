@@ -17,3 +17,7 @@
 ## Cursor
 
 - [Cursor使用記録](./Cursor/index.html) - Cursorの使用記録を管理するページです。
+
+## ツール
+
+- [数値変換ツール](./Tool/convert_large_number.html) - 大きな数値を日本の単位に変換するツールです。

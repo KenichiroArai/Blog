@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日本の大きな数変換ツール</title>
     <style>
         body {
@@ -21,6 +22,10 @@
             font-size: 1.2em;
             font-weight: bold;
         }
+
+        .back-link {
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -29,6 +34,9 @@
     <input type="number" id="numberInput" placeholder="数値を入力してください">
     <button onclick="convertNumber()">変換</button>
     <div id="result"></div>
+    <div class="back-link">
+        <a href="../README.md">← トップページに戻る</a>
+    </div>
 
     <script>
         function formatJapaneseNumber(number) {
