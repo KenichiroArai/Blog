@@ -38,6 +38,32 @@
         .unit-input {
             display: none;
         }
+
+        .result-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .copy-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+
+        .copy-success {
+            color: #4CAF50;
+            font-size: 0.9em;
+            display: none;
+        }
     </style>
 </head>
 
@@ -60,7 +86,11 @@
     </div>
 
     <button onclick="convert()">変換</button>
-    <div id="result"></div>
+    <div class="result-container">
+        <div id="result"></div>
+        <button id="copyButton" class="copy-button" onclick="copyResult()" style="display: none;">コピー</button>
+        <span id="copySuccess" class="copy-success">コピーしました！</span>
+    </div>
     <div class="back-link">
         <a href="../README.md">← トップページに戻る</a>
     </div>
@@ -120,6 +150,7 @@
         function convert() {
             const conversionType = document.querySelector('input[name="conversionType"]:checked').value;
             const resultElement = document.getElementById('result');
+            const copyButton = document.getElementById('copyButton');
 
             if (conversionType === 'numberToUnit') {
                 const input = document.getElementById('numberInput').value;
@@ -131,6 +162,19 @@
                 const result = parseJapaneseNumber(input);
                 resultElement.textContent = `変換結果：${result}`;
             }
+
+            copyButton.style.display = 'inline-block';
+        }
+
+        function copyResult() {
+            const resultText = document.getElementById('result').textContent.replace('変換結果：', '');
+            navigator.clipboard.writeText(resultText).then(() => {
+                const copySuccess = document.getElementById('copySuccess');
+                copySuccess.style.display = 'inline';
+                setTimeout(() => {
+                    copySuccess.style.display = 'none';
+                }, 2000);
+            });
         }
 
         // ラジオボタンの切り替え処理
