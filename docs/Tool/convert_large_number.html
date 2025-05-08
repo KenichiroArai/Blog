@@ -26,28 +26,55 @@
         .back-link {
             margin-top: 20px;
         }
+
+        .conversion-type {
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .unit-input {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <h1>数値を日本の大きな単位に変換</h1>
-    <input type="number" id="numberInput" placeholder="数値を入力してください">
-    <button onclick="convertNumber()">変換</button>
+
+    <div class="conversion-type">
+        <input type="radio" id="numberToUnit" name="conversionType" value="numberToUnit" checked>
+        <label for="numberToUnit">数値から単位へ</label>
+        <input type="radio" id="unitToNumber" name="conversionType" value="unitToNumber">
+        <label for="unitToNumber">単位から数値へ</label>
+    </div>
+
+    <div id="numberInputGroup" class="input-group">
+        <input type="number" id="numberInput" placeholder="数値を入力してください">
+    </div>
+
+    <div id="unitInputGroup" class="input-group unit-input">
+        <input type="text" id="unitInput" placeholder="例：1億2000万">
+    </div>
+
+    <button onclick="convert()">変換</button>
     <div id="result"></div>
     <div class="back-link">
         <a href="../README.md">← トップページに戻る</a>
     </div>
 
     <script>
+        const units = [
+            "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
+            "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
+        ];
+
         function formatJapaneseNumber(number) {
             if (isNaN(number) || number < 10000) {
                 return number.toString();
             }
-
-            const units = [
-                "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
-                "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
-            ];
 
             const unitStep = 4;
             let str = "";
@@ -64,12 +91,63 @@
             return str;
         }
 
-        function convertNumber() {
-            const input = document.getElementById('numberInput').value;
-            const number = parseFloat(input);
-            const result = formatJapaneseNumber(number);
-            document.getElementById('result').textContent = `変換結果：${result}`;
+        function parseJapaneseNumber(str) {
+            let result = 0;
+            let currentNumber = 0;
+            let currentUnit = "";
+
+            for (let i = 0; i < str.length; i++) {
+                const char = str[i];
+                if (char >= '0' && char <= '9') {
+                    currentNumber = currentNumber * 10 + parseInt(char);
+                } else {
+                    const unitIndex = units.indexOf(char);
+                    if (unitIndex !== -1) {
+                        const unitValue = Math.pow(10, unitIndex * 4);
+                        result += currentNumber * unitValue;
+                        currentNumber = 0;
+                    }
+                }
+            }
+
+            if (currentNumber > 0) {
+                result += currentNumber;
+            }
+
+            return result;
         }
+
+        function convert() {
+            const conversionType = document.querySelector('input[name="conversionType"]:checked').value;
+            const resultElement = document.getElementById('result');
+
+            if (conversionType === 'numberToUnit') {
+                const input = document.getElementById('numberInput').value;
+                const number = parseFloat(input);
+                const result = formatJapaneseNumber(number);
+                resultElement.textContent = `変換結果：${result}`;
+            } else {
+                const input = document.getElementById('unitInput').value;
+                const result = parseJapaneseNumber(input);
+                resultElement.textContent = `変換結果：${result}`;
+            }
+        }
+
+        // ラジオボタンの切り替え処理
+        document.querySelectorAll('input[name="conversionType"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const numberInputGroup = document.getElementById('numberInputGroup');
+                const unitInputGroup = document.getElementById('unitInputGroup');
+
+                if (this.value === 'numberToUnit') {
+                    numberInputGroup.style.display = 'block';
+                    unitInputGroup.style.display = 'none';
+                } else {
+                    numberInputGroup.style.display = 'none';
+                    unitInputGroup.style.display = 'block';
+                }
+            });
+        });
     </script>
 </body>
 
