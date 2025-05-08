@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>日本の大きな数変換ツール</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        input,
+        button {
+            padding: 8px;
+            font-size: 1em;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>数値を日本の大きな単位に変換</h1>
+    <input type="number" id="numberInput" placeholder="数値を入力してください">
+    <button onclick="convertNumber()">変換</button>
+    <div id="result"></div>
+
+    <script>
+        function formatJapaneseNumber(number) {
+            if (isNaN(number) || number < 10000) {
+                return number.toString();
+            }
+
+            const units = [
+                "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
+                "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
+            ];
+
+            const unitStep = 4;
+            let str = "";
+
+            for (let i = units.length - 1; i >= 0; i--) {
+                const unitValue = Math.pow(10, i * unitStep);
+                if (number >= unitValue) {
+                    const current = Math.floor(number / unitValue);
+                    str += current + units[i];
+                    number %= unitValue;
+                }
+            }
+
+            return str;
+        }
+
+        function convertNumber() {
+            const input = document.getElementById('numberInput').value;
+            const number = parseFloat(input);
+            const result = formatJapaneseNumber(number);
+            document.getElementById('result').textContent = `変換結果：${result}`;
+        }
+    </script>
+</body>
+
+</html>
