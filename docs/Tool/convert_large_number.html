@@ -37,7 +37,7 @@
             padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            max-width: 800px;
+            max-width: 1200px;
             width: 100%;
             margin: 0 auto;
             box-sizing: border-box;
@@ -45,7 +45,61 @@
 
         @media (min-width: 800px) {
             .container {
+                padding: 60px;
+            }
+
+            body {
                 padding: 40px;
+            }
+
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 50px;
+            }
+
+            input[type="number"],
+            input[type="text"] {
+                padding: 15px;
+                font-size: 1.2em;
+            }
+
+            button {
+                padding: 15px 30px;
+                font-size: 1.2em;
+            }
+
+            .result-container {
+                padding: 25px;
+                margin-top: 35px;
+            }
+
+            #result {
+                font-size: 1.5em;
+            }
+
+            .progress-container {
+                margin-top: 30px;
+                padding: 15px;
+            }
+
+            .progress-bar {
+                height: 25px;
+            }
+
+            .progress-labels {
+                font-size: 1em;
+                min-height: 50px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1600px;
+                padding: 80px;
+            }
+
+            body {
+                padding: 60px;
             }
         }
 
