@@ -336,34 +336,25 @@
         ];
         let unitIdx = 0;
 
-        function formatJapaneseNumber(number) {
+        function formatJapaneseNumber(numberStr) {
 
-            let result;
+            console.log(numberStr);
 
-            unitIdx = -1;
+            let result = '';
 
-            if (isNaN(number) || number < 10000) {
-                result = number.toString();
-                return result;
-            }
+            const numberWk = numberStr.toString().replace(/\B(?=(\d{4})+(?!\d))/g, "-");
+            unitIdx = (numberWk.match(/-/g) || []).length;
 
-            const unitStep = 4;
-            let str = "";
-
-            for (let i = units.length - 1; i >= 0; i--) {
-                const unitValue = Math.pow(10, i * unitStep);
-                if (number >= unitValue) {
-                    const current = Math.floor(number / unitValue);
-                    str += current + units[i];
-                    number %= unitValue;
-
-                    if (unitIdx === -1) {
-                        unitIdx = i;
-                    }
+            let wkIdx = unitIdx;
+            for (let i = 0; i < numberWk.length; i++) {
+                if (numberWk[i] === '-') {
+                    result += units[wkIdx];
+                    wkIdx--;
+                    continue;
                 }
+                result += numberWk[i];
             }
 
-            result = str;
             return result;
         }
 
@@ -407,8 +398,7 @@
 
             if (conversionType === 'numberToUnit') {
                 const input = document.getElementById('numberInput').value;
-                const number = parseFloat(input);
-                const result = formatJapaneseNumber(number);
+                const result = formatJapaneseNumber(input);
                 resultElement.textContent = `変換結果：${result}`;
 
                 // 進捗バーを表示
