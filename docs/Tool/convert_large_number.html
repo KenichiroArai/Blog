@@ -17,11 +17,13 @@
 
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            padding: 5% 2%;
-            margin: 0 auto;
+            padding: 20px;
+            margin: 0;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.6;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -32,16 +34,18 @@
 
         .container {
             background-color: white;
-            padding: 5%;
+            padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            width: 90%;
+            max-width: 800px;
+            width: 100%;
             margin: 0 auto;
+            box-sizing: border-box;
         }
 
         @media (min-width: 800px) {
             .container {
-                width: 60%;
+                padding: 40px;
             }
         }
 
@@ -81,6 +85,7 @@
         .conversion-type {
             margin-bottom: 25px;
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
         }
@@ -149,8 +154,8 @@
             display: none;
             overflow-x: auto;
             width: 100%;
-            padding-left: 10px;
-            padding-right: 10px;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         .progress-bar {
@@ -176,7 +181,9 @@
             margin-top: 5px;
             font-size: 0.8em;
             color: #666;
-            height: 40px;
+            min-height: 40px;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .progress-label {
@@ -199,23 +206,27 @@
 
         @media (max-width: 600px) {
             body {
-                padding: 20px 15px;
+                padding: 10px;
             }
 
             .container {
-                padding: 20px;
-                width: 100%;
-                margin-left: 0;
-            }
-
-            .progress-container {
-                width: 100%;
-                margin-left: 0;
+                padding: 15px;
             }
 
             .conversion-type {
                 flex-direction: column;
+                align-items: flex-start;
                 gap: 10px;
+            }
+
+            .progress-container {
+                padding: 5px;
+            }
+
+            input[type="number"],
+            input[type="text"] {
+                font-size: 16px;
+                /* iOSでのズームを防ぐ */
             }
         }
     </style>
