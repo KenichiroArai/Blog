@@ -410,6 +410,19 @@
                 }
             });
         });
+
+        // エンターキーで変換を実行
+        document.getElementById('numberInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                convert();
+            }
+        });
+
+        document.getElementById('unitInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                convert();
+            }
+        });
     </script>
 </body>
 
