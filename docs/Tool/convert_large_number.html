@@ -433,6 +433,12 @@
                     label.className = 'progress-label';
                     const position = (index / (units.length - 1)) * 100;
                     label.style.left = `${position}%`;
+                    // 左端のラベルを調整
+                    if (index === 0) {
+                        label.style.transform = 'translateX(0)';
+                    } else {
+                        label.style.transform = 'translateX(-50%)';
+                    }
                     labelContainer.appendChild(label);
                 });
 
