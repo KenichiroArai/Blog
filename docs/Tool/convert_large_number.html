@@ -137,6 +137,34 @@
             text-decoration: underline;
         }
 
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.8em;
+            color: #666;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -190,6 +218,12 @@
         <button onclick="convert()">変換</button>
         <div class="result-container">
             <div id="result"></div>
+        </div>
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-labels" id="progressLabels"></div>
         </div>
         <div>
             <button id="copyButton" class="copy-button" onclick="copyResult()" style="display: none;">コピー</button>
@@ -256,16 +290,48 @@
             const conversionType = document.querySelector('input[name="conversionType"]:checked').value;
             const resultElement = document.getElementById('result');
             const copyButton = document.getElementById('copyButton');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressLabels = document.getElementById('progressLabels');
+
+            // 進捗バーをクリア
+            progressFill.style.width = '0%';
+            progressLabels.innerHTML = '';
 
             if (conversionType === 'numberToUnit') {
                 const input = document.getElementById('numberInput').value;
                 const number = parseFloat(input);
                 const result = formatJapaneseNumber(number);
                 resultElement.textContent = `変換結果：${result}`;
+
+                // 進捗バーを表示
+                progressContainer.style.display = 'block';
+
+                // 進捗バーのラベルを設定
+                const maxUnit = Math.floor(Math.log10(number) / 4);
+                const progressPercentage = (maxUnit / (units.length - 1)) * 100;
+                progressFill.style.width = `${progressPercentage}%`;
+
+                // ラベルを追加
+                const labelContainer = document.createElement('div');
+                labelContainer.style.display = 'flex';
+                labelContainer.style.justifyContent = 'space-between';
+                labelContainer.style.width = '100%';
+
+                units.forEach((unit, index) => {
+                    const label = document.createElement('span');
+                    label.textContent = unit || '1';
+                    labelContainer.appendChild(label);
+                });
+
+                progressLabels.appendChild(labelContainer);
             } else {
                 const input = document.getElementById('unitInput').value;
                 const result = parseJapaneseNumber(input);
                 resultElement.textContent = `変換結果：${result}`;
+
+                // 進捗バーを非表示
+                progressContainer.style.display = 'none';
             }
 
             copyButton.style.display = 'inline-block';
