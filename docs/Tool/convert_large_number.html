@@ -359,25 +359,50 @@
 
         function parseJapaneseNumber(numberStr) {
             let result = '';
-            let currentNumber = 0;
+            let currentNumber = '';
+            let currentUnit = '';
 
             for (let i = 0; i < numberStr.length; i++) {
                 const char = numberStr[i];
                 if (char >= '0' && char <= '9') {
-                    currentNumber = currentNumber * 10 + parseInt(char);
+                    currentNumber += char;
                     continue;
                 }
 
                 const unitIndex = units.indexOf(char);
                 if (unitIndex !== -1) {
-                    const unitValue = Math.pow(10, unitIndex * 4);
-                    result += currentNumber * unitValue;
-                    currentNumber = 0;
+                    if (currentNumber) {
+                        // 現在の数値に単位を適用
+                        const zeros = '0'.repeat(unitIndex * 4);
+                        result = addStrings(result, currentNumber + zeros);
+                        currentNumber = '';
+                    }
                 }
             }
 
-            if (currentNumber > 0) {
-                result += currentNumber;
+            // 残りの数値を追加
+            if (currentNumber) {
+                result = addStrings(result, currentNumber);
+            }
+
+            return result || '0';
+        }
+
+        // 文字列としての数値の加算を行う補助関数
+        function addStrings(str1, str2) {
+            let result = '';
+            let carry = 0;
+            let i = str1.length - 1;
+            let j = str2.length - 1;
+
+            while (i >= 0 || j >= 0 || carry > 0) {
+                const digit1 = i >= 0 ? parseInt(str1[i]) : 0;
+                const digit2 = j >= 0 ? parseInt(str2[j]) : 0;
+                const sum = digit1 + digit2 + carry;
+                carry = Math.floor(sum / 10);
+                result = (sum % 10) + result;
+                i--;
+                j--;
             }
 
             return result;
