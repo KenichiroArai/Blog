@@ -357,22 +357,22 @@
             return result;
         }
 
-        function parseJapaneseNumber(str) {
-            let result = 0;
+        function parseJapaneseNumber(numberStr) {
+            let result = '';
             let currentNumber = 0;
-            let currentUnit = "";
 
-            for (let i = 0; i < str.length; i++) {
-                const char = str[i];
+            for (let i = 0; i < numberStr.length; i++) {
+                const char = numberStr[i];
                 if (char >= '0' && char <= '9') {
                     currentNumber = currentNumber * 10 + parseInt(char);
-                } else {
-                    const unitIndex = units.indexOf(char);
-                    if (unitIndex !== -1) {
-                        const unitValue = Math.pow(10, unitIndex * 4);
-                        result += currentNumber * unitValue;
-                        currentNumber = 0;
-                    }
+                    continue;
+                }
+
+                const unitIndex = units.indexOf(char);
+                if (unitIndex !== -1) {
+                    const unitValue = Math.pow(10, unitIndex * 4);
+                    result += currentNumber * unitValue;
+                    currentNumber = 0;
                 }
             }
 
