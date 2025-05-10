@@ -334,22 +334,20 @@
             "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
             "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
         ];
-        let unitIdx = 0;
+        let selectedUnitsIdx = 0;
 
         function formatJapaneseNumber(numberStr) {
-
-            console.log(numberStr);
 
             let result = '';
 
             const numberWk = numberStr.toString().replace(/\B(?=(\d{4})+(?!\d))/g, "-");
-            unitIdx = (numberWk.match(/-/g) || []).length;
+            selectedUnitsIdx = Math.floor(numberStr.length / 4);
 
-            let wkIdx = unitIdx;
+            let unitsIdx = selectedUnitsIdx;
             for (let i = 0; i < numberWk.length; i++) {
                 if (numberWk[i] === '-') {
-                    result += units[wkIdx];
-                    wkIdx--;
+                    result += units[unitsIdx];
+                    unitsIdx--;
                     continue;
                 }
                 result += numberWk[i];
@@ -406,8 +404,7 @@
 
                 // 進捗バーのラベルを設定
                 const progressStep = 100 / (units.length - 1);
-                const progressPercentage = progressStep * unitIdx;
-                console.log(unitIdx, progressPercentage);
+                const progressPercentage = progressStep * selectedUnitsIdx;
                 progressFill.style.width = `${progressPercentage}%`;
 
                 // ラベルを追加
