@@ -163,6 +163,14 @@
             margin-top: 5px;
             font-size: 0.8em;
             color: #666;
+            position: relative;
+        }
+
+        .progress-label {
+            position: absolute;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            text-align: center;
         }
 
         @keyframes fadeIn {
@@ -239,10 +247,17 @@
             "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
             "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
         ];
+        let unitIdx = 0;
 
         function formatJapaneseNumber(number) {
+
+            let result;
+
+            unitIdx = -1;
+
             if (isNaN(number) || number < 10000) {
-                return number.toString();
+                result = number.toString();
+                return result;
             }
 
             const unitStep = 4;
@@ -254,10 +269,15 @@
                     const current = Math.floor(number / unitValue);
                     str += current + units[i];
                     number %= unitValue;
+
+                    if (unitIdx === -1) {
+                        unitIdx = i;
+                    }
                 }
             }
 
-            return str;
+            result = str;
+            return result;
         }
 
         function parseJapaneseNumber(str) {
@@ -308,19 +328,24 @@
                 progressContainer.style.display = 'block';
 
                 // 進捗バーのラベルを設定
-                const maxUnit = Math.floor(Math.log10(number) / 4);
-                const progressPercentage = (maxUnit / (units.length - 1)) * 100;
+                const progressStep = 100 / (units.length - 1);
+                const progressPercentage = progressStep * unitIdx;
+                console.log(unitIdx, progressPercentage);
                 progressFill.style.width = `${progressPercentage}%`;
 
                 // ラベルを追加
                 const labelContainer = document.createElement('div');
-                labelContainer.style.display = 'flex';
-                labelContainer.style.justifyContent = 'space-between';
+                labelContainer.style.position = 'relative';
                 labelContainer.style.width = '100%';
+                labelContainer.style.height = '20px';
 
                 units.forEach((unit, index) => {
                     const label = document.createElement('span');
-                    label.textContent = unit || '1';
+                    const unitView = unit || '0';
+                    label.textContent = unitView;
+                    label.className = 'progress-label';
+                    const position = (index / (units.length - 1)) * 100;
+                    label.style.left = `${position}%`;
                     labelContainer.appendChild(label);
                 });
 
