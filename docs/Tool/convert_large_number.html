@@ -6,33 +6,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日本の大きな数変換ツール</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #45a049;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
         body {
-            font-family: sans-serif;
-            padding: 20px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
-        input,
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
         button {
-            padding: 8px;
-            font-size: 1em;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+            width: 100%;
         }
 
-        #result {
-            margin-top: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .back-link {
-            margin-top: 20px;
+        button:hover {
+            background-color: var(--primary-hover);
         }
 
         .conversion-type {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .conversion-type label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
         }
 
         .input-group {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .unit-input {
@@ -42,54 +96,103 @@
         .result-container {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: var(--border-radius);
+        }
+
+        #result {
+            font-size: 1.3em;
+            font-weight: 500;
+            flex-grow: 1;
         }
 
         .copy-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            background-color: var(--primary-color);
             padding: 8px 16px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .copy-button:hover {
-            background-color: #45a049;
+            font-size: 0.9em;
         }
 
         .copy-success {
-            color: #4CAF50;
+            color: var(--primary-color);
             font-size: 0.9em;
             display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .conversion-type {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>数の単位変換ツール</h1>
+    <div class="container">
+        <h1>数の単位変換ツール</h1>
 
-    <div class="conversion-type">
-        <input type="radio" id="numberToUnit" name="conversionType" value="numberToUnit" checked>
-        <label for="numberToUnit">数値から単位へ</label>
-        <input type="radio" id="unitToNumber" name="conversionType" value="unitToNumber">
-        <label for="unitToNumber">単位から数値へ</label>
-    </div>
+        <div class="conversion-type">
+            <label>
+                <input type="radio" id="numberToUnit" name="conversionType" value="numberToUnit" checked>
+                数値から単位へ
+            </label>
+            <label>
+                <input type="radio" id="unitToNumber" name="conversionType" value="unitToNumber">
+                単位から数値へ
+            </label>
+        </div>
 
-    <div id="numberInputGroup" class="input-group">
-        <input type="number" id="numberInput" placeholder="数値を入力してください">
-    </div>
+        <div id="numberInputGroup" class="input-group">
+            <input type="number" id="numberInput" placeholder="数値を入力してください">
+        </div>
 
-    <div id="unitInputGroup" class="input-group unit-input">
-        <input type="text" id="unitInput" placeholder="例：1億2000万">
-    </div>
+        <div id="unitInputGroup" class="input-group unit-input">
+            <input type="text" id="unitInput" placeholder="例：1億2000万">
+        </div>
 
-    <button onclick="convert()">変換</button>
-    <div class="result-container">
-        <div id="result"></div>
-        <button id="copyButton" class="copy-button" onclick="copyResult()" style="display: none;">コピー</button>
-        <span id="copySuccess" class="copy-success">コピーしました！</span>
+        <button onclick="convert()">変換</button>
+        <div class="result-container">
+            <div id="result"></div>
+            <button id="copyButton" class="copy-button" onclick="copyResult()" style="display: none;">コピー</button>
+            <span id="copySuccess" class="copy-success">コピーしました！</span>
+        </div>
     </div>
     <div class="back-link">
         <a href="../">← トップページに戻る</a>
