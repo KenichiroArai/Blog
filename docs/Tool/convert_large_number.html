@@ -334,18 +334,19 @@
             "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
             "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
         ];
+        const UNIT_SEPARATOR = '-';
         let selectedUnitsIdx = 0;
 
         function formatJapaneseNumber(numberStr) {
 
             let result = '';
 
-            const numberWk = numberStr.toString().replace(/\B(?=(\d{4})+(?!\d))/g, "-");
+            const numberWk = numberStr.toString().replace(/\B(?=(\d{4})+(?!\d))/g, UNIT_SEPARATOR);
             selectedUnitsIdx = Math.floor(numberStr.length / 4);
 
             let unitsIdx = selectedUnitsIdx;
             for (let i = 0; i < numberWk.length; i++) {
-                if (numberWk[i] === '-') {
+                if (numberWk[i] === UNIT_SEPARATOR) {
                     result += units[unitsIdx];
                     unitsIdx--;
                     continue;
