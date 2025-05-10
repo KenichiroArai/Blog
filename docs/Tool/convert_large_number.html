@@ -36,6 +36,9 @@
             padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
         }
 
         input[type="number"],
@@ -140,14 +143,18 @@
         .progress-container {
             margin-top: 20px;
             display: none;
+            overflow-x: auto;
+            width: 100%;
         }
 
         .progress-bar {
-            width: 100%;
+            width: 1200px;
+            min-width: 100%;
             height: 20px;
             background-color: #f0f0f0;
             border-radius: 10px;
             overflow: hidden;
+            margin: 0 auto;
         }
 
         .progress-fill {
@@ -158,12 +165,14 @@
         }
 
         .progress-labels {
-            display: flex;
-            justify-content: space-between;
+            position: relative;
+            width: 1200px;
+            min-width: 100%;
+            margin: 0 auto;
             margin-top: 5px;
             font-size: 0.8em;
             color: #666;
-            position: relative;
+            height: 40px;
         }
 
         .progress-label {
@@ -171,6 +180,7 @@
             transform: translateX(-50%);
             white-space: nowrap;
             text-align: center;
+            padding: 0 10px;
         }
 
         @keyframes fadeIn {
@@ -183,6 +193,33 @@
             }
         }
 
+        @media (max-width: 1200px) {
+
+            .progress-bar,
+            .progress-labels {
+                width: 1000px;
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 1000px) {
+
+            .progress-bar,
+            .progress-labels {
+                width: 700px;
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .progress-bar,
+            .progress-labels {
+                width: 100%;
+                min-width: 100%;
+            }
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 20px 15px;
@@ -190,6 +227,13 @@
 
             .container {
                 padding: 20px;
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .progress-container {
+                width: 100%;
+                margin-left: 0;
             }
 
             .conversion-type {
@@ -337,7 +381,8 @@
                 const labelContainer = document.createElement('div');
                 labelContainer.style.position = 'relative';
                 labelContainer.style.width = '100%';
-                labelContainer.style.height = '20px';
+                labelContainer.style.height = '40px';
+                labelContainer.style.marginTop = '15px';
 
                 units.forEach((unit, index) => {
                     const label = document.createElement('span');
