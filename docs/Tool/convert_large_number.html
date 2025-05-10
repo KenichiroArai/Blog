@@ -341,21 +341,21 @@
 
             let result = '';
 
-            const numberWk = numberStr.toString().replace(/\B(?=(\d{4})+(?!\d))/g, UNIT_SEPARATOR);
             selectedUnitsIdx = Math.ceil(numberStr.length / 4) - 1;
 
-            console.log(numberStr.length, numberWk, selectedUnitsIdx);
-
-            let unitsIdx = selectedUnitsIdx;
-            for (let i = 0; i < numberWk.length; i++) {
-                if (numberWk[i] === UNIT_SEPARATOR) {
-                    if (unitsIdx < units.length) {
-                        result += units[unitsIdx];
+            let wkIdx = 0;
+            let commaIdx = 0;
+            for (let i = numberStr.length - 1; i >= 0; i--) {
+                commaIdx++;
+                console.log(commaIdx, wkIdx);
+                if (commaIdx % 5 === 0) {
+                    wkIdx++;
+                    if (wkIdx < units.length) {
+                        result = units[wkIdx] + result;
                     }
-                    unitsIdx--;
-                    continue;
+                    commaIdx = 1;
                 }
-                result += numberWk[i];
+                result = numberStr[i] + result;
             }
 
             return result;
