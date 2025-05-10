@@ -338,22 +338,16 @@
         let selectedUnitsIdx = 0;
 
         function formatJapaneseNumber(numberStr) {
-
             let result = '';
-
             selectedUnitsIdx = Math.ceil(numberStr.length / 4) - 1;
 
-            let wkIdx = 0;
-            let commaIdx = 0;
             for (let i = numberStr.length - 1; i >= 0; i--) {
-                commaIdx++;
-                console.log(commaIdx, wkIdx);
-                if (commaIdx % 5 === 0) {
-                    wkIdx++;
-                    if (wkIdx < units.length) {
-                        result = units[wkIdx] + result;
+                const position = numberStr.length - 1 - i;
+                if (position > 0 && position % 4 === 0) {
+                    const unitIndex = position / 4;
+                    if (unitIndex < units.length) {
+                        result = units[unitIndex] + result;
                     }
-                    commaIdx = 1;
                 }
                 result = numberStr[i] + result;
             }
