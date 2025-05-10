@@ -342,12 +342,16 @@
             let result = '';
 
             const numberWk = numberStr.toString().replace(/\B(?=(\d{4})+(?!\d))/g, UNIT_SEPARATOR);
-            selectedUnitsIdx = Math.floor(numberStr.length / 4);
+            selectedUnitsIdx = Math.ceil(numberStr.length / 4) - 1;
+
+            console.log(numberStr.length, numberWk, selectedUnitsIdx);
 
             let unitsIdx = selectedUnitsIdx;
             for (let i = 0; i < numberWk.length; i++) {
                 if (numberWk[i] === UNIT_SEPARATOR) {
-                    result += units[unitsIdx];
+                    if (unitsIdx < units.length) {
+                        result += units[unitsIdx];
+                    }
                     unitsIdx--;
                     continue;
                 }
