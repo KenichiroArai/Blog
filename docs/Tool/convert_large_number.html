@@ -9,67 +9,67 @@
 </head>
 
 <body>
-    <div class="main-content">
-        <div class="container">
-            <h1>数の単位変換ツール</h1>
-            <p style="text-align: center; color: #666; margin-top: -20px; margin-bottom: 30px;">JSVer.003</p>
+    <button id="toggleSidebar" class="sidebar-toggle-btn">▶</button>
+    <div class="layout">
+        <div class="main-content">
+            <div class="container">
+                <h1>数の単位変換ツール</h1>
+                <p style="text-align: center; color: #666; margin-top: -20px; margin-bottom: 30px;">JSVer.003</p>
 
-            <div class="conversion-type">
-                <label>
-                    <input type="radio" id="numberToUnit" name="conversionType" value="numberToUnit" checked>
-                    数値から単位へ
-                </label>
-                <label>
-                    <input type="radio" id="unitToNumber" name="conversionType" value="unitToNumber">
-                    単位から数値へ
-                </label>
-            </div>
-
-            <div id="numberInputGroup" class="input-group">
-                <input type="number" id="numberInput" placeholder="数値を入力してください">
-            </div>
-
-            <div id="unitInputGroup" class="input-group unit-input">
-                <input type="text" id="unitInput" placeholder="例：1億2000万">
-            </div>
-
-            <button onclick="convert()">変換</button>
-            <div class="result-container">
-                <div id="result"></div>
-            </div>
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+                <div class="conversion-type">
+                    <label>
+                        <input type="radio" id="numberToUnit" name="conversionType" value="numberToUnit" checked>
+                        数値から単位へ
+                    </label>
+                    <label>
+                        <input type="radio" id="unitToNumber" name="conversionType" value="unitToNumber">
+                        単位から数値へ
+                    </label>
                 </div>
-                <div class="progress-labels" id="progressLabels"></div>
-            </div>
-            <div>
-                <button id="copyButton" class="copy-button" onclick="copyResult()" style="display: none;">コピー</button>
-                <span id="copySuccess" class="copy-success">コピーしました！</span>
-            </div>
-        </div>
-        <div class="back-link">
-            <a href="../">← トップページに戻る</a>
-        </div>
-    </div>
 
-    <div class="sidebar">
-        <div class="sidebar-content">
-            <h2>単位一覧</h2>
-            <div class="sidebar-toggle">
-                <button id="toggleSidebar">▼</button>
+                <div id="numberInputGroup" class="input-group">
+                    <input type="number" id="numberInput" placeholder="数値を入力してください">
+                </div>
+
+                <div id="unitInputGroup" class="input-group unit-input">
+                    <input type="text" id="unitInput" placeholder="例：1億2000万">
+                </div>
+
+                <button onclick="convert()">変換</button>
+                <div class="result-container">
+                    <div id="result"></div>
+                </div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-labels" id="progressLabels"></div>
+                </div>
+                <div>
+                    <button id="copyButton" class="copy-button" onclick="copyResult()"
+                        style="display: none;">コピー</button>
+                    <span id="copySuccess" class="copy-success">コピーしました！</span>
+                </div>
             </div>
-            <div class="units-container">
-                <table class="units-table">
-                    <thead>
-                        <tr>
-                            <th>単位</th>
-                            <th>数値</th>
-                        </tr>
-                    </thead>
-                    <tbody id="unitsTableBody">
-                    </tbody>
-                </table>
+            <div class="back-link">
+                <a href="../">← トップページに戻る</a>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <h2>単位一覧</h2>
+                <div class="units-container">
+                    <table class="units-table">
+                        <thead>
+                            <tr>
+                                <th>単位</th>
+                                <th>数値</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unitsTableBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
