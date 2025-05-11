@@ -16,6 +16,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   box-sizing: border-box;
+  display: flex;
+  gap: 20px;
 }
 
 h1 {
@@ -313,4 +315,104 @@ button:hover {
   font-family: monospace;
   text-align: right;
   min-width: 80px;
+}
+
+/* メインコンテンツとサイドバーのレイアウト */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  max-width: calc(100% - 420px);
+}
+
+.sidebar {
+  width: 400px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  position: sticky;
+  top: 20px;
+  height: calc(100vh - 40px);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+  width: 50px;
+}
+
+.sidebar-content {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+}
+
+.sidebar-toggle button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-toggle button {
+  transform: rotate(-90deg);
+}
+
+.units-container {
+  margin-top: 20px;
+}
+
+.units-table {
+  width: 100%;
+  min-width: 360px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1200px) {
+  body {
+    flex-direction: column;
+  }
+
+  .main-content {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+
+  .sidebar.collapsed {
+    width: 100%;
+  }
+
+  .sidebar.collapsed .sidebar-content {
+    display: block;
+    opacity: 0;
+  }
 }

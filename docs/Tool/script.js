@@ -223,3 +223,14 @@ function initializeUnitsTable() {
 
 // ページ読み込み時に単位一覧を初期化
 document.addEventListener('DOMContentLoaded', initializeUnitsTable);
+
+// サイドバーの表示/非表示を切り替える機能
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleButton = document.getElementById('toggleSidebar');
+    const sidebar = document.querySelector('.sidebar');
+
+    toggleButton.addEventListener('click', function () {
+        sidebar.classList.toggle('collapsed');
+        toggleButton.textContent = sidebar.classList.contains('collapsed') ? '▶' : '▼';
+    });
+});
