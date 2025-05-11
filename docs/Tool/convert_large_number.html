@@ -360,23 +360,34 @@
         function parseJapaneseNumber(numberStr) {
             let result = '';
             let currentNumber = '';
-            let currentUnit = '';
+            let i = 0;
 
-            for (let i = 0; i < numberStr.length; i++) {
+            while (i < numberStr.length) {
                 const char = numberStr[i];
                 if (char >= '0' && char <= '9') {
                     currentNumber += char;
+                    i++;
                     continue;
                 }
 
-                const unitIndex = units.indexOf(char);
-                if (unitIndex !== -1) {
-                    if (currentNumber) {
-                        // 現在の数値に単位を適用
-                        const zeros = '0'.repeat(unitIndex * 4);
-                        result = addStrings(result, currentNumber + zeros);
-                        currentNumber = '';
+                // 複数文字の単位をチェック
+                let foundUnit = false;
+                for (let j = units.length - 1; j >= 0; j--) {
+                    const unit = units[j];
+                    if (unit && numberStr.substring(i, i + unit.length) === unit) {
+                        if (currentNumber) {
+                            const zeros = '0'.repeat(j * 4);
+                            result = addStrings(result, currentNumber + zeros);
+                            currentNumber = '';
+                        }
+                        i += unit.length;
+                        foundUnit = true;
+                        break;
                     }
+                }
+
+                if (!foundUnit) {
+                    i++;
                 }
             }
 
