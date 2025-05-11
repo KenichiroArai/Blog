@@ -286,8 +286,9 @@
         }
 
         .units-table {
-            width: 100%;
-            margin-top: 40px;
+            width: auto;
+            min-width: 300px;
+            margin: 40px auto 0;
             border-collapse: collapse;
             background-color: white;
             border-radius: var(--border-radius);
@@ -296,9 +297,10 @@
 
         .units-table th,
         .units-table td {
-            padding: 12px;
+            padding: 12px 20px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            white-space: nowrap;
         }
 
         .units-table th {
@@ -312,10 +314,14 @@
 
         .units-table td:first-child {
             font-weight: bold;
+            text-align: center;
+            min-width: 100px;
         }
 
         .units-table td:last-child {
             font-family: monospace;
+            text-align: right;
+            min-width: 80px;
         }
     </style>
 </head>
