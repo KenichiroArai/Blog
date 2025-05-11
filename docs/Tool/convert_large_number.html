@@ -341,17 +341,19 @@
             let result = '';
             selectedUnitsIdx = Math.ceil(numberStr.length / 4) - 1;
 
+            // 先頭の0を削除
+            const numberWk = numberStr.replace(/^0+/, '');
 
             // 後ろの桁から見ていき、4桁ごとに単位を追加する
-            for (let i = numberStr.length - 1; i >= 0; i--) {
-                const position = numberStr.length - 1 - i;
+            for (let i = numberWk.length - 1; i >= 0; i--) {
+                const position = numberWk.length - 1 - i;
                 if (position > 0 && position % 4 === 0) {
                     const unitIndex = position / 4;
                     if (unitIndex < units.length) {
                         result = units[unitIndex] + result;
                     }
                 }
-                result = numberStr[i] + result;
+                result = numberWk[i] + result;
             }
 
             return result;
