@@ -284,6 +284,39 @@
                 /* iOSでのズームを防ぐ */
             }
         }
+
+        .units-table {
+            width: 100%;
+            margin-top: 40px;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .units-table th,
+        .units-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .units-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .units-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .units-table td:first-child {
+            font-weight: bold;
+        }
+
+        .units-table td:last-child {
+            font-family: monospace;
+        }
     </style>
 </head>
 
@@ -330,11 +363,41 @@
         <a href="../">← トップページに戻る</a>
     </div>
 
+    <div class="container">
+        <h2>単位一覧</h2>
+        <table class="units-table">
+            <thead>
+                <tr>
+                    <th>単位</th>
+                    <th>数値</th>
+                </tr>
+            </thead>
+            <tbody id="unitsTableBody">
+            </tbody>
+        </table>
+    </div>
+
     <script>
-        const units = [
-            "", "万", "億", "兆", "京", "垓", "𥝱", "穣", "溝", "澗", "正", "載",
-            "極", "恒河沙", "阿僧祇", "那由他", "不可思議", "無量大数"
-        ];
+        const units = {
+            "": { name: "一", description: "1" },
+            "万": { name: "万", description: "10,000" },
+            "億": { name: "億", description: "100,000,000" },
+            "兆": { name: "兆", description: "1,000,000,000,000" },
+            "京": { name: "京", description: "10,000,000,000,000,000" },
+            "垓": { name: "垓", description: "100,000,000,000,000,000,000" },
+            "𥝱": { name: "𥝱", description: "1,000,000,000,000,000,000,000,000" },
+            "穣": { name: "穣", description: "10,000,000,000,000,000,000,000,000,000" },
+            "溝": { name: "溝", description: "100,000,000,000,000,000,000,000,000,000,000" },
+            "澗": { name: "澗", description: "1,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "正": { name: "正", description: "10,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "載": { name: "載", description: "100,000,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "極": { name: "極", description: "1,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "恒河沙": { name: "恒河沙", description: "10,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "阿僧祇": { name: "阿僧祇", description: "100,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "那由他": { name: "那由他", description: "1,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "不可思議": { name: "不可思議", description: "10,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000" },
+            "無量大数": { name: "無量大数", description: "100,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000" }
+        };
         const UNIT_SEPARATOR = '-';
         let selectedUnitsIdx = 0;
 
@@ -350,8 +413,9 @@
                 const position = numberWk.length - 1 - i;
                 if (position > 0 && position % 4 === 0) {
                     const unitIndex = position / 4;
-                    if (unitIndex < units.length) {
-                        result = units[unitIndex] + result;
+                    const unitKey = Object.keys(units)[unitIndex];
+                    if (unitKey) {
+                        result = units[unitKey].name + result;
                     }
                 }
                 result = numberWk[i] + result;
@@ -375,15 +439,15 @@
 
                 // 複数文字の単位をチェック
                 let foundUnit = false;
-                for (let j = units.length - 1; j >= 0; j--) {
-                    const unit = units[j];
-                    if (unit && numberStr.substring(i, i + unit.length) === unit) {
+                for (const [unitKey, unitInfo] of Object.entries(units)) {
+                    if (unitKey && numberStr.substring(i, i + unitInfo.name.length) === unitInfo.name) {
                         if (currentNumber) {
-                            const zeros = '0'.repeat(j * 4);
+                            const unitIndex = Object.keys(units).indexOf(unitKey);
+                            const zeros = '0'.repeat(unitIndex * 4);
                             result = addStrings(result, currentNumber + zeros);
                             currentNumber = '';
                         }
-                        i += unit.length;
+                        i += unitInfo.name.length;
                         foundUnit = true;
                         break;
                     }
@@ -443,7 +507,7 @@
                 progressContainer.style.display = 'block';
 
                 // 進捗バーのラベルを設定
-                const progressStep = 100 / (units.length - 1);
+                const progressStep = 100 / (Object.keys(units).length - 1);
                 const progressPercentage = progressStep * selectedUnitsIdx;
                 progressFill.style.width = `${progressPercentage}%`;
 
@@ -454,15 +518,15 @@
                 labelContainer.style.height = '40px';
                 labelContainer.style.marginTop = '15px';
 
-                units.forEach((unit, index) => {
+                Object.entries(units).forEach(([unitKey, unitInfo]) => {
                     const label = document.createElement('span');
-                    const unitView = unit || '0';
+                    const unitView = unitInfo.name || '0';
                     label.textContent = unitView;
                     label.className = 'progress-label';
-                    const position = (index / (units.length - 1)) * 100;
+                    const position = (Object.keys(units).indexOf(unitKey) / (Object.keys(units).length - 1)) * 100;
                     label.style.left = `${position}%`;
                     // 左端のラベルを調整
-                    if (index === 0) {
+                    if (unitKey === "") {
                         label.style.transform = 'translateX(0)';
                     } else {
                         label.style.transform = 'translateX(-50%)';
@@ -522,6 +586,22 @@
                 convert();
             }
         });
+
+        // 単位一覧テーブルの初期化
+        function initializeUnitsTable() {
+            const tableBody = document.getElementById('unitsTableBody');
+            for (const [key, unit] of Object.entries(units)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${unit.name}</td>
+                    <td>${unit.description}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        // ページ読み込み時に単位一覧を初期化
+        document.addEventListener('DOMContentLoaded', initializeUnitsTable);
     </script>
 </body>
 
