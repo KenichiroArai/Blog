@@ -343,7 +343,6 @@ button:hover {
   box-shadow: var(--box-shadow);
   position: sticky;
   top: 20px;
-  height: calc(100vh - 40px);
   overflow: hidden;
   transition: width 0.3s ease;
   flex-shrink: 0;
