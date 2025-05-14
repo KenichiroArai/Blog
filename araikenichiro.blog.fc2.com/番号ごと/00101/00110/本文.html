@@ -1,0 +1,60 @@
+<h2>前回</h2>
+<div>
+    <a href="http://araikenichiro.blog.fc2.com/blog-entry-105.html" title="kmg-toolのJavadocタグ設定処理の開発記録その27"
+        target="_blank">kmg-toolのJavadocタグ設定処理の開発記録その27</a>
+</div>
+
+<h2>開発記録</h2>
+<p>
+    前回からJavadocタグ設定処理の開発記録の動作確認を行いながら微調整していた。概ね期待通りの動作になったが、まだ完成には至っていない。ただ、次に進めたいのとデグレの可能性があるため、テストコードを作成後にリファクタリングすることにした。<br>
+    他に、kmg-coreのJavadocをプロジェクトフォルダ上に作成するなどの作業も行った。<br>
+    また、今回からタイトルは、「kmg-toolのv0.1.0に向けて」にしている。これは、kmg-toolだけではなく、kmg-core、kmg-fundも含まれる。kmg-coreはkmg-toolの作成に合わせたv0.2.0のリリース、kmg-fundはv0.1.0のリリースを含む。
+</p>
+<p>
+    まだ、開発部分の残があり、次は下記の画像の通り、「Javadoc行削除ツール」をプレゼンテーション、サービス、ロジックに分割する。
+</p>
+<a href="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_001.png" target="_blank">
+    <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_001.png" alt="00110_001.png" width="800"
+        border="0">
+</a>
+<p>
+    それに伴い、Javadocタグ設定ツールで使用していた継承元の「AbstractInputTool」を下記の画像の通りシンプルにした。なぜか、シンプルな入力ファイルのパス処理ではなく、内容を取得してパスに変換する処理を入れていたいので削除した。
+</p>
+<a href="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_002.png" target="_blank">
+    <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_002.png" alt="00110_002.png" width="800"
+        border="0">
+</a>
+<p>
+    Javadocタグ設定の方に、入力ファイルのパスから対象ファイルのパスを取得する処理を下記の画像の通り移動した。
+</p>
+<a href="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_003.png" target="_blank">
+    <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_003.png" alt="00110_003.png" width="800"
+        border="0">
+</a>
+<p>
+    「Javadoc行削除ツール」は、下記の画像の通り実装中である。
+</p>
+<a href="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_004.png" target="_blank">
+    <img src="https://blog-imgs-165.fc2.com/a/r/a/araikenichiro/00110_004.png" alt="00110_004.png" width="800"
+        border="0">
+</a>
+<ol>
+    <li>
+        <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00105"
+            target="_blank">本記事のGitHubでの管理</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-core" title="kmg-core" target="_blank">kmg-coreのGitHubリポジトリ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-core/tree/features/0.2.0" title="kmg-coreの現在の作業用ブランチ"
+            target="_blank">kmg-coreの現在の作業用ブランチ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool" target="_blank">kmg-toolのGitHubリポジトリ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">kmg-toolの現在の作業用ブランチ</a>
+    </li>
+</ol>
