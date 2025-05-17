@@ -430,6 +430,28 @@ h5 {
     margin: 15px 0;
 }
 
+.content-wrapper a[href$=".png"],
+.content-wrapper a[href$=".jpg"],
+.content-wrapper a[href$=".jpeg"],
+.content-wrapper a[href$=".gif"] {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.content-wrapper a[href$=".png"]:hover,
+.content-wrapper a[href$=".jpg"]:hover,
+.content-wrapper a[href$=".jpeg"]:hover,
+.content-wrapper a[href$=".gif"]:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
 .thumbnail {
     display: inline-block;
     position: relative;
