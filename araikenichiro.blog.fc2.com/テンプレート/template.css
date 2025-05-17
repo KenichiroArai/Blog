@@ -435,11 +435,11 @@ h5 {
 .content-wrapper a[href$=".jpeg"],
 .content-wrapper a[href$=".gif"] {
     display: inline-block;
-    border: 1px solid #ccc;
+    border: 1px solid #e0e0e0;
     padding: 10px;
     margin: 15px 0;
     border-radius: 5px;
-    background-color: #fff;
+    background-color: #f0f7fc;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
 }
@@ -450,6 +450,7 @@ h5 {
 .content-wrapper a[href$=".gif"]:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
+    background-color: #e1f0ff;
 }
 
 .thumbnail {
