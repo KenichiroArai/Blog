@@ -95,6 +95,45 @@ body {
   margin-right: 5px;
 }
 
+.width-controls .link-list {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  font-size: 15px;
+}
+
+.width-controls .link-list-label {
+  font-weight: bold;
+  margin-right: 8px;
+  color: #555;
+}
+
+.width-controls .link-list a {
+  text-decoration: none;
+  color: #2c6aa0;
+  padding: 3px 12px;
+  border-radius: 0;
+  background: none;
+  border-left: 1px solid #ccc;
+  transition: background 0.2s, color 0.2s;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+.width-controls .link-list a:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.width-controls .link-list a:hover {
+  color: #e83929;
+  text-decoration: underline;
+  background: #f0f7fc;
+}
+
 /* 構造 */
 
 /* 文字装飾 */
