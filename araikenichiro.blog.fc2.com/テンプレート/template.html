@@ -1,487 +1,506 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta http-equiv="content-style-type" content="text/css">
-    <meta http-equiv="content-script-type" content="text/javascript">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<%css_link>" type="text/css" rel="stylesheet">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="<%url>?xml">
-    <link type="text/css" rel="stylesheet" href="https://blog-imgs-111.fc2.com/a/r/a/araikenichiro/theme.css" />
-    <script type="text/javascript"
-        src="https://blog-imgs-111.fc2.com/a/r/a/araikenichiro/syntaxhighlighter.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <title><!--permanent_area-->
-        <%sub_title> | <!--/permanent_area-->
-            <%blog_name>
-    </title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SWQW95J6HG"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'G-SWQW95J6HG');
-    </script>
-    <script>
-        function changeWidth(size) {
-            const page = document.getElementById('page');
-            if (size === 'auto') {
-                page.style.width = '100%';
-            } else if (size === 'large') {
-                page.style.width = '1200px';
-            } else if (size === 'medium') {
-                page.style.width = '900px';
-            } else if (size === 'small') {
-                page.style.width = '700px';
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta http-equiv="content-style-type" content="text/css">
+        <meta http-equiv="content-script-type" content="text/javascript">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="<%css_link>" type="text/css" rel="stylesheet">
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="<%url>?xml">
+        <link type="text/css" rel="stylesheet" href="https://blog-imgs-111.fc2.com/a/r/a/araikenichiro/theme.css" />
+        <style>
+            #main {
+                position: relative;
             }
 
-            // すべてのボタンからactiveクラスを削除
-            const buttons = document.querySelectorAll('.width-controls button');
-            buttons.forEach(button => {
-                button.classList.remove('active');
-            });
-
-            // クリックされたボタンにactiveクラスを追加
-            const activeButton = document.querySelector(`.width-controls button[onclick="changeWidth('${size}')"]`);
-            if (activeButton) {
-                activeButton.classList.add('active');
+            #right {
+                position: sticky;
+                top: 20px;
+                width: 300px;
+                /* サイドバーの幅に応じて調整してください */
+                max-height: calc(100vh - 40px);
+                /* ビューポートの高さから余白を引いた値 */
+                overflow-y: auto;
+                background-color: #fff;
+                /* 背景色を設定 */
+                margin-left: 20px;
+                /* main要素との間隔 */
             }
-        }
-
-        function toggleArticleOnly() {
-            const main = document.getElementById('main');
-            const left = document.getElementById('left');
-            const right = document.getElementById('right');
-            const articleOnly = document.getElementById('article-only');
-
-            if (articleOnly.checked) {
-                left.style.display = 'none';
-                right.style.display = 'none';
-            } else {
-                left.style.display = 'block';
-                right.style.display = 'block';
-            }
-        }
-
-        // ページ読み込み時にデフォルトのボタン（自動）をアクティブにする
-        document.addEventListener('DOMContentLoaded', function () {
-            const autoButton = document.querySelector('.width-controls button[onclick="changeWidth(\'auto\')"]');
-            if (autoButton) {
-                autoButton.classList.add('active');
-            }
-
-            /* マークダウンをHTMLに変換 */
-            // class="markdown-embedded"を持つすべての<pre>要素を取得
-            const mdElements = document.querySelectorAll('pre.markdown-embedded');
-
-            // 各要素に対して処理
-            mdElements.forEach(function (element) {
-                // マークダウンソースコードを取得
-                const markdown = element.textContent;
-
-                // HTMLに変換
-                const html = marked.parse(markdown);
-
-                // 変換したHTMLを挿入するdiv要素を作成
-                const div = document.createElement('div');
-                div.className = 'markdown-content markdown-embedded';
-                div.innerHTML = html;
-
-                // 元のpre要素を変換した内容で置き換え
-                element.parentNode.replaceChild(div, element);
-            });
-
-            // メインコンテンツとしてのマークダウンを処理
-            const mainMarkdownElements = document.querySelectorAll('pre.markdown-main');
-            mainMarkdownElements.forEach(function (element) {
-                const markdown = element.textContent;
-                const html = marked.parse(markdown);
-                const div = document.createElement('div');
-                div.className = 'markdown-content markdown-main';
-                div.innerHTML = html;
-                element.parentNode.replaceChild(div, element);
-            });
-        });
-    </script>
-</head>
-
-<body>
-    <!-- [FC2 Analyzer] //analyzer.fc2.com/  -->
-    <script language="javascript" src="//analyzer54.fc2.com/ana/processor.php?uid=2817391"
-        type="text/javascript"></script>
-    <noscript>
-        <div align="right"><img src="//analyzer54.fc2.com/ana/icon.php?uid=2817391&ref=&href=&wid=0&hei=0&col=0" />
-        </div>
-    </noscript>
-    <!-- [FC2 Analyzer]  -->
-    <div id="page">
-        <div id="header">
-
-            <!--not_search_area-->
-            <!--not_permanent_area-->
-            <h1><a href="<%url>">
-                    <%blog_name>
-                </a></h1>
-            <!--/not_permanent_area-->
-            <!--/not_search_area-->
-
-            <!--permanent_area-->
-            <a href="<%url>">
+        </style>
+        <script type="text/javascript"
+            src="https://blog-imgs-111.fc2.com/a/r/a/araikenichiro/syntaxhighlighter.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <title><!--permanent_area-->
+            <%sub_title> | <!--/permanent_area-->
                 <%blog_name>
-            </a>
-            <!--/permanent_area-->
+        </title>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SWQW95J6HG"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
 
-            <!--search_area-->
-            <a href="<%url>">
-                <%blog_name>
-            </a>
-            <!--/search_area-->
+            gtag('config', 'G-SWQW95J6HG');
+        </script>
+        <script>
+            function changeWidth(size) {
+                const page = document.getElementById('page');
+                if (size === 'auto') {
+                    page.style.width = '100%';
+                } else if (size === 'large') {
+                    page.style.width = '1200px';
+                } else if (size === 'medium') {
+                    page.style.width = '900px';
+                } else if (size === 'small') {
+                    page.style.width = '700px';
+                }
 
+                // すべてのボタンからactiveクラスを削除
+                const buttons = document.querySelectorAll('.width-controls button');
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
 
-            <p id="blog-desc">
-                <%introduction>
-            </p>
+                // クリックされたボタンにactiveクラスを追加
+                const activeButton = document.querySelector(`.width-controls button[onclick="changeWidth('${size}')"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                }
+            }
 
-            <!--header-->
-        </div>
+            function toggleArticleOnly() {
+                const main = document.getElementById('main');
+                const left = document.getElementById('left');
+                const right = document.getElementById('right');
+                const articleOnly = document.getElementById('article-only');
 
-        <div class="width-controls">
-            <button onclick="changeWidth('auto')">自動</button>
-            <button onclick="changeWidth('large')">大</button>
-            <button onclick="changeWidth('medium')">中</button>
-            <button onclick="changeWidth('small')">小</button>
-            <label><input type="checkbox" id="article-only" onchange="toggleArticleOnly()"> 記事のみ</label>
-            <span class="article-only-separator">|</span>
-            <span class="link-list">
-                <!--link-->
-                <a href="<%link_url>" target="_blank">
-                    <%link_name>
-                </a>
-                <!--/link-->
-            </span>
-        </div>
+                if (articleOnly.checked) {
+                    left.style.display = 'none';
+                    right.style.display = 'none';
+                } else {
+                    left.style.display = 'block';
+                    right.style.display = 'block';
+                }
+            }
 
-        <div id="main">
+            // ページ読み込み時にデフォルトのボタン（自動）をアクティブにする
+            document.addEventListener('DOMContentLoaded', function () {
+                const autoButton = document.querySelector('.width-controls button[onclick="changeWidth(\'auto\')"]');
+                if (autoButton) {
+                    autoButton.classList.add('active');
+                }
 
-            <div id="left">
-                <!--plugin_first-->
-                <div class="plugin-wrapper">
-                    <div class="plugin-title <%plugin_first_tag>" style="text-align:<%plugin_first_talign>;">
-                        <%plugin_first_title>
-                            <!--plugin-title-->
-                    </div>
-                    <div class="plugin-content <%plugin_first_tag>" style="text-align:<%plugin_first_align>;">
-                        <%plugin_first_content>
-                            <!--plugin-content-->
-                    </div>
-                    <!--plugin-wrapper-->
-                </div>
-                <!--/plugin_first-->
-                <!--left-->
+                /* マークダウンをHTMLに変換 */
+                // class="markdown-embedded"を持つすべての<pre>要素を取得
+                const mdElements = document.querySelectorAll('pre.markdown-embedded');
+
+                // 各要素に対して処理
+                mdElements.forEach(function (element) {
+                    // マークダウンソースコードを取得
+                    const markdown = element.textContent;
+
+                    // HTMLに変換
+                    const html = marked.parse(markdown);
+
+                    // 変換したHTMLを挿入するdiv要素を作成
+                    const div = document.createElement('div');
+                    div.className = 'markdown-content markdown-embedded';
+                    div.innerHTML = html;
+
+                    // 元のpre要素を変換した内容で置き換え
+                    element.parentNode.replaceChild(div, element);
+                });
+
+                // メインコンテンツとしてのマークダウンを処理
+                const mainMarkdownElements = document.querySelectorAll('pre.markdown-main');
+                mainMarkdownElements.forEach(function (element) {
+                    const markdown = element.textContent;
+                    const html = marked.parse(markdown);
+                    const div = document.createElement('div');
+                    div.className = 'markdown-content markdown-main';
+                    div.innerHTML = html;
+                    element.parentNode.replaceChild(div, element);
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <!-- [FC2 Analyzer] //analyzer.fc2.com/  -->
+        <script language="javascript" src="//analyzer54.fc2.com/ana/processor.php?uid=2817391"
+            type="text/javascript"></script>
+        <noscript>
+            <div align="right"><img src="//analyzer54.fc2.com/ana/icon.php?uid=2817391&ref=&href=&wid=0&hei=0&col=0" />
             </div>
+        </noscript>
+        <!-- [FC2 Analyzer]  -->
+        <div id="page">
+            <div id="header">
 
-            <div id="center">
+                <!--not_search_area-->
+                <!--not_permanent_area-->
+                <h1><a href="<%url>">
+                        <%blog_name>
+                    </a></h1>
+                <!--/not_permanent_area-->
+                <!--/not_search_area-->
+
+                <!--permanent_area-->
+                <a href="<%url>">
+                    <%blog_name>
+                </a>
+                <!--/permanent_area-->
+
                 <!--search_area-->
-                <div id="search-title">
-                    <h1>「<%search_word>」の検索結果</h1>
-                    <!--search-title-->
-                </div>
+                <a href="<%url>">
+                    <%blog_name>
+                </a>
                 <!--/search_area-->
 
 
-                <!--topentry-->
-                <div class="article-wrapper">
-                    <div class="article-title-wrapper">
-                        <div class="article-title">
+                <p id="blog-desc">
+                    <%introduction>
+                </p>
 
-                            <!--not_permanent_area-->
-                            <h2><a href="<%topentry_link>">
+                <!--header-->
+            </div>
+
+            <div class="width-controls">
+                <button onclick="changeWidth('auto')">自動</button>
+                <button onclick="changeWidth('large')">大</button>
+                <button onclick="changeWidth('medium')">中</button>
+                <button onclick="changeWidth('small')">小</button>
+                <label><input type="checkbox" id="article-only" onchange="toggleArticleOnly()"> 記事のみ</label>
+                <span class="article-only-separator">|</span>
+                <span class="link-list">
+                    <!--link-->
+                    <a href="<%link_url>" target="_blank">
+                        <%link_name>
+                    </a>
+                    <!--/link-->
+                </span>
+            </div>
+
+            <div id="main">
+
+                <div id="left">
+                    <!--plugin_first-->
+                    <div class="plugin-wrapper">
+                        <div class="plugin-title <%plugin_first_tag>" style="text-align:<%plugin_first_talign>;">
+                            <%plugin_first_title>
+                                <!--plugin-title-->
+                        </div>
+                        <div class="plugin-content <%plugin_first_tag>" style="text-align:<%plugin_first_align>;">
+                            <%plugin_first_content>
+                                <!--plugin-content-->
+                        </div>
+                        <!--plugin-wrapper-->
+                    </div>
+                    <!--/plugin_first-->
+                    <!--left-->
+                </div>
+
+                <div id="center">
+                    <!--search_area-->
+                    <div id="search-title">
+                        <h1>「<%search_word>」の検索結果</h1>
+                        <!--search-title-->
+                    </div>
+                    <!--/search_area-->
+
+
+                    <!--topentry-->
+                    <div class="article-wrapper">
+                        <div class="article-title-wrapper">
+                            <div class="article-title">
+
+                                <!--not_permanent_area-->
+                                <h2><a href="<%topentry_link>">
+                                        <%topentry_title>
+                                    </a></h2><!--/not_permanent_area-->
+                                <!--permanent_area-->
+                                <h1>
                                     <%topentry_title>
-                                </a></h2><!--/not_permanent_area-->
-                            <!--permanent_area-->
-                            <h1>
-                                <%topentry_title>
-                                    </h2><!--/permanent_area-->
+                                        </h2><!--/permanent_area-->
 
-                                    <!--article-title-->
+                                        <!--article-title-->
+                            </div>
+                            <div class="article-record">
+                                <%topentry_year>/<%topentry_month>/<%topentry_day>
+                                            <%topentry_hour>:<%topentry_minute>:<%topentry_second> |
+                                                        <a href="<%url>/<%topentry_category_link>">
+                                                            <%topentry_category>
+                                                        </a> |
+                                                        コメント：<%topentry_comment_num>件
+                                                            <!--article-record-->
+                            </div>
+                            <!--article-title-wrapper-->
                         </div>
-                        <div class="article-record">
-                            <%topentry_year>/<%topentry_month>/<%topentry_day>
-                                        <%topentry_hour>:<%topentry_minute>:<%topentry_second> |
-                                                    <a href="<%url>/<%topentry_category_link>">
-                                                        <%topentry_category>
-                                                    </a> |
-                                                    コメント：<%topentry_comment_num>件
-                                                        <!--article-record-->
+                        <div class="content-wrapper">
+
+
+
+                            <div class="thumbnail">
+                                <%topentry_image_w300>
+                            </div><br>
+                            <!--not_permanent_area-->
+                            <%topentry_description>
+                                <a href="<%url>/<%topentry_rlink>">続きを読む</a>
+                                <!--/not_permanent_area-->
+
+                                <!--permanent_area-->
+                                <%topentry_body>
+                                    <!--/permanent_area-->
+
+                                    <!--more-->
+                                    <%topentry_more>
+                                        <!--/more-->
+
+                                        <!--content-wrapper-->
                         </div>
-                        <!--article-title-wrapper-->
+                        <!--article-wrapper-->
                     </div>
-                    <div class="content-wrapper">
 
+                    <!--/topentry-->
 
-
-                        <div class="thumbnail">
-                            <%topentry_image_w300>
-                        </div><br>
-                        <!--not_permanent_area-->
-                        <%topentry_description>
-                            <a href="<%url>/<%topentry_rlink>">続きを読む</a>
-                            <!--/not_permanent_area-->
-
-                            <!--permanent_area-->
-                            <%topentry_body>
-                                <!--/permanent_area-->
-
-                                <!--more-->
-                                <%topentry_more>
-                                    <!--/more-->
-
-                                    <!--content-wrapper-->
+                    <div id="pager">
+                        <div id="prev">
+                            <!--prevpage--><a href="<%prevpage_url>">&lt;&lt;<%template_prevpage></a><!--/prevpage-->
+                            <!--preventry--><a href="<%preventry_url>">&lt;&lt;<%preventry_title></a><!--/preventry-->
+                            <!--prev-->
+                        </div>
+                        <div id="next">
+                            <!--nextpage--><a href="<%nextpage_url>">
+                                <%template_nextpage>&gt;&gt;
+                            </a><!--/nextpage-->
+                            <!--nextentry--><a href="<%nextentry_url>">
+                                <%nextentry_title>&gt;&gt;
+                            </a><!--/nextentry-->
+                            <!--next-->
+                        </div>
+                        <!--pager-->
                     </div>
-                    <!--article-wrapper-->
-                </div>
 
-                <!--/topentry-->
 
-                <div id="pager">
-                    <div id="prev">
-                        <!--prevpage--><a href="<%prevpage_url>">&lt;&lt;<%template_prevpage></a><!--/prevpage-->
-                        <!--preventry--><a href="<%preventry_url>">&lt;&lt;<%preventry_title></a><!--/preventry-->
-                        <!--prev-->
+
+                    <!--comment_area-->
+
+
+                    <hr>
+
+
+                    <h4><a name="comment">
+                            <%template_comment>
+                        </a></h4>
+
+
+
+
+                    <!--comment-->
+
+                    <h3><a id="comment<%comment_no>" name="comment<%comment_no>">
+                            <%comment_title>
+                        </a></h3>
+
+
+
+                    <div class="comment-record">
+                        <%comment_year>/<%comment_month>/<%comment_day>(<%comment_wayoubi>) <%comment_hour>:
+                                            <%comment_minute>:<%comment_second> | <%comment_url+str> |
+                                                        <%comment_mail+name> #<%comment_trip>
+                                                                <!--comment-record-->
                     </div>
-                    <div id="next">
-                        <!--nextpage--><a href="<%nextpage_url>">
-                            <%template_nextpage>&gt;&gt;
-                        </a><!--/nextpage-->
-                        <!--nextentry--><a href="<%nextentry_url>">
-                            <%nextentry_title>&gt;&gt;
-                        </a><!--/nextentry-->
-                        <!--next-->
+                    <div class="comment-body">
+                        <%comment_body>
+                            <!--comment-body-->
                     </div>
-                    <!--pager-->
-                </div>
+                    <!--/comment-->
+
+
+                    <h3><a name="comment_post">
+                            <%template_post_comment>
+                        </a></h3>
+                    <form method="post" action="./" name="comment_form">
+                        <div class="dl-area">
+                            <input type="hidden" name="mode" value="regist">
+                            <input type="hidden" name="comment[no]" value="<%pno>">
+                            <dl class="reaf">
+                                <dt><label for="name">
+                                        <%template_name>:
+                                    </label></dt>
+                                <dd><input id="name" type="text" name="comment[name]" size="30" value="名無しさん"></dd>
+                                <dt><label for="subject">
+                                        <%template_title>:
+                                    </label></dt>
+                                <dd><input id="subject" type="text" name="comment[title]" size="30"></dd>
+                                <dt><label for="mail">
+                                        <%template_address>:
+                                    </label></dt>
+                                <dd><input id="mail" type="text" name="comment[mail]" size="30" value="<%cookie_mail>">
+                                </dd>
+                                <dt><label for="url">URL:</label></dt>
+                                <dd><input id="url" type="text" name="comment[url]" size="30" value="<%cookie_url>">
+                                </dd>
+                                <dt><label for="comment">
+                                        <%template_body>:
+                                    </label></dt>
+                                <dd>
+                                    <script type="text/javascript" src="<%template_comment_js>"></script><br>
+                                    <textarea id="comment" cols="40" rows="8" name="comment[body]"></textarea>
+                                </dd>
+                                <dt><label for="pass">
+                                        <%template_password>:
+                                    </label></dt>
+                                <dd><input id="pass" type="password" name="comment[pass]" size="20"></dd>
+                                <dt><label for="himitu">
+                                        <%template_private>:
+                                    </label></dt>
+                                <dd><input id="himitu" type="checkbox" name="comment[himitu]">
+                                    <%template_private_check>
+                                </dd>
+                            </dl>
+                            <p><input type="submit" value="<%template_send>"></p>
+                        </div>
+                    </form>
+
+                    <!--/comment_area-->
+
+                    <!--edit_area-->
+                    <h3><a name="comment_post">
+                            <%template_edit_comment>
+                        </a></h3>
+                    <form method="post" action="./" name="comment_form">
+                        <div class="dl-area">
+                            <input type="hidden" name="mode" value="edit">
+                            <input type="hidden" name="mode2" value="edited">
+                            <input type="hidden" name="edit[rno]" value="<%eno>">
+                            <dl class="reaf">
+                                <dt><label for="name">
+                                        <%template_name>:
+                                    </label></dt>
+                                <dd><input id="name" type="text" name="edit[name]" size="30" value="<%edit_name>"></dd>
+                                <dt><label for="subject">
+                                        <%template_title>:
+                                    </label></dt>
+                                <dd><input id="subject" type="text" name="edit[title]" size="30" value="<%edit_title>">
+                                </dd>
+                                <dt><label for="mail">
+                                        <%template_address>:
+                                    </label></dt>
+                                <dd><input id="mail" type="text" name="edit[mail]" size="30" value="<%edit_mail>"></dd>
+                                <dt><label for="url">URL:</label></dt>
+                                <dd><input id="url" type="text" name="edit[url]" size="30" value="<%edit_url>"></dd>
+                                <dt><label for="comment">
+                                        <%template_body>:
+                                    </label></dt>
+                                <dd>
+                                    <script type="text/javascript" src="<%template_comment_js>"></script><br>
+                                    <textarea id="comment" cols="40" rows="8" name="edit[body]"><%edit_body></textarea>
+                                </dd>
+                                <dt><label for="pass">
+                                        <%template_password>:
+                                    </label></dt>
+                                <dd><input id="pass" type="password" name="edit[pass]" size="20"></dd>
+                                <dt><label for="himitu">
+                                        <%template_private>:
+                                    </label><input id="himitu" type="checkbox" name="edit[himitu]">
+                                    <%template_private>
+                                </dt>
+                            </dl>
+                            <p>
+                                <input type="submit" value="<%template_send>">
+                                <input type="submit" name="edit[delete]" value="<%template_delete>">
+                            </p>
+                        </div>
+                    </form>
+                    <!--/edit_area-->
 
 
 
-                <!--comment_area-->
-
-
-                <hr>
-
-
-                <h4><a name="comment">
-                        <%template_comment>
-                    </a></h4>
-
-
-
-
-                <!--comment-->
-
-                <h3><a id="comment<%comment_no>" name="comment<%comment_no>">
-                        <%comment_title>
-                    </a></h3>
-
-
-
-                <div class="comment-record">
-                    <%comment_year>/<%comment_month>/<%comment_day>(<%comment_wayoubi>) <%comment_hour>:
-                                        <%comment_minute>:<%comment_second> | <%comment_url+str> |
-                                                    <%comment_mail+name> #<%comment_trip>
-                                                            <!--comment-record-->
-                </div>
-                <div class="comment-body">
-                    <%comment_body>
-                        <!--comment-body-->
-                </div>
-                <!--/comment-->
-
-
-                <h3><a name="comment_post">
-                        <%template_post_comment>
-                    </a></h3>
-                <form method="post" action="./" name="comment_form">
+                    <!--trackback_area-->
                     <div class="dl-area">
-                        <input type="hidden" name="mode" value="regist">
-                        <input type="hidden" name="comment[no]" value="<%pno>">
-                        <dl class="reaf">
-                            <dt><label for="name">
-                                    <%template_name>:
-                                </label></dt>
-                            <dd><input id="name" type="text" name="comment[name]" size="30" value="名無しさん"></dd>
-                            <dt><label for="subject">
-                                    <%template_title>:
-                                </label></dt>
-                            <dd><input id="subject" type="text" name="comment[title]" size="30"></dd>
-                            <dt><label for="mail">
-                                    <%template_address>:
-                                </label></dt>
-                            <dd><input id="mail" type="text" name="comment[mail]" size="30" value="<%cookie_mail>">
-                            </dd>
-                            <dt><label for="url">URL:</label></dt>
-                            <dd><input id="url" type="text" name="comment[url]" size="30" value="<%cookie_url>">
-                            </dd>
-                            <dt><label for="comment">
-                                    <%template_body>:
-                                </label></dt>
-                            <dd>
-                                <script type="text/javascript" src="<%template_comment_js>"></script><br>
-                                <textarea id="comment" cols="40" rows="8" name="comment[body]"></textarea>
-                            </dd>
-                            <dt><label for="pass">
-                                    <%template_password>:
-                                </label></dt>
-                            <dd><input id="pass" type="password" name="comment[pass]" size="20"></dd>
-                            <dt><label for="himitu">
-                                    <%template_private>:
-                                </label></dt>
-                            <dd><input id="himitu" type="checkbox" name="comment[himitu]">
-                                <%template_private_check>
-                            </dd>
-                        </dl>
-                        <p><input type="submit" value="<%template_send>"></p>
-                    </div>
-                </form>
-
-                <!--/comment_area-->
-
-                <!--edit_area-->
-                <h3><a name="comment_post">
-                        <%template_edit_comment>
-                    </a></h3>
-                <form method="post" action="./" name="comment_form">
-                    <div class="dl-area">
-                        <input type="hidden" name="mode" value="edit">
-                        <input type="hidden" name="mode2" value="edited">
-                        <input type="hidden" name="edit[rno]" value="<%eno>">
-                        <dl class="reaf">
-                            <dt><label for="name">
-                                    <%template_name>:
-                                </label></dt>
-                            <dd><input id="name" type="text" name="edit[name]" size="30" value="<%edit_name>"></dd>
-                            <dt><label for="subject">
-                                    <%template_title>:
-                                </label></dt>
-                            <dd><input id="subject" type="text" name="edit[title]" size="30" value="<%edit_title>">
-                            </dd>
-                            <dt><label for="mail">
-                                    <%template_address>:
-                                </label></dt>
-                            <dd><input id="mail" type="text" name="edit[mail]" size="30" value="<%edit_mail>"></dd>
-                            <dt><label for="url">URL:</label></dt>
-                            <dd><input id="url" type="text" name="edit[url]" size="30" value="<%edit_url>"></dd>
-                            <dt><label for="comment">
-                                    <%template_body>:
-                                </label></dt>
-                            <dd>
-                                <script type="text/javascript" src="<%template_comment_js>"></script><br>
-                                <textarea id="comment" cols="40" rows="8" name="edit[body]"><%edit_body></textarea>
-                            </dd>
-                            <dt><label for="pass">
-                                    <%template_password>:
-                                </label></dt>
-                            <dd><input id="pass" type="password" name="edit[pass]" size="20"></dd>
-                            <dt><label for="himitu">
-                                    <%template_private>:
-                                </label><input id="himitu" type="checkbox" name="edit[himitu]">
-                                <%template_private>
+                        <h3><a name="trackback">
+                                <%template_trackback>
+                            </a></h3>
+                        <dl id="trap">
+                            <dt>
+                                <%template_trackback> URL
                             </dt>
+                            <dd><a href="<%trackback_url>">
+                                    <%trackback_url>
+                                </a></dd>
+                            <dd><a
+                                    href="javascript:window.location.replace('https://blog.fc2.com/?url='+window.location.href);">
+                                    <%template_trackback_this>
+                                </a></dd>
                         </dl>
-                        <p>
-                            <input type="submit" value="<%template_send>">
-                            <input type="submit" name="edit[delete]" value="<%template_delete>">
-                        </p>
+
+                        <!--trackback-->
+
+                        <h3><a href="<%tb_url>" name="trackback<%tb_no>">
+                                <%tb_title>
+                            </a></h3>
+                        <div class="body">
+                            <%tb_excerpt>
+                                <ol class="sub">
+                                    <li>
+                                        <%tb_year>/<%tb_month>/<%tb_day>(<%tb_wayoubi>) <%tb_hour>:<%tb_minute>:
+                                                                <%tb_second> |
+                                    </li>
+                                    <li>
+                                        <%tb_blog_name>
+                                    </li>
+                                </ol>
+                        </div>
+
+                        <!--/trackback-->
                     </div>
-                </form>
-                <!--/edit_area-->
+                    <!--/trackback_area-->
 
 
+                    <!--center-->
+                </div>
 
-                <!--trackback_area-->
-                <div class="dl-area">
-                    <h3><a name="trackback">
-                            <%template_trackback>
-                        </a></h3>
-                    <dl id="trap">
-                        <dt>
-                            <%template_trackback> URL
-                        </dt>
-                        <dd><a href="<%trackback_url>">
-                                <%trackback_url>
-                            </a></dd>
-                        <dd><a
-                                href="javascript:window.location.replace('https://blog.fc2.com/?url='+window.location.href);">
-                                <%template_trackback_this>
-                            </a></dd>
-                    </dl>
+                <div id="right">
+                    <!--plugin_second-->
 
-                    <!--trackback-->
-
-                    <h3><a href="<%tb_url>" name="trackback<%tb_no>">
-                            <%tb_title>
-                        </a></h3>
-                    <div class="body">
-                        <%tb_excerpt>
-                            <ol class="sub">
-                                <li>
-                                    <%tb_year>/<%tb_month>/<%tb_day>(<%tb_wayoubi>) <%tb_hour>:<%tb_minute>:
-                                                            <%tb_second> |
-                                </li>
-                                <li>
-                                    <%tb_blog_name>
-                                </li>
-                            </ol>
+                    <div class="plugin-title <%plugin_second_tag>" style="text-align:<%plugin_second_talign>;">
+                        <%plugin_second_title>
+                            <!--plugin-title-->
+                    </div>
+                    <div class="plugin-content <%plugin_second_tag>" style="text-align:<%plugin_second_align>;">
+                        <%plugin_second_content>
+                            <!--plugin-content-->
                     </div>
 
-                    <!--/trackback-->
+                    <!--/plugin_second-->
+                    <!--right-->
                 </div>
-                <!--/trackback_area-->
 
-
-                <!--center-->
+                <!--main-->
             </div>
 
-            <div id="right">
-                <!--plugin_second-->
 
-                <div class="plugin-title <%plugin_second_tag>" style="text-align:<%plugin_second_talign>;">
-                    <%plugin_second_title>
-                        <!--plugin-title-->
-                </div>
-                <div class="plugin-content <%plugin_second_tag>" style="text-align:<%plugin_second_align>;">
-                    <%plugin_second_content>
-                        <!--plugin-content-->
-                </div>
 
-                <!--/plugin_second-->
-                <!--right-->
+            <div id="footer">
+                <%ad>
+                    <%ad2>
+                        <br>
+                        <span class="copyright">CopyRight <a href="<%url>">
+                                <%blog_name>
+                            </a> All Rights Reserved.</span>
+                        /
+                        <!--！！このクレジットは削除しないでください！！-->
+                        <span class="poweredby"><a href="https://scriptholic.com/" target="_blank">Design By
+                                ScriptHolic.com</span></a>
+                        <!--！！このクレジットは削除しないでください！！-->
+                        <!--footer-->
             </div>
-
-            <!--main-->
+            <!--page-->
         </div>
-
-
-
-        <div id="footer">
-            <%ad>
-                <%ad2>
-                    <br>
-                    <span class="copyright">CopyRight <a href="<%url>">
-                            <%blog_name>
-                        </a> All Rights Reserved.</span>
-                    /
-                    <!--！！このクレジットは削除しないでください！！-->
-                    <span class="poweredby"><a href="https://scriptholic.com/" target="_blank">Design By
-                            ScriptHolic.com</span></a>
-                    <!--！！このクレジットは削除しないでください！！-->
-                    <!--footer-->
-        </div>
-        <!--page-->
-    </div>
-    <a href="//35029640.ranking.fc2.com/" title="新井健一朗さんのランキング集計結果" />新井健一朗さんのランキング集計結果</a>
-</body>
+        <a href="//35029640.ranking.fc2.com/" title="新井健一朗さんのランキング集計結果" />新井健一朗さんのランキング集計結果</a>
+    </body>
 
 </html>
