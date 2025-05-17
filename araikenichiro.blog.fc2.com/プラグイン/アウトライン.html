@@ -1,0 +1,266 @@
+<div id="blog-outline" class="sidebar-content">
+    <h3 class="sidebar-title">記事の目次</h3>
+    <div id="outline-content">
+        <!-- ここに目次が動的に生成されます -->
+        <p class="no-outline">目次を読み込み中...</p>
+    </div>
+</div>
+
+<script>
+    /**
+     * 記事ページの動的アウトライン生成
+     * 記事内のh2〜h6タグを検出し、フリーエリアに目次を生成します
+     */
+    document.addEventListener('DOMContentLoaded', function () {
+        // 記事のコンテンツコンテナと目次を表示する要素を取得
+        const contentWrapper = document.querySelector('.content-wrapper');
+        const outlineContainer = document.getElementById('outline-content');
+
+        // 記事ページでない場合や必要な要素がない場合は処理を終了
+        if (!contentWrapper || !outlineContainer) {
+            const noOutlineMsg = document.querySelector('.no-outline');
+            if (noOutlineMsg) {
+                noOutlineMsg.textContent = '目次を表示できません';
+            }
+            return;
+        }
+
+        // 見出し要素を取得
+        const headings = contentWrapper.querySelectorAll('h2, h3, h4, h5, h6');
+
+        // 見出しがない場合はメッセージを表示
+        if (headings.length === 0) {
+            outlineContainer.innerHTML = '<p>この記事には目次がありません</p>';
+            return;
+        }
+
+        // 目次リストの作成
+        const outlineList = document.createElement('ul');
+        outlineList.className = 'outline-list';
+
+        // 各見出しにIDを付与し、目次項目を作成
+        headings.forEach((heading, index) => {
+            // IDがなければ付与
+            if (!heading.id) {
+                heading.id = `section-${index + 1}`;
+            }
+
+            // 見出しレベルを取得（h2=2, h3=3, ...）
+            const level = parseInt(heading.tagName.charAt(1));
+
+            // 目次項目を作成
+            const listItem = document.createElement('li');
+            listItem.className = `outline-item level-${level}`;
+
+            // リンクを作成
+            const link = document.createElement('a');
+            link.href = `#${heading.id}`;
+            link.textContent = heading.textContent;
+            link.className = 'outline-link';
+
+            listItem.appendChild(link);
+            outlineList.appendChild(listItem);
+
+            // 見出し要素自体にもリンクアンカーを追加（オプション）
+            const headingText = heading.innerHTML;
+            heading.innerHTML = `<a id="${heading.id}" href="#${heading.id}" class="heading-anchor">${headingText}</a>`;
+        });
+
+        // 目次をコンテナに追加
+        outlineContainer.innerHTML = '';
+        outlineContainer.appendChild(outlineList);
+
+        // スクロール時のアクティブ項目のハイライト（オプション）
+        window.addEventListener('scroll', highlightCurrentSection);
+
+        function highlightCurrentSection() {
+            // 現在のスクロール位置
+            const scrollPosition = window.scrollY + 100; // 少し余裕を持たせる
+
+            // アクティブなセクションを特定
+            let currentSection = null;
+
+            headings.forEach((heading) => {
+                if (heading.offsetTop <= scrollPosition) {
+                    currentSection = heading.id;
+                }
+            });
+
+            // アクティブクラスを設定
+            if (currentSection) {
+                const links = outlineList.querySelectorAll('.outline-link');
+                links.forEach((link) => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<style>
+    #blog-outline {
+        margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .outline-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .outline-item {
+        margin-bottom: 5px;
+        line-height: 1.4;
+    }
+
+    .outline-item.level-2 {
+        margin-left: 0;
+    }
+
+    .outline-item.level-3 {
+        margin-left: 15px;
+    }
+
+    .outline-item.level-4 {
+        margin-left: 30px;
+    }
+
+    .outline-item.level-5 {
+        margin-left: 45px;
+    }
+
+    .outline-item.level-6 {
+        margin-left: 60px;
+    }
+
+    .outline-link {
+        text-decoration: none;
+        color: #0066cc;
+        display: block;
+        padding: 2px 0;
+    }
+
+    .outline-link:hover {
+        text-decoration: underline;
+    }
+
+    .outline-link.active {
+        font-weight: bold;
+        color: #ff6600;
+    }
+
+    .heading-anchor {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .no-outline {
+        color: #999;
+        font-style: italic;
+    }
+</style>
+
+<script>
+    /**
+     * 記事ページの動的アウトライン生成
+     * 記事内のh2〜h6タグを検出し、フリーエリアに目次を生成します
+     */
+    document.addEventListener('DOMContentLoaded', function () {
+        // 記事のコンテンツコンテナと目次を表示する要素を取得
+        const contentWrapper = document.querySelector('.content-wrapper');
+        const outlineContainer = document.getElementById('outline-content');
+
+        // 記事ページでない場合や必要な要素がない場合は処理を終了
+        if (!contentWrapper || !outlineContainer) {
+            const noOutlineMsg = document.querySelector('.no-outline');
+            if (noOutlineMsg) {
+                noOutlineMsg.textContent = '目次を表示できません';
+            }
+            return;
+        }
+
+        // 見出し要素を取得
+        const headings = contentWrapper.querySelectorAll('h2, h3, h4, h5, h6');
+
+        // 見出しがない場合はメッセージを表示
+        if (headings.length === 0) {
+            outlineContainer.innerHTML = '<p>この記事には目次がありません</p>';
+            return;
+        }
+
+        // 目次リストの作成
+        const outlineList = document.createElement('ul');
+        outlineList.className = 'outline-list';
+
+        // 各見出しにIDを付与し、目次項目を作成
+        headings.forEach((heading, index) => {
+            // IDがなければ付与
+            if (!heading.id) {
+                heading.id = `section-${index + 1}`;
+            }
+
+            // 見出しレベルを取得（h2=2, h3=3, ...）
+            const level = parseInt(heading.tagName.charAt(1));
+
+            // 目次項目を作成
+            const listItem = document.createElement('li');
+            listItem.className = `outline-item level-${level}`;
+
+            // リンクを作成
+            const link = document.createElement('a');
+            link.href = `#${heading.id}`;
+            link.textContent = heading.textContent;
+            link.className = 'outline-link';
+
+            listItem.appendChild(link);
+            outlineList.appendChild(listItem);
+
+            // 見出し要素自体にもリンクアンカーを追加（オプション）
+            const headingText = heading.innerHTML;
+            heading.innerHTML = `<a id="${heading.id}" href="#${heading.id}" class="heading-anchor">${headingText}</a>`;
+        });
+
+        // 目次をコンテナに追加
+        outlineContainer.innerHTML = '';
+        outlineContainer.appendChild(outlineList);
+
+        // スクロール時のアクティブ項目のハイライト（オプション）
+        window.addEventListener('scroll', highlightCurrentSection);
+
+        function highlightCurrentSection() {
+            // 現在のスクロール位置
+            const scrollPosition = window.scrollY + 100; // 少し余裕を持たせる
+
+            // アクティブなセクションを特定
+            let currentSection = null;
+
+            headings.forEach((heading) => {
+                if (heading.offsetTop <= scrollPosition) {
+                    currentSection = heading.id;
+                }
+            });
+
+            // アクティブクラスを設定
+            if (currentSection) {
+                const links = outlineList.querySelectorAll('.outline-link');
+                links.forEach((link) => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+    });
+</script>
