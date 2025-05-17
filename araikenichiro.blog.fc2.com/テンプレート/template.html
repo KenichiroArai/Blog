@@ -28,14 +28,20 @@
         <script>
             function changeWidth(size) {
                 const page = document.getElementById('page');
+                const articleOnlyLabel = document.querySelector('.width-controls label span');
+
                 if (size === 'auto') {
                     page.style.width = '100%';
+                    articleOnlyLabel.style.display = 'inline';
                 } else if (size === 'large') {
                     page.style.width = '1920px';
+                    articleOnlyLabel.style.display = 'inline';
                 } else if (size === 'medium') {
                     page.style.width = '1280px';
+                    articleOnlyLabel.style.display = 'inline';
                 } else if (size === 'small') {
                     page.style.width = '720px';
+                    articleOnlyLabel.style.display = 'none';
                 }
 
                 // すべてのボタンからactiveクラスを削除
