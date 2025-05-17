@@ -97,6 +97,17 @@ body {
     margin-right: 24px;
 }
 
+@media screen and (max-width: 768px) {
+    .width-controls label {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .width-controls label span {
+        display: none;
+    }
+}
+
 .width-controls input[type="checkbox"] {
     margin-right: 5px;
 }
