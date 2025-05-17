@@ -103,9 +103,12 @@ body {
 
 .width-controls .link-list {
     margin-left: 32px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
     gap: 12px;
 }
 
