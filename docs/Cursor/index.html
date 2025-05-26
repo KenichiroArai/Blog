@@ -33,33 +33,40 @@
 
         <!-- 上部 -->
         <div class="card latest-record mb-4">
-            <div class="card-body">
-                <div class="row g-4">
+            <div class="card-body p-3">
+                <div class="row g-3">
                     <!-- 最新の使用記録 -->
                     <div class="col-md-6 border-end">
                         <div class="card h-100">
-                            <div class="card-body">
-                                <h2 class="card-title text-center mb-4">最新の使用記録</h2>
+                            <div class="card-body p-3">
+                                <h2 class="card-title text-center mb-3">最新の使用記録</h2>
                                 <div class="usage-stats">
-                                    <h3 class="h4 mb-3">Premium Models使用状況</h3>
-                                    <div class="progress-label">
-                                        <span id="premium-label"></span>
-                                        <span id="premium-value"></span>
+                                    <div class="card mb-3">
+                                        <div class="card-body p-3">
+                                            <h3 class="h5 mb-2">Premium Models使用状況</h3>
+                                            <div class="progress-label">
+                                                <span id="premium-label"></span>
+                                                <span id="premium-value"></span>
+                                            </div>
+                                            <div class="progress">
+                                                <div id="premium-progress" class="progress-bar" role="progressbar">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="progress">
-                                        <div id="premium-progress" class="progress-bar" role="progressbar"></div>
+                                    <div class="card mb-3">
+                                        <div class="card-body p-3">
+                                            <h3 class="h5 mb-2">使用日数</h3>
+                                            <div class="progress-label">
+                                                <span id="days-label"></span>
+                                                <span id="days-value"></span>
+                                            </div>
+                                            <div class="progress">
+                                                <div id="days-progress" class="progress-bar" role="progressbar"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <h3 class="h4 mt-4 mb-3">使用日数</h3>
-                                    <div class="progress-label">
-                                        <span id="days-label"></span>
-                                        <span id="days-value"></span>
-                                    </div>
-                                    <div class="progress">
-                                        <div id="days-progress" class="progress-bar" role="progressbar"></div>
-                                    </div>
-                                    <div class="mt-4">
-                                        <div class="usage-info" id="latest-usage-info"></div>
-                                    </div>
+                                    <div class="usage-info" id="latest-usage-info"></div>
                                 </div>
                             </div>
                         </div>
@@ -67,31 +74,39 @@
                     <!-- 次の日の目安 -->
                     <div class="col-md-6">
                         <div class="card h-100">
-                            <div class="card-body text-center">
-                                <h2 class="card-title mb-4">次の日の目安</h2>
+                            <div class="card-body p-3">
+                                <h2 class="card-title text-center mb-3">次の日の目安</h2>
                                 <div class="row g-3">
                                     <div class="col-6">
-                                        <div class="target-box">
-                                            <h5 class="text-muted">Premium Models使用目安</h5>
-                                            <p id="today-premium-target" class="h2 mb-0"></p>
+                                        <div class="card h-100">
+                                            <div class="card-body p-3 text-center">
+                                                <h5 class="text-muted mb-2">Premium Models使用目安</h5>
+                                                <p id="today-premium-target" class="h3 mb-0"></p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="target-box">
-                                            <h5 class="text-muted">残り日数</h5>
-                                            <p id="today-remaining-days" class="h2 mb-0"></p>
+                                        <div class="card h-100">
+                                            <div class="card-body p-3 text-center">
+                                                <h5 class="text-muted mb-2">残り日数</h5>
+                                                <p id="today-remaining-days" class="h3 mb-0"></p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="target-box">
-                                            <h5 class="text-muted">残りPremium</h5>
-                                            <p id="today-remaining-premium" class="h2 mb-0"></p>
+                                        <div class="card h-100">
+                                            <div class="card-body p-3 text-center">
+                                                <h5 class="text-muted mb-2">残りPremium</h5>
+                                                <p id="today-remaining-premium" class="h3 mb-0"></p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="target-box">
-                                            <h5 class="text-muted">1日あたり使用可能回数</h5>
-                                            <p id="today-daily-available" class="h2 mb-0"></p>
+                                        <div class="card h-100">
+                                            <div class="card-body p-3 text-center">
+                                                <h5 class="text-muted mb-2">1日あたり使用可能回数</h5>
+                                                <p id="today-daily-available" class="h3 mb-0"></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
