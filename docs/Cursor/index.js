@@ -91,10 +91,18 @@ function updateLatestRecord() {
     document.getElementById('remaining-days').textContent = `${remainingDays}日`;
     document.getElementById('remaining-premium').textContent = remainingPremium;
 
+    // 1日あたりの残り使用可能回数を計算し、表示
+    let dailyAvailable = 0;
+    if (remainingDays > 0) {
+        dailyAvailable = Math.floor(remainingPremium / remainingDays);
+    }
+    const dailyAvailableElem = document.getElementById('daily-available');
+    if (dailyAvailableElem) {
+        dailyAvailableElem.textContent = `1日あたり残り使用可能回数: ${dailyAvailable}回`;
+    }
+
     // 使用情報のテキスト作成
-    const usageInfo = `追加情報：
-gpt-4o-mini or cursor-small: ${miniModels} / No Limit
-Fast requests will refresh in ${fastRequestsDays} day`;
+    const usageInfo = `追加情報：\ngpt-4o-mini or cursor-small: ${miniModels} / No Limit\nFast requests will refresh in ${fastRequestsDays} day`;
 
     // 表示
     document.getElementById('latest-usage-info').textContent = usageInfo;
