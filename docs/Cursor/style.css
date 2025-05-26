@@ -32,3 +32,28 @@
   font-family: monospace;
   white-space: pre-line;
 }
+
+.latest-record .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+.latest-record .col-md-6 {
+  flex: 1 1 0;
+  min-width: 320px;
+  max-width: 50%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.latest-record .card-title {
+  margin-bottom: 1.5rem;
+}
+.latest-record .usage-info {
+  margin-top: 2rem;
+}
+@media (max-width: 900px) {
+  .latest-record .col-md-6 {
+    max-width: 100%;
+    min-width: 100%;
+    padding: 8px 0;
+  }
+}
