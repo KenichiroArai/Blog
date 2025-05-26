@@ -93,14 +93,14 @@ function updateLatestRecord() {
     // 表示
     document.getElementById('latest-usage-info').textContent = usageInfo;
 
-    // 今日の目安の計算
+    // 次の日の目安の計算
     const todayDays = days + 1;
     const todayPremiumTarget = Math.ceil((todayDays / totalDays) * totalPremiumModels);
     const todayRemainingDays = totalDays - todayDays;
     const todayRemainingPremium = totalPremiumModels - todayPremiumTarget;
     const todayDailyAvailable = todayRemainingDays > 0 ? Math.floor(todayRemainingPremium / todayRemainingDays) : 0;
 
-    // 今日の目安の表示
+    // 次の日の目安の表示
     document.getElementById('today-premium-target').textContent = todayPremiumTarget;
     document.getElementById('today-remaining-days').textContent = `${todayRemainingDays}日`;
     document.getElementById('today-remaining-premium').textContent = todayRemainingPremium;
