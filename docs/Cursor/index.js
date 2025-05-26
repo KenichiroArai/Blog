@@ -101,9 +101,20 @@ function updateLatestRecord() {
     const todayRemainingPremium = totalPremiumModels - premiumModels;
     const todayDailyAvailable = todayRemainingDays > 0 ? Math.floor(todayRemainingPremium / todayRemainingDays) : 0;
 
+    // 差分の計算
+    const premiumTargetDiff = todayPremiumTarget - premiumModels;
+    const diffText = premiumTargetDiff > 0
+        ? `+${premiumTargetDiff}回（目安より少ない）`
+        : `${premiumTargetDiff}回（目安より多い）`;
+
     // 次の日の目安の表示
     const premiumTargetElem = document.getElementById('today-premium-target');
     if (premiumTargetElem) premiumTargetElem.textContent = String(todayPremiumTarget);
+    const premiumTargetDiffElem = document.getElementById('premium-target-diff');
+    if (premiumTargetDiffElem) {
+        premiumTargetDiffElem.textContent = diffText;
+        premiumTargetDiffElem.style.color = premiumTargetDiff > 0 ? '#dc3545' : '#28a745';
+    }
     const remainingDaysElem = document.getElementById('today-remaining-days');
     if (remainingDaysElem) remainingDaysElem.textContent = `${todayRemainingDays}日`;
     const remainingPremiumElem = document.getElementById('today-remaining-premium');
