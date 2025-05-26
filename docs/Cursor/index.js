@@ -97,14 +97,19 @@ function updateLatestRecord() {
     const todayDays = days + 1;
     const todayPremiumTarget = Math.ceil((todayDays / totalDays) * totalPremiumModels);
     const todayRemainingDays = totalDays - todayDays;
-    const todayRemainingPremium = totalPremiumModels - todayPremiumTarget;
+    // 「残りPremium」は最新のPremium modelsから計算
+    const todayRemainingPremium = totalPremiumModels - premiumModels;
     const todayDailyAvailable = todayRemainingDays > 0 ? Math.floor(todayRemainingPremium / todayRemainingDays) : 0;
 
     // 次の日の目安の表示
-    document.getElementById('today-premium-target').textContent = todayPremiumTarget;
-    document.getElementById('today-remaining-days').textContent = `${todayRemainingDays}日`;
-    document.getElementById('today-remaining-premium').textContent = todayRemainingPremium;
-    document.getElementById('today-daily-available').textContent = `${todayDailyAvailable}回`;
+    const premiumTargetElem = document.getElementById('today-premium-target');
+    if (premiumTargetElem) premiumTargetElem.textContent = String(todayPremiumTarget);
+    const remainingDaysElem = document.getElementById('today-remaining-days');
+    if (remainingDaysElem) remainingDaysElem.textContent = `${todayRemainingDays}日`;
+    const remainingPremiumElem = document.getElementById('today-remaining-premium');
+    if (remainingPremiumElem) remainingPremiumElem.textContent = String(todayRemainingPremium);
+    const dailyAvailableElem = document.getElementById('today-daily-available');
+    if (dailyAvailableElem) dailyAvailableElem.textContent = `${todayDailyAvailable}回`;
 }
 
 // プログレスバーの更新
@@ -146,6 +151,7 @@ function showLoading(show) {
 
 function showError(message) {
     const errorElement = document.getElementById('error-message');
+    if (!errorElement) return;
     errorElement.textContent = message;
     errorElement.classList.remove('d-none');
 }
