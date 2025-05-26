@@ -87,25 +87,24 @@ function updateLatestRecord() {
     updateProgressBar('days-progress', daysPercentage, `${days}日 / ${totalDays}日`);
     updateProgressBar('premium-progress', premiumPercentage, `${premiumModels} / ${totalPremiumModels}`);
 
-    // 残り日数と残りPremiumの更新
-    document.getElementById('remaining-days').textContent = `${remainingDays}日`;
-    document.getElementById('remaining-premium').textContent = remainingPremium;
-
-    // 1日あたりの残り使用可能回数を計算し、表示
-    let dailyAvailable = 0;
-    if (remainingDays > 0) {
-        dailyAvailable = Math.floor(remainingPremium / remainingDays);
-    }
-    const dailyAvailableElem = document.getElementById('daily-available');
-    if (dailyAvailableElem) {
-        dailyAvailableElem.textContent = `1日あたり残り使用可能回数: ${dailyAvailable}回`;
-    }
-
     // 使用情報のテキスト作成
     const usageInfo = `追加情報：\ngpt-4o-mini or cursor-small: ${miniModels} / No Limit\nFast requests will refresh in ${fastRequestsDays} day`;
 
     // 表示
     document.getElementById('latest-usage-info').textContent = usageInfo;
+
+    // 今日の目安の計算
+    const todayDays = days + 1;
+    const todayPremiumTarget = Math.ceil((todayDays / totalDays) * totalPremiumModels);
+    const todayRemainingDays = totalDays - todayDays;
+    const todayRemainingPremium = totalPremiumModels - todayPremiumTarget;
+    const todayDailyAvailable = todayRemainingDays > 0 ? Math.floor(todayRemainingPremium / todayRemainingDays) : 0;
+
+    // 今日の目安の表示
+    document.getElementById('today-premium-target').textContent = todayPremiumTarget;
+    document.getElementById('today-remaining-days').textContent = `${todayRemainingDays}日`;
+    document.getElementById('today-remaining-premium').textContent = todayRemainingPremium;
+    document.getElementById('today-daily-available').textContent = `${todayDailyAvailable}回`;
 }
 
 // プログレスバーの更新
