@@ -88,7 +88,7 @@ function updateLatestRecord() {
     updateProgressBar('premium-progress', premiumPercentage, `${premiumModels} / ${totalPremiumModels}`);
 
     // 使用情報のテキスト作成
-    const usageInfo = `追加情報：\ngpt-4o-mini or cursor-small: ${miniModels} / No Limit\nFast requests will refresh in ${fastRequestsDays} day`;
+    const usageInfo = `gpt-4o-mini or cursor-small: ${miniModels} / No Limit\nFast requests will refresh in ${fastRequestsDays} day`;
 
     // 表示
     document.getElementById('latest-usage-info').textContent = usageInfo;
