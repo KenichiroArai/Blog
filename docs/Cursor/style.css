@@ -29,10 +29,10 @@
 }
 
 .latest-record {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border: 2px solid #b6c6e3;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #dee2e6;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(180, 200, 230, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .usage-info {
@@ -43,7 +43,9 @@
 .latest-record .row {
   display: flex;
   flex-wrap: wrap;
+  margin: 0;
 }
+
 .latest-record .col-md-6 {
   flex: 1 1 0;
   min-width: 320px;
@@ -51,12 +53,19 @@
   padding: 16px;
   box-sizing: border-box;
 }
+
 .latest-record .card-title {
   margin-bottom: 1.5rem;
+  color: #495057;
 }
+
 .latest-record .usage-info {
   margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
 }
+
 @media (max-width: 900px) {
   .latest-record .col-md-6 {
     max-width: 100%;
