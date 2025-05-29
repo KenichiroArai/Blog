@@ -1,0 +1,163 @@
+<h2>今日のまとめ</h2>
+<div>
+  <p>
+    今日は、主にSVGなどや文書構造の全体を学んだ。<br>
+    MathML、SVGなどの現状をChatGPTで調べまとめた。<a href="https://chatgpt.com/share/683864c8-4150-800c-8339-165f0dc62735"
+      target="_blank">ChatGPTのチャット履歴</a>の結果を備忘録として下記に載せておく。
+  </p>
+</div>
+<pre class="markdown-embedded">
+2025年時点での各HTML関連技術の現状を以下に整理します。HTMLの進化やWebブラウザのサポート、標準化団体（W3Cなど）の動向を基にした内容です。
+
+---
+
+### ■ DOM（Document Object Model）
+
+* **現状**: DOMはHTMLやXML文書を扱うための標準APIであり、**Web開発に不可欠な中核技術**。
+* **バージョン**: DOM Level 3が広く使われており、それ以降の発展は仕様統合（WHATWGのDOM Living Standard）に。
+* **サポート状況**: **主要ブラウザで完全サポート**されており、JavaScriptによるDOM操作は日常的。
+* **備考**: 静的DOMからShadow DOM・Custom Elementsなどを含むWeb Componentsへの拡張が進んでいる。
+
+---
+
+### ■ MathML（Mathematical Markup Language）
+
+* **現状**: 数式をHTML文書内に埋め込むためのXMLベースのマークアップ言語。
+* **サポート状況**:
+
+  * Firefox: **ネイティブサポートあり**
+  * Chrome/Edge/Safari: **限定的または削除（2023年頃）**
+* **代替手段**: [MathJax](https://www.mathjax.org/) や [KaTeX](https://katex.org/) によりJSベースで描画する方法が主流。
+* **仕様**: MathML Coreとして再定義・軽量化されている（W3C Working Draft）。
+
+---
+
+### ■ SVG（Scalable Vector Graphics）
+
+* **現状**: **ベクターグラフィックのWeb標準**。グラフ、UIアイコン、アニメーションなどに利用。
+* **サポート状況**: **全モダンブラウザで完全サポート**。
+* **使用例**:
+
+  * `<svg>`タグによる直接描画
+  * `<img>`タグやCSSのbackground-imageとして使用
+* **仕様**: SVG 2が草案段階だが、実装は限定的（SVG 1.1が実質標準）。
+
+---
+
+### ■ SMIL（Synchronized Multimedia Integration Language）
+
+* **現状**: SVGや他のメディア要素にアニメーションを付けるXMLベース言語。
+* **サポート状況**:
+
+  * **非推奨（Deprecated）**
+  * Chrome: サポート削除済み
+  * Firefox: 限定サポートあり（将来的に削除予定）
+* **代替手段**:
+
+  * CSSアニメーション
+  * JavaScriptによるアニメーション制御
+  * Web Animations API（WAAPI）
+
+---
+
+### ■ RDF（Resource Description Framework）
+
+* **現状**: セマンティックWebの中核技術。データ間の関係性（トリプル）を表現。
+* **用途**:
+
+  * Linked Dataの記述
+  * メタデータ（例: Dublin Core）
+  * スキーマ統合、知識グラフ
+* **実装**: SPARQLエンドポイント、RDFライブラリ（Apache Jenaなど）で活用。
+* **ウェブでの普及**: 低いが、バックエンドや学術・政府系では利用継続。
+
+---
+
+### ■ RDFS（RDF Schema）
+
+* **現状**: RDFで定義されたリソースに対する語彙（クラス、プロパティ）を定義するスキーマ。
+* **用途**: セマンティックWebにおける簡易的な意味付け。
+* **普及**: RDFと同様に限定的だが、SPARQLや知識グラフ用途で生きている。
+
+---
+
+### ■ OWL（Web Ontology Language）
+
+* **現状**: セマンティックWebで**意味論的に厳密な記述**を行うための論理言語。
+* **バージョン**: OWL 2が最新版（W3C勧告）。
+* **用途**:
+
+  * 知識ベース（例：医療、製薬、法学など）
+  * オントロジーの構築（例：Gene Ontology）
+* **一般Webでは普及していない**が、研究・産業応用（AI、データ統合）で重要。
+
+---
+
+### ■ WCAG 1.0（Web Content Accessibility Guidelines 1.0）
+
+* **現状**: 1999年に策定された**初期のアクセシビリティガイドライン**。
+* **ステータス**: **W3Cにより廃止状態（obsolete）**
+* **最新版**:
+
+  * **WCAG 2.2**（2023年10月に正式勧告）
+* **主な変更点**:
+
+  * 測定可能で実装しやすい原則（Perceivable, Operable, Understandable, Robust）
+  * レベルA/AA/AAAの基準設定
+* **推奨**: WCAG 2.2に従ったアクセシブルなWeb開発。
+
+---
+
+### まとめ（現状評価）
+
+| 技術       | 現状      | サポート・将来性                 |
+| -------- | ------- | ------------------------ |
+| DOM      | 中核技術    | ◎ 継続進化中（Living Standard） |
+| MathML   | 限定的     | △ MathJaxなど代替が主流         |
+| SVG      | 主流技術    | ◎ 全ブラウザ対応、現役             |
+| SMIL     | 廃止傾向    | × CSS/JS/WAAPIへ移行        |
+| RDF      | 限定的活用   | △ 知識グラフ分野で継続使用           |
+| RDFS     | RDFとセット | △ 同上                     |
+| OWL      | 専門分野で活用 | ○ AI/知識ベースで有用            |
+| WCAG 1.0 | 廃止      | × 最新は2.2、移行推奨            |
+
+---
+
+必要であれば、各項目に関する詳細資料やコード例もお渡しできます。どの技術に特に興味がありますか？
+</pre>
+<h2>現在の進捗</h2>
+<table>
+  <tr>
+    <th>書籍名</th>
+    <th>進捗</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+    </td>
+    <td>
+      <div style="width: 100%; background-color: #e0e0e0;">
+        <div style="width: 7.41%; background-color: #76c7c0; height: 20px;"></div>
+      </div>
+      45/607 = 7.41%
+    </td>
+  </tr>
+</table>
+
+<h2>リンク</h2>
+<ol>
+  <li>
+    <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00137"
+      target="_blank">本記事のGitHubでの管理</a>
+  </li>
+  <li>
+    前回の記事：<a href="http://araikenichiro.blog.fc2.com/blog-entry-137.html"
+      target="_blank">フロントエンド（TS、JS）の59日目：Web標準の教科書#002/a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+  </li>
+  <li>
+    <a href="https://chatgpt.com/share/683864c8-4150-800c-8339-165f0dc62735" target="_blank">ChatGPTのチャット履歴</a>
+  </li>
+</ol>
