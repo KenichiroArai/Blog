@@ -18,12 +18,10 @@
         必要なオシロスコープのスペック
     </h2>
     <p>
-        どれくらいのスペックがよいかをChatGPTに聞いてみた。
-    </p>
-    <a href="https://chatgpt.com/share/68395df0-5750-800c-8088-89c04d88e76f" target="_blank">
-        ChatGPTのチャットの履歴
-    </a><br>
-    <p>
+        どれくらいのスペックがよいかをChatGPTに聞いてみた。<br>
+        <a href="https://chatgpt.com/share/68395df0-5750-800c-8088-89c04d88e76f" target="_blank">
+            ChatGPTのチャットの履歴
+        </a><br>
         電子回路やマイコンであれば帯域幅は20Mhzで十分との回答だった。
     </p>
     <h2>
@@ -48,6 +46,11 @@
             サンプルレート対応 3 in1 ハンドヘルドデジタルオシロスコープ トランジスタテスター 信号発生器 ポータブル バックライト付き</a><br>
         オシロスコープ機能は500kHz帯域幅だが、他の機能もいいなと思って、先にこっちを購入かなと思っている。オシロスコープも今の僕の学習レベルではこのレベルから使い始めてもいいのではと思ったからだ。<br>
         機能としては、抵抗やトランジスタなどを判定できるところや発信器としても使えるからだ。抵抗はテスターでも測定できるが、トランジスタなどは分からないため。丁度トランジスタの印字が見えづらくNPNなのかPNPかを判別するの時間が掛かったからだ。<br>
+        下記が見えづらいトランジスタなどだ。スマホの接写モードで見るとよくわかるが、肉眼だと光の反射や陰で見えづらいし、見えたとしても型版で判断する必要がある。<br>
+        <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00141_001.jpg" target="_blank">
+            <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00141_001.jpg" alt="00141_001.jpg" width="600"
+                border="0">
+        </a><br>
         500kHz帯域幅だとどんな感じかは、天秤AIで確認した。<br>
         <a href="https://tenbin.ai/workspace/share/239145209292891136" target="_blank">天秤AIのチャット履歴</a><br>
         下記抜粋です。ひとまずは500kHz帯域幅でもいいかなと思い始めている。後でSDS1104を買ったら使い分けが出来ると思うため。
@@ -55,7 +58,7 @@
     <pre class="markdown-embedded">
 オペアンプの基礎学習において、500kHz帯域幅・10MS/sのオシロスコープは**最低限の要件は満たしますが、やや制限がある**というのが率直な評価です。
 
-## 十分な点
+### 十分な点
 
 **基本的な回路解析**
 - 反転・非反転増幅回路の動作確認
@@ -63,7 +66,7 @@
 - DC特性の測定
 - 基本的な波形観測
 
-## 制限される点
+### 制限される点
 
 **周波数特性の詳細解析**
 - 多くの汎用オペアンプ（LM358、TL072など）のGBW積は1MHz程度
@@ -74,13 +77,13 @@
 - ナイキスト定理により実効帯域幅は250kHz程度
 - 高速オペアンプ（数MHz～数十MHz）の評価は困難
 
-## 推奨仕様
+### 推奨仕様
 
 基礎学習なら最低でも：
 - **帯域幅：2-5MHz以上**
 - **サンプルレート：50-100MS/s以上**
 
-## 結論
+### 結論
 
 完全な初心者の基礎学習であれば使用可能ですが、より深い理解や実用的なスキル習得を目指すなら、もう少し高性能なオシロスコープを検討することをお勧めします。予算に制約がある場合は、この仕様でスタートして必要に応じてアップグレードするのも一つの方法です。
     </pre>
@@ -88,13 +91,15 @@
         DSO-TC4との比較
     </h2>
     <p>
-        DSO-TC3を調べてみると最新版のDSO-TC4も出ていることが分かった。価格差があるので最新版であり上位版という印象でDSO-TC3との選択になるかなと思う。<br>
+        DSO-TC3を調べてみると最新版のDSO-TC4も出ていることが分かった。価格差があるので最新版であり上位版という印象でDSO-TC3との比較対象になると思う。<br>
         <a href="https://amzn.asia/d/500O3Av" target="_blank">FNIRSI DSO-TC4 3-in-1 オシロスコープ 10MHz帯域幅 48MS/s サンプルレート対応
             ハンドヘルドデジタルオシロスコープ トランジスタテスター 信号発生器 ポータブル バックライト調整可能</a><br>
         オシロスコープが10MHz帯域幅と大幅に広くなっておりとりあずのオシロスコープとしても良さそうである。他にも機能が追加されていたリ、日本語対応になっていたりとスペック、機能が良さそうだ。<br>
-        ただ、価格が約1万3千円となる。10万台のオシロスコープを購入予定であれば5千ぐらいは誤差となるが、2、3万円代のオシロスコープも後で買う予定だとこの5千円差は悩んでいる。<br>
-        DSO-TC4の紹介記事：<a href="https://ascii.jp/elem/000/004/267/4267106/"
-            target="_blank">ASCII.jp：動かない電子工作キット、その原因はどこ？</a>
+        ただ、価格が約1万3千円となる。10万台のオシロスコープを購入予定であれば5千ぐらいは誤差となるが、2、3万円台のオシロスコープも後で買う予定だとこの5千円差は悩んでいる。<br>
+    </p>
+    <p>
+        DSO-TC4の紹介記事が参考になったので載せておく。<br>
+        <a href="https://ascii.jp/elem/000/004/267/4267106/" target="_blank">ASCII.jp：動かない電子工作キット、その原因はどこ？</a>
     </p>
     <h2>
         現状の検討
@@ -167,8 +172,8 @@
             Pi Pico用オシロスコープ基板 DIYキット PL2302KIT</a>
     </p>
     <p>
-        他に検討候補としてはPCで確認するだけのオシロスコープであるが、上記を調べていくとOWON
-        SDS1104系でもPCで確認できるのと値段もそんなに変わらない、DSO-TC系と大きさもそこまで変わらないため、現状は候補として挙げていない。
+        他に検討候補としてはPCで確認するだけのオシロスコープがあるが、上記を調べていくとOWON
+        SDS1104系でもPCで確認できるし、DSO-TC系であれば値段もそんなに変わらないと大きさもそこまで変わらないため、現状は候補として挙げていない。
     </p>
 </div>
 <h2>リンク</h2>
@@ -182,12 +187,42 @@
             target="_blank">本記事のGitHubでの管理</a>
     </li>
     <li>
-        <a href="https://xuarkyry.manus.space/" target="_blank">電子工作初心者のためのオシロスコープ入門ガイド</a><br>
+        <a href="https://xuarkyry.manus.space/" target="_blank">
+            電子工作初心者のためのオシロスコープ入門ガイド
+        </a>
     </li>
     <li>
-        <a href="https://manus.im/share/XrwkDaCNVZlp2L2VVmt3sL?replay=1" target="_blank">Manusのチャットの履歴</a>
+        <a href="https://manus.im/share/XrwkDaCNVZlp2L2VVmt3sL?replay=1" target="_blank">
+            Manusのチャットの履歴
+        </a>
     </li>
     <li>
-        <a href="https://chatgpt.com/share/68395df0-5750-800c-8088-89c04d88e76f" target="_blank">ChatGPTのチャットの履歴</a>
+        <a href="https://chatgpt.com/share/68395df0-5750-800c-8088-89c04d88e76f" target="_blank">
+            ChatGPTのチャットの履歴
+        </a>
+    </li>
+    <li>
+        <a href="https://amzn.asia/d/aglsDMU" target="_blank">
+            OWON SDS1104 オシロスコープ 薄型 軽量 4チャンネル 1Gs/s 100MHz帯域【国内正規品】【3年保証】【日本語取扱説明書対応】
+        </a>
+    </li>
+    <li>
+        <a href="https://amzn.asia/d/500O3Av" target="_blank">
+            FNIRSI DSO-TC4 3-in-1 オシロスコープ 10MHz帯域幅 48MS/s サンプルレート対応
+            ハンドヘルドデジタルオシロスコープ トランジスタテスター 信号発生器 ポータブル バックライト調整可能
+        </a>
+    </li>
+    <li>
+        <a href="https://note.com/domo8258/n/n68296bf09563" target="_blank">
+            Raspberry Pi Picoで簡易オシロスコープを作る
+        </a>
+        <a href="https://picockpit.com/raspberry-pi/ja/%E3%83%A9%E3%82%BA%E3%83%99%E3%83%AA%E3%83%BC%E3%83%91%E3%82%A4%E3%83%BB%E3%83%94%E3%82%B3%E3%83%BB%E3%82%AA%E3%82%B7%E3%83%AD%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%97%E3%81%A7%E9%9B%BB%E6%B0%97%E3%82%92/"
+            target="_blank">
+            Raspberry Pi Picoオシロスコープで電気を操る
+        </a>
+        <a
+            href="https://www.switch-science.com/products/8849?srsltid=AfmBOoqYf98TXgTnUD1GWKfOYbyab_9BMXz3xZ7zDuuY9sXYK3_sw5Qn">
+            Raspberry Pi Pico用オシロスコープ基板 DIYキット PL2302KIT
+        </a>
     </li>
 </ol>
