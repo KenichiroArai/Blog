@@ -66,15 +66,14 @@
 </div>
 
 <script>
-  function updateDaysResult() {
-    const startDate = '2025-03-30';
-    const targetDate = '2025-06-02';
-    const result = calculateDays(startDate, targetDate);
-    document.getElementById('startDate').textContent = result.startDate;
-    document.getElementById('currentDate').textContent = result.targetDate;
-    document.getElementById('elapsedDays').textContent = `${result.days}日`;
-  }
-
   // ページ読み込み時に実行
-  window.onload = updateDaysResult;
+  window.onload = () => {
+    updateDaysResult({
+      startDate: '2025-03-30',
+      targetDate: '2025-06-02',
+      startDateElementId: 'startDate',
+      currentDateElementId: 'currentDate',
+      elapsedDaysElementId: 'elapsedDays'
+    });
+  };
 </script>
