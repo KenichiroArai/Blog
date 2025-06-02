@@ -1,7 +1,8 @@
 <h2>今回のまとめ</h2>
 <div>
   <p>
-
+    今回は、主にテーブルとリンク、画像を学習した。<br>
+    それと、「投稿内容の変更」に記載したが学習期間も追加しているため、そのための関数や仕組みを実装した。
   </p>
 </div>
 <h2>投稿内容の変更</h2>
@@ -13,6 +14,9 @@
 </div>
 
 <h2>現在の進捗</h2>
+<p>
+  毎日、15ページほどしか読めていないないため、今月中の読了は難しい。他も進めつつのため、焦らず確実に進め行く。
+</p>
 <div>
   <h3>学習期間</h3>
   <table>
@@ -22,8 +26,8 @@
       <th>経過日数</th>
     </tr>
     <tr>
-      <td id="startDate"></td>
-      <td id="currentDate"></td>
+      <td id="startDate">2025/03/30</td>
+      <td id="currentDate">2025/06/02</td>
       <td id="elapsedDays"></td>
     </tr>
   </table>
@@ -68,9 +72,13 @@
 <script>
   // ページ読み込み時に実行
   window.onload = () => {
+    const startDateElement = document.getElementById('startDate');
+    const currentDateElement = document.getElementById('currentDate');
+    const elapsedDaysElement = document.getElementById('elapsedDays');
+
     updateDaysResult({
-      startDate: '2025-03-30',
-      targetDate: '2025-06-02',
+      startDate: startDateElement.textContent,
+      targetDate: currentDateElement.textContent,
       startDateElementId: 'startDate',
       currentDateElementId: 'currentDate',
       elapsedDaysElementId: 'elapsedDays'
