@@ -55,9 +55,9 @@
       </td>
       <td>
         <div style="width: 100%; background-color: #e0e0e0;">
-          <div style="width: 14.66%; background-color: #76c7c0; height: 20px;"></div>
+          <div id="progressBar" style="width: 0%; background-color: #76c7c0; height: 20px;"></div>
         </div>
-        89/607 = 14.66%
+        <span id="progressText">0/0 = 0%</span>
       </td>
     </tr>
   </table>
@@ -81,6 +81,25 @@
 </div>
 
 <script>
+  // 書籍の進捗情報
+  const bookProgress = {
+    currentPage: 89,
+    totalPages: 607
+  };
+
+  // 進捗状況を更新する関数
+  function updateProgress() {
+    const percentage = ((bookProgress.currentPage / bookProgress.totalPages) * 100).toFixed(2);
+
+    // 進捗バーの更新
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.width = percentage + '%';
+
+    // 進捗テキストの更新
+    const progressText = document.getElementById('progressText');
+    progressText.textContent = `${bookProgress.currentPage}/${bookProgress.totalPages} = ${percentage}%`;
+  }
+
   // ページ読み込み時に実行
   window.onload = () => {
     const startDateElement = document.getElementById('startDate');
@@ -94,5 +113,8 @@
       currentDateElementId: 'currentDate',
       elapsedDaysElementId: 'elapsedDays'
     });
+
+    // 進捗状況の更新
+    updateProgress();
   };
 </script>
