@@ -718,6 +718,7 @@ table {
     overflow: hidden;
     font-size: 15px;
     table-layout: fixed;
+    border: 2px solid #86ae46;
 }
 
 table th,
@@ -725,6 +726,7 @@ table td {
     word-wrap: break-word;
     min-width: 0;
     box-sizing: border-box;
+    border: 1px solid #ddd;
 }
 
 table th {
@@ -733,7 +735,7 @@ table th {
     font-weight: bold;
     text-align: left;
     padding: 12px 15px;
-    border: 1px solid #6b8c37;
+    border: 2px solid #6b8c37;
     position: sticky;
     top: 0;
     white-space: normal;
@@ -744,6 +746,14 @@ table td {
     border: 1px solid #ddd;
     background-color: #fff;
     vertical-align: top;
+}
+
+table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:last-child {
+    border-bottom: none;
 }
 
 table tr:nth-child(even) {
@@ -757,6 +767,7 @@ table tr:hover {
 table td[rowspan] {
     background-color: #e9f0e0;
     font-weight: bold;
+    border: 2px solid #86ae46;
 }
 
 /* 比較表のスタイル */
