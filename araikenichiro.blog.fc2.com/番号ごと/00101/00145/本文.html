@@ -66,18 +66,6 @@
 </div>
 
 <script>
-  function calculateDays(startDateStr, targetDateStr) {
-    const startDate = new Date(startDateStr);
-    const targetDate = new Date(targetDateStr);
-    const diffTime = Math.abs(targetDate - startDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return {
-      startDate: startDate.toLocaleDateString(),
-      targetDate: targetDate.toLocaleDateString(),
-      days: diffDays
-    };
-  }
-
   function updateDaysResult() {
     const startDate = '2025-03-30';
     const targetDate = '2025-06-02';
