@@ -26,16 +26,47 @@
         gtag('config', 'G-SWQW95J6HG');
     </script>
     <script>
+
+        /* 日付計算 */
         function calculateDays(startDateStr, targetDateStr) {
+
+            let result;
+
             const startDate = new Date(startDateStr);
             const targetDate = new Date(targetDateStr);
             const diffTime = Math.abs(targetDate - startDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return {
+            result = {
                 startDate: startDate.toLocaleDateString(),
                 targetDate: targetDate.toLocaleDateString(),
                 days: diffDays
             };
+
+            return result;
+        }
+
+        /* 経過時間表示用 */
+        /**
+         * 指定された開始日と対象日から経過日数を計算し、指定されたHTML要素に表示する
+         * @param {Object} params - パラメータオブジェクト
+         * @param {string} params.startDate - 開始日（YYYY-MM-DD形式）
+         * @param {string} params.targetDate - 対象日（YYYY-MM-DD形式）
+         * @param {string} params.startDateElementId - 開始日を表示する要素のID
+         * @param {string} params.currentDateElementId - 現在日を表示する要素のID
+         * @param {string} params.elapsedDaysElementId - 経過日数を表示する要素のID
+         * @returns {void}
+         */
+        function updateDaysResult({
+            startDate,
+            targetDate,
+            startDateElementId,
+            currentDateElementId,
+            elapsedDaysElementId
+        }) {
+            const result = calculateDays(startDate, targetDate);
+            document.getElementById(startDateElementId).textContent = result.startDate;
+            document.getElementById(currentDateElementId).textContent = result.targetDate;
+            document.getElementById(elapsedDaysElementId).textContent = `${result.days}日`;
         }
 
         function changeWidth(size) {
