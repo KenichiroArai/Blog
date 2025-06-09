@@ -1,7 +1,10 @@
 # 動画ファイルを無視する
 *.mp4
-*.mkv
-*.avi
 *.mov
-
-
+*.avi
+*.mkv
+*.wmv
+*.flv
+*.webm
+*.mpeg
+*.mpg
