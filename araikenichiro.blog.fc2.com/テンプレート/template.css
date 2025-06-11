@@ -737,6 +737,7 @@ table td {
     min-width: 0;
     box-sizing: border-box;
     border: 1px solid #ccc;
+    text-align: center;
 }
 
 table th {
