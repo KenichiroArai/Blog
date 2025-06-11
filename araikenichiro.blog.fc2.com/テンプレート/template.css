@@ -743,7 +743,6 @@ table th {
     background-color: #86ae46;
     color: white;
     font-weight: bold;
-    text-align: left;
     padding: 12px 15px;
     border: 2px solid #6b8c37;
     position: sticky;
@@ -800,13 +799,6 @@ table th {
 table th:first-child {
     width: auto;
     min-width: 30%;
-}
-
-/* 3列の比較表のスタイル */
-table th:nth-child(2),
-table th:nth-child(3) {
-    text-align: center;
-    width: auto;
 }
 
 /* 図表のキャプション */
@@ -1027,22 +1019,4 @@ table th:nth-child(3) {
     font-weight: bold;
     color: #333;
     text-align: center;
-}
-
-/* テーブルスタイル */
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-th {
-    background-color: #f2f2f2;
 }
