@@ -1,0 +1,188 @@
+<h2>学習のまとめ</h2>
+<p>
+  前回から『Web標準の教科書』を読み進めている。ただ、1日当たりのページ数が少ないのでまだ30%である。
+</p>
+<p>
+  今回から『Rect.js&Next.js超入門』を読み始めた。
+</p>
+
+<h2>今後の学習の進め方について</h2>
+<p>
+  このままだと『Web標準の教科書』が読み終わるのは1か月後になるのと読みが中心となるため、実践も同時に進めたいとの判断から『Rect.js&Next.js超入門』の学習も始めた。Rect.jsを学ぶことがこのシリーズの始める目的だったので本来の目的に合った学習になる。
+</p>
+<p>
+  ただ、その分、『Web標準の教科書』の1日当たりのページ数も少なくするため、さらに遅れることになる。今の予定としては、1日5ページを目安にしているため、約2.5か月後に読み終わることになるが、フロント関連の紙の書籍はこれともう1冊だけで順調に読了出来ているため、急がずこの方針で進めていく。
+</p>
+
+<h2>現在の進捗</h2>
+<h3>学習期間</h3>
+<table>
+  <tr>
+    <th>開始日</th>
+    <th>現在日</th>
+    <th>経過日数</th>
+  </tr>
+  <tr>
+    <td id="startDate">2025/03/30</td>
+    <td id="currentDate">2025/06/11</td>
+    <td id="elapsedDays"></td>
+  </tr>
+</table>
+
+<h3>書籍の進捗状況</h3>
+<table>
+  <tr>
+    <th>書籍名</th>
+    <th>現在ページ</th>
+    <th>全体ページ</th>
+    <th>進捗率</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+    </td>
+    <td class="current-page">190</td>
+    <td class="total-pages">607</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js&Next.js超入門』</a>
+    </td>
+    <td class="current-page">1</td>
+    <td class="total-pages">431</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+  </tr>
+</table>
+
+<h2>リンク</h2>
+<ol>
+  <li>
+    <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00152"
+      target="_blank">本記事のGitHubでの管理</a>
+  </li>
+  <li>
+    前回の記事：<a href="https://araikenichiro.blog.fc2.com/blog-entry-145.html"
+      target="_blank">フロントエンド（TS、JS）#0063：Web標準の教科書#006</a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js＆Next.js超入門 第2版 Kindle版』</a>
+  </li>
+</ol>
+
+<style>
+  .progress-bar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .progress-bar {
+    width: 150px;
+    height: 18px;
+    background-color: #e0e0e0;
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(45deg, #4CAF50, #81C784);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .progress-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+</style>
+
+<script>
+  // 進捗率を計算して表示する関数
+  function calculateProgressRates() {
+    const progressBarContainers = document.querySelectorAll('.progress-bar-container');
+
+    progressBarContainers.forEach((container) => {
+      const row = container.parentElement;
+      const currentPageCell = row.querySelector('.current-page');
+      const totalPagesCell = row.querySelector('.total-pages');
+      const progressFill = container.querySelector('.progress-fill');
+      const progressText = container.querySelector('.progress-text');
+
+      const currentPage = parseInt(currentPageCell.textContent);
+      const totalPages = parseInt(totalPagesCell.textContent);
+
+      const percentage = ((currentPage / totalPages) * 100).toFixed(2);
+
+      // プログレスバーの更新
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${percentage}%`;
+
+      // プログレスバー内に進捗率を表示（バーが十分な幅がある場合）
+      if (parseFloat(percentage) > 15) {
+        progressFill.textContent = `${percentage}%`;
+      } else {
+        progressFill.textContent = '';
+      }
+    });
+  }
+
+  // ページ読み込み時に実行
+  window.onload = () => {
+    const startDateElement = document.getElementById('startDate');
+    const currentDateElement = document.getElementById('currentDate');
+    const elapsedDaysElement = document.getElementById('elapsedDays');
+
+    updateDaysResult({
+      startDate: startDateElement.textContent,
+      targetDate: currentDateElement.textContent,
+      startDateElementId: 'startDate',
+      currentDateElementId: 'currentDate',
+      elapsedDaysElementId: 'elapsedDays'
+    });
+
+    // 進捗率の計算と表示
+    calculateProgressRates();
+  };
+</script>
