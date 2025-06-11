@@ -30,7 +30,30 @@
 </table>
 
 <h3>書籍の進捗状況</h3>
-<div id="booksProgressContainer"></div>
+<table>
+  <tr>
+    <th>書籍名</th>
+    <th>現在ページ</th>
+    <th>全体ページ</th>
+    <th>進捗率</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+    </td>
+    <td class="current-page">190</td>
+    <td class="total-pages">607</td>
+    <td class="progress-rate"></td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js&Next.js超入門』</a>
+    </td>
+    <td class="current-page">1</td>
+    <td class="total-pages">431</td>
+    <td class="progress-rate"></td>
+  </tr>
+</table>
 
 <h2>リンク</h2>
 <ol>
@@ -51,101 +74,20 @@
 </ol>
 
 <script>
-  // 書籍の進捗情報
-  const booksProgress = [
-    {
-      title: 'Web標準の教科書',
-      url: 'https://amzn.asia/d/9nODCGv',
-      currentPage: 190,
-      totalPages: 607
-    },
-    {
-      title: 'React.js&Next.js超入門',
-      url: 'https://amzn.asia/d/4lEpBGG',
-      currentPage: 1,
-      totalPages: 431,
-    }
-  ];
+  // 進捗率を計算して表示する関数
+  function calculateProgressRates() {
+    const progressCells = document.querySelectorAll('.progress-rate');
 
-  // 書籍進捗テーブルを生成する関数
-  function createBooksProgressTable() {
-    const container = document.getElementById('booksProgressContainer');
+    progressCells.forEach((cell) => {
+      const row = cell.parentElement;
+      const currentPageCell = row.querySelector('.current-page');
+      const totalPagesCell = row.querySelector('.total-pages');
 
-    // テーブル要素の作成
-    const table = document.createElement('table');
+      const currentPage = parseInt(currentPageCell.textContent);
+      const totalPages = parseInt(totalPagesCell.textContent);
 
-    // ヘッダー行の作成
-    const headerRow = document.createElement('tr');
-    const titleHeader = document.createElement('th');
-    titleHeader.textContent = '書籍名';
-    const progressHeader = document.createElement('th');
-    progressHeader.textContent = '進捗';
-    headerRow.appendChild(titleHeader);
-    headerRow.appendChild(progressHeader);
-    table.appendChild(headerRow);
-
-    // 各書籍の行を作成
-    booksProgress.forEach((book, index) => {
-      const row = document.createElement('tr');
-
-      // 書籍名セル
-      const titleCell = document.createElement('td');
-      const titleLink = document.createElement('a');
-      titleLink.href = book.url;
-      titleLink.target = '_blank';
-      titleLink.textContent = `『${book.title}』`;
-      titleCell.appendChild(titleLink);
-
-      // 進捗セル
-      const progressCell = document.createElement('td');
-
-      // 進捗バーのコンテナ
-      const progressBarContainer = document.createElement('div');
-      progressBarContainer.style.width = '100%';
-      progressBarContainer.style.backgroundColor = '#e0e0e0';
-
-      // 進捗バー
-      const progressBar = document.createElement('div');
-      progressBar.id = `progressBarBook${index}`;
-      progressBar.style.width = '0%';
-      progressBar.style.backgroundColor = '#76c7c0';
-      progressBar.style.height = '20px';
-
-      // 進捗テキスト
-      const progressText = document.createElement('span');
-      progressText.id = `progressTextBook${index}`;
-      progressText.textContent = '0/0 = 0%';
-
-      progressBarContainer.appendChild(progressBar);
-      progressCell.appendChild(progressBarContainer);
-      progressCell.appendChild(progressText);
-
-      row.appendChild(titleCell);
-      row.appendChild(progressCell);
-      table.appendChild(row);
-    });
-
-    container.appendChild(table);
-  }
-
-  // 指定された書籍の進捗状況を更新する関数
-  function updateBookProgress(bookIndex) {
-    const book = booksProgress[bookIndex];
-    const percentage = ((book.currentPage / book.totalPages) * 100).toFixed(2);
-
-    // 進捗バーの更新
-    const progressBar = document.getElementById(`progressBarBook${bookIndex}`);
-    progressBar.style.width = percentage + '%';
-
-    // 進捗テキストの更新
-    const progressText = document.getElementById(`progressTextBook${bookIndex}`);
-    progressText.textContent = `${book.currentPage}/${book.totalPages} = ${percentage}%`;
-  }
-
-  // すべての書籍の進捗状況を更新する関数
-  function updateAllProgress() {
-    booksProgress.forEach((book, index) => {
-      updateBookProgress(index);
+      const percentage = ((currentPage / totalPages) * 100).toFixed(2);
+      cell.textContent = `${percentage}%`;
     });
   }
 
@@ -163,10 +105,7 @@
       elapsedDaysElementId: 'elapsedDays'
     });
 
-    // 書籍進捗テーブルの作成
-    createBooksProgressTable();
-
-    // すべての書籍の進捗状況の更新
-    updateAllProgress();
+    // 進捗率の計算と表示
+    calculateProgressRates();
   };
 </script>
