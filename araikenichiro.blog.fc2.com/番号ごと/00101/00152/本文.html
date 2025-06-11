@@ -36,7 +36,6 @@
     <th>現在ページ</th>
     <th>全体ページ</th>
     <th>進捗率</th>
-    <th>進捗バー</th>
   </tr>
   <tr>
     <td>
@@ -44,7 +43,6 @@
     </td>
     <td class="current-page">190</td>
     <td class="total-pages">607</td>
-    <td class="progress-rate"></td>
     <td class="progress-bar-container">
       <div class="progress-bar">
         <div class="progress-fill"></div>
@@ -58,7 +56,6 @@
     </td>
     <td class="current-page">1</td>
     <td class="total-pages">431</td>
-    <td class="progress-rate"></td>
     <td class="progress-bar-container">
       <div class="progress-bar">
         <div class="progress-fill"></div>
@@ -144,23 +141,19 @@
 <script>
   // 進捗率を計算して表示する関数
   function calculateProgressRates() {
-    const progressCells = document.querySelectorAll('.progress-rate');
+    const progressBarContainers = document.querySelectorAll('.progress-bar-container');
 
-    progressCells.forEach((cell) => {
-      const row = cell.parentElement;
+    progressBarContainers.forEach((container) => {
+      const row = container.parentElement;
       const currentPageCell = row.querySelector('.current-page');
       const totalPagesCell = row.querySelector('.total-pages');
-      const progressBarContainer = row.querySelector('.progress-bar-container');
-      const progressFill = progressBarContainer.querySelector('.progress-fill');
-      const progressText = progressBarContainer.querySelector('.progress-text');
+      const progressFill = container.querySelector('.progress-fill');
+      const progressText = container.querySelector('.progress-text');
 
       const currentPage = parseInt(currentPageCell.textContent);
       const totalPages = parseInt(totalPagesCell.textContent);
 
       const percentage = ((currentPage / totalPages) * 100).toFixed(2);
-
-      // 進捗率のテキスト表示
-      cell.textContent = `${percentage}%`;
 
       // プログレスバーの更新
       progressFill.style.width = `${percentage}%`;
