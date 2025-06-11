@@ -814,26 +814,6 @@ table th:nth-child(3) {
     width: auto;
 }
 
-/* カスタマイズオプションテーブルのスタイル */
-table td:first-child,
-table th:first-child {
-    width: auto;
-    min-width: 20%;
-}
-
-table td:nth-child(2),
-table th:nth-child(2) {
-    width: auto;
-    min-width: 60%;
-}
-
-table td:nth-child(3),
-table th:nth-child(3) {
-    width: auto;
-    min-width: 20%;
-    text-align: right;
-}
-
 /* 図表のキャプション */
 .figure-caption {
     text-align: center;
@@ -1053,7 +1033,7 @@ table th:nth-child(3) {
     color: #333;
 }
 
-/* 本文のテーブルスタイル - 本文から追加 */
+/* テーブルスタイル */
 table {
     border-collapse: collapse;
     width: 100%;
