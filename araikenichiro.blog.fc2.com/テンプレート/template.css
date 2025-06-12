@@ -235,8 +235,6 @@ h5 {
     margin: 0;
     padding: 0;
 }
-#header h1 {
-}
 /* 見出し */
 
 /* スペース調整 */
@@ -383,9 +381,6 @@ h5 {
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 15px;
-}
-
-#center {
 }
 
 #footer {
@@ -742,13 +737,13 @@ table td {
     min-width: 0;
     box-sizing: border-box;
     border: 1px solid #ccc;
+    text-align: center;
 }
 
 table th {
     background-color: #86ae46;
     color: white;
     font-weight: bold;
-    text-align: left;
     padding: 12px 15px;
     border: 2px solid #6b8c37;
     position: sticky;
@@ -805,33 +800,6 @@ table th {
 table th:first-child {
     width: auto;
     min-width: 30%;
-}
-
-/* 3列の比較表のスタイル */
-table th:nth-child(2),
-table th:nth-child(3) {
-    text-align: center;
-    width: auto;
-}
-
-/* カスタマイズオプションテーブルのスタイル */
-table td:first-child,
-table th:first-child {
-    width: auto;
-    min-width: 20%;
-}
-
-table td:nth-child(2),
-table th:nth-child(2) {
-    width: auto;
-    min-width: 60%;
-}
-
-table td:nth-child(3),
-table th:nth-child(3) {
-    width: auto;
-    min-width: 20%;
-    text-align: right;
 }
 
 /* 図表のキャプション */
@@ -1014,4 +982,43 @@ table th:nth-child(3) {
     border-bottom: dotted 1px #dddddd;
     padding: 8px 0;
     margin: 8px 0;
+}
+
+/* 進捗バー関連のスタイル */
+.progress-bar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    border: 0px;
+}
+
+.progress-bar {
+    width: 150px;
+    height: 18px;
+    background-color: #e0e0e0;
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(45deg, #4caf50, #81c784);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.progress-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
 }
