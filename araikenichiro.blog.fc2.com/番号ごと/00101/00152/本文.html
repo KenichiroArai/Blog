@@ -3,15 +3,18 @@
   前回から『Web標準の教科書』を読み進めている。ただ、1日当たりのページ数が少ないのでまだ30%である。
 </p>
 <p>
-  今回から『Rect.js&Next.js超入門』を読み始めた。今日は準備段階で数ページ読んだのみ。
+  今回から『React.js&Next.js超入門』を読み始めた。今日は準備段階で数ページ読んだのみ。
+</p>
+<p>
+  それとこの記事の進捗率の計算を自動的に行う処理を追加した。それに伴い、テンプレートのhtmlとCSSを修正した。
 </p>
 
 <h2>今後の学習の進め方について</h2>
 <p>
-  このままだと『Web標準の教科書』が読み終わるのは1か月後になるのと読みが中心となるため、実践も同時に進めたいとの判断から『Rect.js&Next.js超入門』の学習も始めた。Rect.jsを学ぶことがこのシリーズの始める目的だったので本来の目的に合った学習になる。
+  このままだと『Web標準の教科書』が読み終わるのは1か月後になる。読みが中心となるため、実践も同時に進めたいとの判断から『React.js&Next.js超入門』の学習も始めた。React.jsを学ぶことがこのシリーズの始める目的だったので、本来の目的に合った学習になる。
 </p>
 <p>
-  ただ、その分、『Web標準の教科書』の1日当たりのページ数も少なくするため、さらに遅れることになる。今の予定としては、1日5ページを目安にしているため、約2.5か月後に読み終わることになるが、フロント関連の紙の書籍はこれともう1冊だけで順調に読了出来ているため、急がずこの方針で進めていく。
+  ただ、その分、『Web標準の教科書』の1日当たりのページ数も少なくするため、さらに遅れることになる。今の予定としては、1日5ページを目安にしているため、約2.5か月後に読み終わることになる。フロント関連の紙の書籍はこれともう1冊だけで順調に読了出来ているため、急がずこの方針で進めていく。
 </p>
 
 <h2>現在の進捗</h2>
@@ -86,19 +89,28 @@
 <script>
   // ページ読み込み時に実行
   window.onload = () => {
-    const startDateElement = document.getElementById('startDate');
-    const currentDateElement = document.getElementById('currentDate');
-    const elapsedDaysElement = document.getElementById('elapsedDays');
+    try {
+      const startDateElement = document.getElementById('startDate');
+      const currentDateElement = document.getElementById('currentDate');
+      const elapsedDaysElement = document.getElementById('elapsedDays');
 
-    updateDaysResult({
-      startDate: startDateElement.textContent,
-      targetDate: currentDateElement.textContent,
-      startDateElementId: 'startDate',
-      currentDateElementId: 'currentDate',
-      elapsedDaysElementId: 'elapsedDays'
-    });
+      if (!startDateElement || !currentDateElement || !elapsedDaysElement) {
+        throw new Error('必要な要素が見つかりません');
+      }
 
-    // 進捗率の計算と表示
-    calculateProgressRates();
+      updateDaysResult({
+        startDate: startDateElement.textContent,
+        targetDate: currentDateElement.textContent,
+        startDateElementId: 'startDate',
+        currentDateElementId: 'currentDate',
+        elapsedDaysElementId: 'elapsedDays'
+      });
+
+      // 進捗率の計算と表示
+      calculateProgressRates();
+    } catch (error) {
+      console.error('エラーが発生しました:', error);
+      // エラーメッセージを表示する要素があれば、そこに表示することも可能
+    }
   };
 </script>
