@@ -54,7 +54,10 @@
 
 <h2>参考：長考した思考の中身</h2>
 
-<pre>
+<div>
+    <button onclick="this.nextElementSibling.style.display='block'; this.style.display='none';">クリックして展開</button>
+    <pre style="display:none;">
+
     ユーザーは、verifyKmgMsgExceptionメソッドを使用して実装し直すことを求めています。先ほど私が直接Assertionsを使用するように変更しましたが、ユーザーは元のverifyKmgMsgExceptionメソッドを使用したいようです。
     問題は、verifyKmgMsgExceptionメソッドが例外の原因（cause）を期待していることでした。AbstractKmgTestのverifyKmgMsgExceptionメソッドを再度確認すると：
     このメソッドは、actualException.getCause()が期待されるクラスのインスタンスかどうかをチェックしています。
@@ -119,4 +122,7 @@
     assertInstanceOfの制限を考えると、直接的なnull値の処理は複雑になります。代替アプローチを検討する必要があります。
     元のメソッドに戻り、causeのnullを明示的に検証することで、より明確な例外処理が可能になります。クラス型パラメータへのnull設定には、型キャストを活用できます。
     実際のテストケースで確認してみます。
+
+    折り畳み内容。
 </pre>
+</div>
