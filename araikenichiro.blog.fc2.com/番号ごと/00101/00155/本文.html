@@ -1,0 +1,141 @@
+<h2>学習のまとめ</h2>
+<p>
+  『React.js&Next.js超入門』を試す開発環境を準備した。Node.jsを学ぶ際にも利用したが、CursorでDev Containerを利用した。Docker内で開発できるようにした。設定は下記の画像の通りだ。
+</p>
+<p>
+  <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_001.png" target="_blank">
+    <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_001.png" alt="00155_001.png" width="600"
+      border="0">
+  </a>
+</p>
+<p>
+  今回は、imageを"mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm"にした。Dev
+  Containerで用意されているテンプレートである。Debianを使うのは初めてのレベルかも。開発するときは、Ubuntuを選択することが多かったので。さくらVPSはCentOSなんだけど、もともとRed
+  Hat系のディストリビューションが多かった。CentOSは、6.10まで使っていて、Ubuntuはそれ以降使っているという感じだ。
+</p>
+
+<h2>Gitの導入</h2>
+<p>
+  ちなみに、Gitを導入しているが、GitHub、GitLabなどのホスティングサービスはもちろんリモートにすら繋がず利用している。GitとGitHubを一緒に学び、その違いが分からない非エンジニアの方も多いが、単なる履歴管理、バックアップでこれで十分である。つまり、プル・プッシュは使わない、コミットと履歴管理や過去に戻すなどだけだ。ちなみに、同じローカル上でリモートリポジトリを作成できるし、外付けSDDやNASなどにリモートリポジトリを置けば、インターネットネットに繋がず、LAN内でも利用できる。僕は、仕事ではGitではないが、SVNはローカル内にSVNを作成し、ローカル内でチェックアウトして利用することもある。SVNなら
+  <a href="https://tortoisesvn.net/" target="_blank">
+    TortoiseSVN
+  </a>
+  、Gitなら
+  <a href="https://tortoisegit.org/" target="_blank">
+    TortoiseGit
+  </a>
+  を使うと簡単である。
+</p>
+<p>
+  リモートリポジトリを作成しなくローカルのみでも当然Gitの概ねの機能を使える。例えば、ブランチとかも当然使えるので、下記の画像の通り作業の切り替えも当然問題ない。
+</p>
+<p>
+  <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_002.png" target="_blank">
+    <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_002.png" alt="00155_002.png" width="600"
+      border="0"></a>
+</p>
+<p>
+  ちなみに、CursorならターミナルでCtrl+Kを使えば下記の画像の通り楽なのでコマンドベースでも使いやすい。
+</p>
+<p>
+  <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_003.png" target="_blank"><img
+      src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_003.png" alt="00155_003.png" width="600"
+      border="0"></a>
+</p>
+<h2>現在の進捗</h2>
+<h3>学習期間</h3>
+<table>
+  <tr>
+    <th>開始日</th>
+    <th>現在日</th>
+    <th>経過日数</th>
+  </tr>
+  <tr>
+    <td id="startDate">2025/03/30</td>
+    <td id="currentDate">2025/06/11</td>
+    <td id="elapsedDays"></td>
+  </tr>
+</table>
+
+<h3>書籍の進捗状況</h3>
+<table>
+  <tr>
+    <th>書籍名</th>
+    <th>現在ページ</th>
+    <th>全体ページ</th>
+    <th>進捗率</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+    </td>
+    <td class="current-page">206</td>
+    <td class="total-pages">607</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js&Next.js超入門』</a>
+    </td>
+    <td class="current-page">24</td>
+    <td class="total-pages">431</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+  </tr>
+</table>
+
+<h2>リンク</h2>
+<ol>
+  <li>
+    <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00155"
+      target="_blank">本記事のGitHubでの管理</a>
+  </li>
+  <li>
+    前回の記事：<a href="https://araikenichiro.blog.fc2.com/blog-entry-152.html"
+      target="_blank">フロントエンド（TS、JS）#0064：React.js&Next.js超入門#001</a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js＆Next.js超入門 第2版 Kindle版』</a>
+  </li>
+</ol>
+
+<script>
+  // ページ読み込み時に実行
+  window.onload = () => {
+    try {
+      const startDateElement = document.getElementById('startDate');
+      const currentDateElement = document.getElementById('currentDate');
+      const elapsedDaysElement = document.getElementById('elapsedDays');
+
+      if (!startDateElement || !currentDateElement || !elapsedDaysElement) {
+        throw new Error('必要な要素が見つかりません');
+      }
+
+      updateDaysResult({
+        startDate: startDateElement.textContent,
+        targetDate: currentDateElement.textContent,
+        startDateElementId: 'startDate',
+        currentDateElementId: 'currentDate',
+        elapsedDaysElementId: 'elapsedDays'
+      });
+
+      // 進捗率の計算と表示
+      calculateProgressRates();
+    } catch (error) {
+      console.error('エラーが発生しました:', error);
+      // エラーメッセージを表示する要素があれば、そこに表示することも可能
+    }
+  };
+</script>
