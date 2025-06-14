@@ -1,6 +1,6 @@
 <h2>学習のまとめ</h2>
 <p>
-  『React.js&Next.js超入門』を試す開発環境を準備した。Node.jsを学ぶ際にも利用したが、CursorでDev Containerを利用した。Docker内で開発できるようにした。設定は下記の画像の通りである。
+  『React.js&Next.js超入門』を試す開発環境を準備し、Node.jsを学ぶ際にも利用したがCursorでDev Containerを利用してDocker内で開発できるようにした。設定は下記の画像の通りである。
 </p>
 <p>
   <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_001.png" target="_blank">
@@ -9,14 +9,17 @@
   </a>
 </p>
 <p>
-  今回は、imageを"mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm"にした。Dev
-  Containerで用意されているテンプレートである。Debianを本格的に使用するのは初めての経験である。開発するときは、Ubuntuを選択することが多かった。さくらVPSはCentOSであるが、もともとRed
-  Hat系のディストリビューションが多かった。CentOSは、6.10まで使っていて、Ubuntuはそれ以降使っているという状況である。
+  今回は、imageをDev
+  Containerのテンプレートにある"mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm"にした。Debianを本格的に使用するのは初めての経験で、開発するときはUbuntuを選択することが多かった。さくらVPSはCentOSであるが、もともとRed
+  Hat系のディストリビューションが多く、CentOSは6.10まで使っていて、Ubuntuはそれ以降使っている。
 </p>
 
 <h2>Gitの導入</h2>
 <p>
-  ちなみに、Gitを導入しているが、GitHub、GitLabなどのホスティングサービスはもちろんリモートにすら繋がず利用している。GitとGitHubを一緒に学び、その違いが分からない非エンジニアの方も多いが、単なる履歴管理、バックアップでこれで十分である。つまり、プル・プッシュは使わない、コミットと履歴管理や過去に戻すなどだけである。ちなみに、同じローカル上でリモートリポジトリを作成できるし、外付けSDDやNASなどにリモートリポジトリを置けば、インターネットネットに繋がず、LAN内でも利用できる。筆者は、仕事ではGitではないが、SVNはローカル内にSVNを作成し、ローカル内でチェックアウトして利用することもある。SVNなら
+  ちなみに、Gitを導入しているが、GitHub、GitLabなどのホスティングサービスはもちろんリモートすら作成せず利用している。GitとGitHubを一緒に学び、その違いが分からない非エンジニアの方も多いが、単なる履歴管理、バックアップであればこれで十分である。つまり、プル・プッシュは使わず、コミットと履歴管理や過去に戻すなどの操作だけである。
+</p>
+<p>
+  他にも、同じローカル上でリモートリポジトリを作成することもできるし、外付けSDDやNASなどにリモートリポジトリを置けばインターネットネットに繋がず、LAN内でローカル以外にデータを保存できる。僕は仕事ではGitではないが、SVNを使い、自分のPCのローカル内にSVNを作成し、PCのローカル内でチェックアウトして利用していた。自分のメモなどはローカルのSVNを使って履歴管理しているという感じだ。SVNやGitを使っていれば、利用できるのでセキュリティ的にも問題ない（メモを含むすべてを共有フォルダに置かないとダメならできないが）。SVNなら
   <a href="https://tortoisesvn.net/" target="_blank">
     TortoiseSVN
   </a>
@@ -27,7 +30,7 @@
   を使うと簡単である。
 </p>
 <p>
-  リモートリポジトリを作成しなくローカルのみでも当然Gitの概ねの機能を使える。例えば、ブランチとかも当然使えるので、下記の画像の通り作業の切り替えも当然問題ない。
+  リモートリポジトリを作成しなくてローカルのみでも当然Gitの概ねの機能を使え、例えば、ブランチとかも当然使えるので、下記の画像の通り作業の切り替えも当然問題ない。
 </p>
 <p>
   <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00155_002.png" target="_blank">
@@ -52,7 +55,7 @@
   </tr>
   <tr>
     <td id="startDate">2025/03/30</td>
-    <td id="currentDate">2025/06/11</td>
+    <td id="currentDate">2025/06/14</td>
     <td id="elapsedDays"></td>
   </tr>
 </table>
