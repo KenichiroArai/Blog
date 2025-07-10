@@ -1,6 +1,7 @@
 // グローバル変数
 let recordsData = [];
 let dataTable;
+let suggestedLinesChart, acceptedLinesChart, tabsAcceptedChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadExcelFile();
         initializeDataTable();
         updateLatestRecord();
+        createCharts();
     } catch (error) {
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
     }
@@ -65,6 +67,110 @@ function initializeDataTable() {
     });
 }
 
+// グラフの作成
+function createCharts() {
+    const labels = recordsData.map(record => record.記録日);
+    const suggestedLinesData = recordsData.map(record => record['Suggested Lines: X lines']);
+    const acceptedLinesData = recordsData.map(record => record['Accepted Lines: X Lines']);
+    const tabsAcceptedData = recordsData.map(record => record['Tabs Accpeted: X tabs']);
+
+    // Suggested Lines グラフ
+    const suggestedLinesCtx = document.getElementById('suggested-lines-chart').getContext('2d');
+    suggestedLinesChart = new Chart(suggestedLinesCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Suggested Lines',
+                data: suggestedLinesData,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Suggested Lines 推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Accepted Lines グラフ
+    const acceptedLinesCtx = document.getElementById('accepted-lines-chart').getContext('2d');
+    acceptedLinesChart = new Chart(acceptedLinesCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Accepted Lines',
+                data: acceptedLinesData,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Accepted Lines 推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Tabs Accepted グラフ
+    const tabsAcceptedCtx = document.getElementById('tabs-accepted-chart').getContext('2d');
+    tabsAcceptedChart = new Chart(tabsAcceptedCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Tabs Accepted',
+                data: tabsAcceptedData,
+                borderColor: '#ffc107',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Tabs Accepted 推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
 // 最新の記録を表示
 function updateLatestRecord() {
     const latest = recordsData[recordsData.length - 1];
@@ -92,14 +198,6 @@ function updateLatestRecord() {
     // 表示
     document.getElementById('latest-usage-info').textContent = usageInfo;
 
-    // 次の日の目安の計算
-    const todayDays = days + 1;
-    const todayRemainingDays = totalDays - todayDays;
-
-    // 次の日の目安の表示
-    const remainingDaysElem = document.getElementById('today-remaining-days');
-    if (remainingDaysElem) remainingDaysElem.textContent = `${todayRemainingDays}日`;
-
     // 使用統計の表示
     const suggestedLinesElem = document.getElementById('suggested-lines-value');
     if (suggestedLinesElem) suggestedLinesElem.textContent = suggestedLines.toLocaleString();
@@ -107,14 +205,6 @@ function updateLatestRecord() {
     if (acceptedLinesElem) acceptedLinesElem.textContent = acceptedLines.toLocaleString();
     const tabsAcceptedElem = document.getElementById('tabs-accepted-value');
     if (tabsAcceptedElem) tabsAcceptedElem.textContent = String(tabsAccepted);
-
-    // 次の日の目安の表示
-    const todaySuggestedLinesElem = document.getElementById('today-suggested-lines');
-    if (todaySuggestedLinesElem) todaySuggestedLinesElem.textContent = suggestedLines.toLocaleString();
-    const todayAcceptedLinesElem = document.getElementById('today-accepted-lines');
-    if (todayAcceptedLinesElem) todayAcceptedLinesElem.textContent = acceptedLines.toLocaleString();
-    const todayTabsAcceptedElem = document.getElementById('today-tabs-accepted');
-    if (todayTabsAcceptedElem) todayTabsAcceptedElem.textContent = String(tabsAccepted);
 }
 
 // プログレスバーの更新

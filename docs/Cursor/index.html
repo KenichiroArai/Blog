@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Chart.js CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="style.css" rel="stylesheet">
 </head>
@@ -76,42 +78,25 @@
                         </div>
                     </div>
                 </div>
-                <!-- 次の日の目安 -->
+                <!-- グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h2 class="card-title text-center mb-3">次の日の目安</h2>
+                            <h2 class="card-title text-center mb-3">使用状況グラフ</h2>
                             <div class="row g-3">
-                                <div class="col-6">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-muted mb-2">Suggested Lines</h5>
-                                            <p id="today-suggested-lines" class="h3 mb-0"></p>
-                                        </div>
+                                <div class="col-12">
+                                    <div class="chart-container">
+                                        <canvas id="suggested-lines-chart"></canvas>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-muted mb-2">残り日数</h5>
-                                            <p id="today-remaining-days" class="h3 mb-0"></p>
-                                        </div>
+                                <div class="col-12">
+                                    <div class="chart-container">
+                                        <canvas id="accepted-lines-chart"></canvas>
                                     </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-muted mb-2">Accepted Lines</h5>
-                                            <p id="today-accepted-lines" class="h3 mb-0"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="card h-100">
-                                        <div class="card-body text-center">
-                                            <h5 class="text-muted mb-2">Tabs Accepted</h5>
-                                            <p id="today-tabs-accepted" class="h3 mb-0"></p>
-                                        </div>
+                                <div class="col-12">
+                                    <div class="chart-container">
+                                        <canvas id="tabs-accepted-chart"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -152,6 +137,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     <script src="index.js"></script>
     <div class="container mt-4">
         <a href="../" class="btn btn-secondary">← トップページに戻る</a>
