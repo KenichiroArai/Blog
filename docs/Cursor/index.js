@@ -37,7 +37,7 @@ async function loadExcelFile() {
             'Fast requests will refresh in X day': parseInt(record['Fast requests will refresh in X day']) || 0,
             'Suggested Lines: X lines': parseInt(record['Suggested Lines: X lines']) || 0,
             'Accepted Lines: X Lines': parseInt(record['Accepted Lines: X Lines']) || 0,
-            'Tabs Accpeted: X tabs': parseInt(record['Tabs Accpeted: X tabs']) || 0
+            'Tabs Accepted: X tabs': parseInt(record['Tabs Accepted: X tabs']) || 0
         }));
     } catch (error) {
         throw new Error('Excelファイルの読み込みに失敗しました');
@@ -57,7 +57,7 @@ function initializeDataTable() {
             { data: 'Fast requests will refresh in X day' },
             { data: 'Suggested Lines: X lines' },
             { data: 'Accepted Lines: X Lines' },
-            { data: 'Tabs Accpeted: X tabs' }
+            { data: 'Tabs Accepted: X tabs' }
         ],
         order: [[0, 'desc']],
         language: {
@@ -72,7 +72,7 @@ function createCharts() {
     const labels = recordsData.map(record => record.記録日);
     const suggestedLinesData = recordsData.map(record => record['Suggested Lines: X lines']);
     const acceptedLinesData = recordsData.map(record => record['Accepted Lines: X Lines']);
-    const tabsAcceptedData = recordsData.map(record => record['Tabs Accpeted: X tabs']);
+    const tabsAcceptedData = recordsData.map(record => record['Tabs Accepted: X tabs']);
 
     // Suggested Lines グラフ
     const suggestedLinesCtx = document.getElementById('suggested-lines-chart').getContext('2d');
@@ -180,7 +180,7 @@ function updateLatestRecord() {
     const fastRequestsDays = latest['Fast requests will refresh in X day'];
     const suggestedLines = latest['Suggested Lines: X lines'];
     const acceptedLines = latest['Accepted Lines: X Lines'];
-    const tabsAccepted = latest['Tabs Accpeted: X tabs'];
+    const tabsAccepted = latest['Tabs Accepted: X tabs'];
 
     // 固定値
     const totalDays = 30;
