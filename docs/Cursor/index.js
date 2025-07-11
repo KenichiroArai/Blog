@@ -1,6 +1,7 @@
 // グローバル変数
 let recordsData = [];
 let dataTable;
+let suggestedLinesChart, acceptedLinesChart, tabsAcceptedChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadExcelFile();
         initializeDataTable();
         updateLatestRecord();
+        createCharts();
     } catch (error) {
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
     }
@@ -32,9 +34,10 @@ async function loadExcelFile() {
             ...record,
             記録日: formatDate(record.記録日),
             日数: parseInt(record.日数) || 0,
-            'Premium models': parseInt(record['Premium models']) || 0,
-            'gpt-4o-mini or cursor-small': parseInt(record['gpt-4o-mini or cursor-small']) || 0,
-            'Fast requests will refresh in X day': parseInt(record['Fast requests will refresh in X day']) || 0
+            'Fast requests will refresh in X day': parseInt(record['Fast requests will refresh in X day']) || 0,
+            'Suggested Lines: X lines': parseInt(record['Suggested Lines: X lines']) || 0,
+            'Accepted Lines: X Lines': parseInt(record['Accepted Lines: X Lines']) || 0,
+            'Tabs Accepted: X tabs': parseInt(record['Tabs Accepted: X tabs']) || 0
         }));
     } catch (error) {
         throw new Error('Excelファイルの読み込みに失敗しました');
@@ -51,9 +54,10 @@ function initializeDataTable() {
             { data: '番号' },
             { data: '記録日' },
             { data: '日数' },
-            { data: 'Premium models' },
-            { data: 'gpt-4o-mini or cursor-small' },
-            { data: 'Fast requests will refresh in X day' }
+            { data: 'Fast requests will refresh in X day' },
+            { data: 'Suggested Lines: X lines' },
+            { data: 'Accepted Lines: X Lines' },
+            { data: 'Tabs Accepted: X tabs' }
         ],
         order: [[0, 'desc']],
         language: {
@@ -63,64 +67,144 @@ function initializeDataTable() {
     });
 }
 
+// グラフの作成
+function createCharts() {
+    const labels = recordsData.map(record => record.記録日);
+    const suggestedLinesData = recordsData.map(record => record['Suggested Lines: X lines']);
+    const acceptedLinesData = recordsData.map(record => record['Accepted Lines: X Lines']);
+    const tabsAcceptedData = recordsData.map(record => record['Tabs Accepted: X tabs']);
+
+    // Suggested Lines グラフ
+    const suggestedLinesCtx = document.getElementById('suggested-lines-chart').getContext('2d');
+    suggestedLinesChart = new Chart(suggestedLinesCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Suggested Lines',
+                data: suggestedLinesData,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Suggested Lines 推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Accepted Lines グラフ
+    const acceptedLinesCtx = document.getElementById('accepted-lines-chart').getContext('2d');
+    acceptedLinesChart = new Chart(acceptedLinesCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Accepted Lines',
+                data: acceptedLinesData,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Accepted Lines 推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Tabs Accepted グラフ
+    const tabsAcceptedCtx = document.getElementById('tabs-accepted-chart').getContext('2d');
+    tabsAcceptedChart = new Chart(tabsAcceptedCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Tabs Accepted',
+                data: tabsAcceptedData,
+                borderColor: '#ffc107',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Tabs Accepted 推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
 // 最新の記録を表示
 function updateLatestRecord() {
     const latest = recordsData[recordsData.length - 1];
     if (!latest) return;
 
     const days = latest.日数;
-    const premiumModels = latest['Premium models'];
-    const miniModels = latest['gpt-4o-mini or cursor-small'];
     const fastRequestsDays = latest['Fast requests will refresh in X day'];
+    const suggestedLines = latest['Suggested Lines: X lines'];
+    const acceptedLines = latest['Accepted Lines: X Lines'];
+    const tabsAccepted = latest['Tabs Accepted: X tabs'];
 
     // 固定値
     const totalDays = 30;
-    const totalPremiumModels = 500;
 
     // パーセンテージ計算
     const daysPercentage = (days / totalDays * 100).toFixed(2);
-    const premiumPercentage = (premiumModels / totalPremiumModels * 100).toFixed(2);
     const remainingDays = totalDays - days;
-    const remainingPremium = totalPremiumModels - premiumModels;
 
     // プログレスバーの更新
     updateProgressBar('days-progress', daysPercentage, `${days}日 / ${totalDays}日`);
-    updateProgressBar('premium-progress', premiumPercentage, `${premiumModels} / ${totalPremiumModels}`);
 
     // 使用情報のテキスト作成
-    const usageInfo = `gpt-4o-mini or cursor-small: ${miniModels} / No Limit\nFast requests will refresh in ${fastRequestsDays} day`;
+    const usageInfo = `Suggested Lines: ${suggestedLines.toLocaleString()}\nAccepted Lines: ${acceptedLines.toLocaleString()}\nTabs Accepted: ${tabsAccepted}\nFast requests will refresh in ${fastRequestsDays} day`;
 
     // 表示
     document.getElementById('latest-usage-info').textContent = usageInfo;
 
-    // 次の日の目安の計算
-    const todayDays = days + 1;
-    const todayPremiumTarget = Math.ceil((todayDays / totalDays) * totalPremiumModels);
-    const todayRemainingDays = totalDays - todayDays;
-    // 「残りPremium」は最新のPremium modelsから計算
-    const todayRemainingPremium = totalPremiumModels - premiumModels;
-    const todayDailyAvailable = todayRemainingDays > 0 ? Math.floor(todayRemainingPremium / todayRemainingDays) : 0;
-
-    // 差分の計算
-    const premiumTargetDiff = todayPremiumTarget - premiumModels;
-    const diffText = premiumTargetDiff > 0
-        ? `+${premiumTargetDiff}回（目安より少ない）`
-        : `${premiumTargetDiff}回（目安より多い）`;
-
-    // 次の日の目安の表示
-    const premiumTargetElem = document.getElementById('today-premium-target');
-    if (premiumTargetElem) premiumTargetElem.textContent = String(todayPremiumTarget);
-    const premiumTargetDiffElem = document.getElementById('premium-target-diff');
-    if (premiumTargetDiffElem) {
-        premiumTargetDiffElem.textContent = diffText;
-        premiumTargetDiffElem.style.color = premiumTargetDiff > 0 ? '#dc3545' : '#28a745';
-    }
-    const remainingDaysElem = document.getElementById('today-remaining-days');
-    if (remainingDaysElem) remainingDaysElem.textContent = `${todayRemainingDays}日`;
-    const remainingPremiumElem = document.getElementById('today-remaining-premium');
-    if (remainingPremiumElem) remainingPremiumElem.textContent = String(todayRemainingPremium);
-    const dailyAvailableElem = document.getElementById('today-daily-available');
-    if (dailyAvailableElem) dailyAvailableElem.textContent = `${todayDailyAvailable}回`;
+    // 使用統計の表示
+    const suggestedLinesElem = document.getElementById('suggested-lines-value');
+    if (suggestedLinesElem) suggestedLinesElem.textContent = suggestedLines.toLocaleString();
+    const acceptedLinesElem = document.getElementById('accepted-lines-value');
+    if (acceptedLinesElem) acceptedLinesElem.textContent = acceptedLines.toLocaleString();
+    const tabsAcceptedElem = document.getElementById('tabs-accepted-value');
+    if (tabsAcceptedElem) tabsAcceptedElem.textContent = String(tabsAccepted);
 }
 
 // プログレスバーの更新
