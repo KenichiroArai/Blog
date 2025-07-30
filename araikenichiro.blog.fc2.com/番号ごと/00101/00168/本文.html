@@ -1,0 +1,111 @@
+<h2>学習のまとめ</h2>
+<p>
+　前回から期間が空いているが、本来の予定よりも進んでいない。そのため、特段記載することはないが、記録として残しておく。
+</p>
+<p>
+  『React.js&Next.js超入門』はどんどん進めていく予定であるが、『Web標準の教科書』については他の学習もあるため、読み終わるのに時間がかかりそうだ。今は2日ごとに10ページぐらいを想定しているため、再来月まで掛かるだろう。
+</p>
+<h2>現在の進捗</h2>
+<h3>学習期間</h3>
+<table>
+  <tr>
+    <th>開始日</th>
+    <th>現在日</th>
+    <th>経過日数</th>
+  </tr>
+  <tr>
+    <td id="startDate">2025/03/30</td>
+    <td id="currentDate">2025/07/30</td>
+    <td id="elapsedDays"></td>
+  </tr>
+</table>
+
+<h3>書籍の進捗状況</h3>
+<table>
+  <tr>
+    <th>書籍名</th>
+    <th>現在ページ</th>
+    <th>全体ページ</th>
+    <th>進捗率</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+    </td>
+    <td class="current-page">405</td>
+    <td class="total-pages">607</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js&Next.js超入門』</a>
+    </td>
+    <td class="current-page">257</td>
+    <td class="total-pages">431</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+  </tr>
+</table>
+
+<h2>リンク</h2>
+<ol>
+  <li>
+    <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00168"
+      target="_blank">本記事のGitHubでの管理</a>
+  </li>
+  <li>
+    前回の記事：<a href="https://araikenichiro.blog.fc2.com/blog-entry-155.html"
+      target="_blank">フロントエンド（TS、JS）#0065：React.js&Next.js超入門超入門#002</a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/9nODCGv" target="_blank">『Web標準の教科書』</a>
+  </li>
+  <li>
+    <a href="https://amzn.asia/d/4lEpBGG" target="_blank">『React.js＆Next.js超入門 第2版 Kindle版』</a>
+  </li>
+</ol>
+
+<script>
+  // ページ読み込み時に実行
+  window.onload = () => {
+    try {
+      const startDateElement = document.getElementById('startDate');
+      const currentDateElement = document.getElementById('currentDate');
+      const elapsedDaysElement = document.getElementById('elapsedDays');
+
+      if (!startDateElement || !currentDateElement || !elapsedDaysElement) {
+        throw new Error('必要な要素が見つかりません');
+      }
+
+      updateDaysResult({
+        startDate: startDateElement.textContent,
+        targetDate: currentDateElement.textContent,
+        startDateElementId: 'startDate',
+        currentDateElementId: 'currentDate',
+        elapsedDaysElementId: 'elapsedDays'
+      });
+
+      // 進捗率の計算と表示
+      calculateProgressRates();
+    } catch (error) {
+      console.error('エラーが発生しました:', error);
+      const errorElement = document.createElement('div');
+      errorElement.style.color = 'red';
+      errorElement.style.padding = '10px';
+      errorElement.style.margin = '10px 0';
+      errorElement.style.border = '1px solid red';
+      errorElement.style.borderRadius = '5px';
+      errorElement.textContent = `エラーが発生しました: ${error.message}`;
+      document.body.insertBefore(errorElement, document.body.firstChild);
+    }
+  };
+</script>
