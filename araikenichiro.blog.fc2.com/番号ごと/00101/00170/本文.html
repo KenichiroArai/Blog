@@ -2,12 +2,12 @@
 
 <h3>読書の内容について</h3>
 <p>
-  学習はある程度区分けして進めている。例えば、読書、フロント学習、ソフトウェア開発、組み込み系である。その一つがこの読書である。読書にも厳密には自分の中でいろいろと区別しているが、ここでは一緒にして学習内容をまとめようと思う。ちなみに、分け方としては、紙の主に積読解消と電子書籍だったり、運動しながら読む、手を動かしたり頭を使ったりなどに分かれている。それぞれを分けることによって、バランスよく進めている。
+  学習はある程度分類して進めている。例えば、読書、フロント学習、ソフトウェア開発、組み込み系である。その一つがこの読書である。読書にも厳密には自分の中でいろいろと区別しているが、ここでは一緒にして学習内容をまとめようと思う。ちなみに、分け方としては、紙の主に積読解消と電子書籍だったり、運動しながら読む、手を動かしたり頭を使ったりなどに分かれている。それぞれを分けることによって、バランスよく進めている。
 </p>
 
 <h3>リレーショナルデータベース入門について</h3>
 <p>
-  前回からの進捗となるが、もともとは紙の本の積読解消と運動しながら用の読書だったが、代数、数論など頭を使う必要があると感じ、今はじっくりと進めている。前回に引き続き、特に記号などをまとめ、基礎を調べなおしている状況だ。今年ぐらいに読み終わればいいぐらいのスペースで進めている。ただ、深く学ぶにはもっと基礎的な部分を理化していないと効率が悪いのでさっと読み進めてしまおうかなと考え直しているところである。
+  前回からの進捗となるが、もともとは紙の本の積読解消と運動しながら用の読書だったが、代数、数論など頭を使う必要があると感じ、今はじっくりと進めている。前回に引き続き、特に記号などをまとめ、基礎を調べなおしている状況だ。今年ぐらいに読み終わればいいぐらいのスペースで進めている。ただ、深く学ぶにはもっと基礎的な部分を理解していないと効率が悪いのでさっと読み進めてしまおうかなと考え直しているところである。
 </p>
 
 <h3>システムテスト自動化について</h3>
@@ -29,7 +29,7 @@
   <tr>
     <td>
       <a href="https://amzn.asia/d/7AZhIZM" target="_blank">
-        リレーショナルデータベース入門: データモデル・SQL・管理システム・NoSQL
+        リレーショナルデータベース入門
       </a>
     </td>
     <td class="current-page">93</td>
@@ -40,9 +40,9 @@
       </div>
       <span class="progress-text"></span>
     </td>
-    <td id="startDate">2025/06/14</td>
-    <td id="currentDate">2025/08/03</td>
-    <td id="elapsedDays"></td>
+    <td class="start-date">2025/06/14</td>
+    <td class="current-date">2025/08/03</td>
+    <td class="elapsed-days"></td>
   </tr>
   <tr>
     <td>
@@ -58,9 +58,9 @@
       </div>
       <span class="progress-text"></span>
     </td>
-    <td id="startDate">2025/06/25</td>
-    <td id="currentDate">2025/08/03</td>
-    <td id="elapsedDays"></td>
+    <td class="start-date">2025/06/25</td>
+    <td class="current-date">2025/08/03</td>
+    <td class="elapsed-days"></td>
   </tr>
 </table>
 
@@ -92,21 +92,27 @@
   // ページ読み込み時に実行
   window.onload = () => {
     try {
-      const startDateElement = document.getElementById('startDate');
-      const currentDateElement = document.getElementById('currentDate');
-      const elapsedDaysElement = document.getElementById('elapsedDays');
+      const startDateElements = document.querySelectorAll('.start-date');
+      const currentDateElements = document.querySelectorAll('.current-date');
+      const elapsedDaysElements = document.querySelectorAll('.elapsed-days');
 
-      if (!startDateElement || !currentDateElement || !elapsedDaysElement) {
+      if (startDateElements.length === 0 || currentDateElements.length === 0 || elapsedDaysElements.length === 0) {
         throw new Error('必要な要素が見つかりません');
       }
 
-      updateDaysResult({
-        startDate: startDateElement.textContent,
-        targetDate: currentDateElement.textContent,
-        startDateElementId: 'startDate',
-        currentDateElementId: 'currentDate',
-        elapsedDaysElementId: 'elapsedDays'
-      });
+             startDateElements.forEach((startDateElement, index) => {
+         const currentDateElement = currentDateElements[index];
+         const elapsedDaysElement = elapsedDaysElements[index];
+
+         // 経過日数を計算
+         const startDate = new Date(startDateElement.textContent);
+         const targetDate = new Date(currentDateElement.textContent);
+         const timeDiff = targetDate.getTime() - startDate.getTime();
+         const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+         // 経過日数を表示
+         elapsedDaysElement.textContent = `${daysDiff}日`;
+       });
 
       // 進捗率の計算と表示
       calculateProgressRates();
