@@ -1,0 +1,95 @@
+<h2>開発記録</h2>
+<p>
+    GitHub Projectsに、kmgシリーズの開発を管理するプロジェクトの用意した。Projectsは「<a href="https://github.com/users/KenichiroArai/projects/6" target="_blank">kmg</a>」で公開している。下記の画像のような状態だ。
+</p>
+<p>
+    <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00171_001.png" target="_blank">
+        <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00171_001.png" alt="00171_001.png" width="600" border="0">
+    </a>
+</p>
+<p>
+    Statusは、アジャイル開発、特にスクラムを参考にして作成した。あくまでもアジャイル開発風として一部の参考にとどめる。
+</p>
+<ol>
+    <li>
+        <strong>new issues</strong><br>
+        誰かが思いついた、または外部／チームから上がってきた未整理の課題を一時的に置く場所。<br>
+        → ここで担当者／優先度／分類／必要なら軽いスコーピングを付与し、次のステップへ。
+    </li>
+    <li>
+        <strong>icebox</strong><br>
+        アイデア段階・将来的にやるか検討中のもの。すぐ着手しないが捨てない候補。<br>
+        定期的（例：週1）に見直し、価値が上がったら backlog へ昇格。
+    </li>
+    <li>
+        <strong>backlog</strong><br>
+        着手予定が確定しているが、まだ手をつけていない課題。<br>
+        優先順位付け・見積もり（ポイント / 時間）を付け、スプリントや次の着手候補としてキープ。
+    </li>
+    <li>
+        <strong>in progress</strong><br>
+        誰かが実際に手を動かして作業中。<br>
+        ブランチを切って開発し、進捗を都度コメント。途中での大きな軌道修正があればここで明記。
+    </li>
+    <li>
+        <strong>review/qa</strong><br>
+        実装が完了し、プルリクエストが出ている状態。<br>
+        コードレビュー・自動テスト・ステージ環境でのQAを経て承認を得る。
+    </li>
+    <li>
+        <strong>done</strong><br>
+        マージ済み／本番反映済み／完了を確認した課題。<br>
+        （必要ならクローズとアーカイブのルールを明記）
+    </li>
+</ol>
+<p>
+    kmg-core、kmg-fund、kmg-toolの各リポジトリでIssuesを追加した。画像は、Issuesが一番多い<a href="https://github.com/KenichiroArai/kmg-tool/issues" target="_blank">kmg-toolのIssues</a>を紹介する。
+</p>
+<p>
+    <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00171_002.png" target="_blank">
+        <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00171_002.png" alt="00171_002.png" width="600" border="0">
+    </a>
+</p>
+<p>
+    Issuesは下記の画像の通り作成している。Projectsにもカスタムフィールドを追加している。Milestoneも各リポジトリごとに作成している。画像のIssuesは<a href="https://github.com/KenichiroArai/kmg-tool/issues/27" target="_blank">こちら</a>。
+</p>
+<p>
+    <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00171_003.png" target="_blank">
+        <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00171_003.png" alt="00171_003.png" width="600" border="0">
+    </a>
+</p>
+<p>
+    まずは、上記画像から進めていくことにする。今あるIssuesの19は今月中に終わらせることが目標である。今設定しているMilestoneも期日を今月中にしている。
+</p>
+<h2>リンク</h2>
+<ol>
+    <li>
+        <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00171"
+            target="_blank">本記事のGitHubでの管理</a>
+    </li>
+    <li>
+        前回の記事：<a href="https://araikenichiro.blog.fc2.com/blog-entry-169.html"
+            target="_blank">kmg-toolのv0.1.0に向けて#011</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-core" title="kmg-core" target="_blank">kmg-coreのGitHubリポジトリ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-core/tree/features/0.2.0" title="kmg-coreの現在の作業用ブランチ"
+            target="_blank">kmg-coreの現在の作業用ブランチ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-fund" title="kmg-fund" target="_blank">kmg-fundのGitHubリポジトリ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-fund/tree/features/0.1.0" title="kmg-fundの現在の作業用ブランチ"
+            target="_blank">kmg-fundの現在の作業用ブランチ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool" title="kmg-tool" target="_blank">kmg-toolのGitHubリポジトリ</a>
+    </li>
+    <li>
+        <a href="https://github.com/KenichiroArai/kmg-tool/tree/features/0.1.0" title="kmg-toolの現在の作業用ブランチ"
+            target="_blank">kmg-toolの現在の作業用ブランチ</a>
+    </li>
+</ol>
