@@ -1,7 +1,7 @@
 // グローバル変数
 let recordsData = [];
 let dataTable;
-let suggestedLinesChart, acceptedLinesChart, tabsAcceptedChart;
+let combinedLinesChart, tabsAcceptedChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
@@ -74,9 +74,9 @@ function createCharts() {
     const acceptedLinesData = recordsData.map(record => record['Accepted Lines: X Lines']);
     const tabsAcceptedData = recordsData.map(record => record['Tabs Accepted: X tabs']);
 
-    // Suggested Lines グラフ
-    const suggestedLinesCtx = document.getElementById('suggested-lines-chart').getContext('2d');
-    suggestedLinesChart = new Chart(suggestedLinesCtx, {
+    // Combined Lines グラフ
+    const combinedLinesCtx = document.getElementById('combined-lines-chart').getContext('2d');
+    combinedLinesChart = new Chart(combinedLinesCtx, {
         type: 'line',
         data: {
             labels: labels,
@@ -87,32 +87,7 @@ function createCharts() {
                 backgroundColor: 'rgba(0, 123, 255, 0.1)',
                 tension: 0.4,
                 fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Suggested Lines 推移'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // Accepted Lines グラフ
-    const acceptedLinesCtx = document.getElementById('accepted-lines-chart').getContext('2d');
-    acceptedLinesChart = new Chart(acceptedLinesCtx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
+            }, {
                 label: 'Accepted Lines',
                 data: acceptedLinesData,
                 borderColor: '#28a745',
@@ -127,7 +102,7 @@ function createCharts() {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Accepted Lines 推移'
+                    text: 'Suggested Lines & Accepted Lines 推移'
                 }
             },
             scales: {
