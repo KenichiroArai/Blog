@@ -103,11 +103,44 @@ function createCharts() {
                 title: {
                     display: true,
                     text: 'Suggested Lines & Accepted Lines 推移'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value.toLocaleString()}`;
+                        }
+                    }
                 }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            onClick: function(event, elements) {
+                if (elements.length > 0) {
+                    const element = elements[0];
+                    const index = element.index;
+                    const datasetIndex = element.datasetIndex;
+                    const date = labels[index];
+                    const value = element.parsed.y;
+                    const label = element.dataset.label;
+
+                    showGraphDetail(date, label, value);
                 }
             }
         }
@@ -135,14 +168,90 @@ function createCharts() {
                 title: {
                     display: true,
                     text: 'Tabs Accepted 推移'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value.toLocaleString()}`;
+                        }
+                    }
                 }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            onClick: function(event, elements) {
+                if (elements.length > 0) {
+                    const element = elements[0];
+                    const index = element.index;
+                    const datasetIndex = element.datasetIndex;
+                    const date = labels[index];
+                    const value = element.parsed.y;
+                    const label = element.dataset.label;
+
+                    showGraphDetail(date, label, value);
                 }
             }
         }
+    });
+}
+
+// グラフ詳細情報表示
+function showGraphDetail(date, label, value) {
+    // 既存のモーダルがあれば削除
+    const existingModal = document.getElementById('graph-detail-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // モーダルを作成
+    const modal = document.createElement('div');
+    modal.id = 'graph-detail-modal';
+    modal.className = 'modal fade';
+    modal.setAttribute('tabindex', '-1');
+    modal.innerHTML = `
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">詳細情報</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>日付:</strong> ${date}</p>
+                    <p><strong>項目:</strong> ${label}</p>
+                    <p><strong>値:</strong> ${value.toLocaleString()}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // モーダルを表示
+    document.body.appendChild(modal);
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+
+    // モーダルが閉じられたら要素を削除
+    modal.addEventListener('hidden.bs.modal', function() {
+        modal.remove();
     });
 }
 
