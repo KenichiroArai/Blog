@@ -4,7 +4,7 @@ let tokensData = [];
 let dataTable;
 let tokensTable;
 let combinedLinesChart, tabsAcceptedChart;
-let tokensDailyChart, tokensCumulativeChart;
+let tokensDailyChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
@@ -365,14 +365,6 @@ function createTokensCharts() {
     const dailyAverages = dates.map(date => Math.round(dailyData[date].total / dailyData[date].count));
     const dailyMaxs = dates.map(date => dailyData[date].max);
 
-    // 累積データの計算
-    const cumulativeData = [];
-    let cumulative = 0;
-    dates.forEach(date => {
-        cumulative += dailyData[date].total;
-        cumulativeData.push(cumulative);
-    });
-
     // 日別トークン使用量グラフ
     const tokensDailyCtx = document.getElementById('tokens-daily-chart').getContext('2d');
     tokensDailyChart = new Chart(tokensDailyCtx, {
@@ -409,59 +401,6 @@ function createTokensCharts() {
                 title: {
                     display: true,
                     text: '日別トークン使用量'
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.dataset.label || '';
-                            const value = context.parsed.y;
-                            return `${label}: ${value.toLocaleString()}`;
-                        }
-                    }
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString();
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    // 累積トークン使用量グラフ
-    const tokensCumulativeCtx = document.getElementById('tokens-cumulative-chart').getContext('2d');
-    tokensCumulativeChart = new Chart(tokensCumulativeCtx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: '累積トークン数',
-                data: cumulativeData,
-                borderColor: '#6f42c1',
-                backgroundColor: 'rgba(111, 66, 193, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: '累積トークン使用量'
                 },
                 tooltip: {
                     mode: 'index',
