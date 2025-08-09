@@ -1,6 +1,8 @@
 // グローバル変数
 let includedUsageTable;
 let includedUsageChart;
+let costChart;
+let totalTokensChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
@@ -44,61 +46,43 @@ function initializeIncludedUsageTable() {
         columns: [
             {
                 data: 'date',
-                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleDateString('ja-JP');
                 }
             },
-            {
-                data: 'model',
-                className: 'text-start'
-            },
+            { data: 'model' },
             {
                 data: 'input',
-                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'output',
-                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'cacheWrite',
-                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'cacheRead',
-                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'totalTokens',
-                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
-            {
-                data: 'apiCost',
-                className: 'text-end'
-            },
-            {
-                data: 'costToYou',
-                className: 'text-end',
-                render: function(data) {
-                    return data || '0';
-                }
-            }
+            { data: 'apiCost' },
+            { data: 'costToYou' }
         ],
         order: [[0, 'desc']],
         language: {
@@ -285,4 +269,245 @@ function createIncludedUsageCharts() {
             }
         }
     });
+
+    // 新しいグラフを作成
+    try {
+        createCostChart();
+        createTotalTokensChart();
+    } catch (error) {
+        console.error('新しいグラフの作成中にエラーが発生しました:', error);
+    }
+}
+
+// API Cost と Cost to You グラフの作成
+function createCostChart() {
+    try {
+        if (includedUsageData.length === 0) return;
+
+        // 日付とモデルごとのデータを整理
+        const modelData = {};
+
+        // 日付の重複を除去してソート
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))].sort();
+
+        includedUsageData.forEach(record => {
+            const model = record.model;
+            const dateStr = record.dateStr;
+
+            if (!modelData[model]) {
+                modelData[model] = {
+                    apiCost: {},
+                    costToYou: {}
+                };
+            }
+
+            if (!modelData[model].apiCost[dateStr]) {
+                modelData[model].apiCost[dateStr] = 0;
+                modelData[model].costToYou[dateStr] = 0;
+            }
+
+            // 数値に変換（文字列の場合は0として扱う）
+            const apiCost = parseFloat(record.apiCost) || 0;
+            const costToYou = parseFloat(record.costToYou) || 0;
+
+            modelData[model].apiCost[dateStr] += apiCost;
+            modelData[model].costToYou[dateStr] += costToYou;
+        });
+
+        // グラフデータセットを作成
+        const datasets = [];
+        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
+        const models = Object.keys(modelData);
+
+        models.forEach((model, index) => {
+            const color = colors[index % colors.length];
+
+            // API Cost データセット
+            const apiCostData = uniqueDates.map(dateStr => modelData[model].apiCost[dateStr] || 0);
+            datasets.push({
+                label: `${model} - API Cost`,
+                data: apiCostData,
+                borderColor: color,
+                backgroundColor: color + '1a', // 透明度を追加
+                tension: 0.4,
+                fill: false,
+                yAxisID: 'y'
+            });
+
+            // Cost to You データセット
+            const costToYouData = uniqueDates.map(dateStr => modelData[model].costToYou[dateStr] || 0);
+            datasets.push({
+                label: `${model} - Cost to You`,
+                data: costToYouData,
+                borderColor: color,
+                backgroundColor: color + '1a', // 透明度を追加
+                tension: 0.4,
+                fill: false,
+                yAxisID: 'y',
+                borderDash: [5, 5]
+            });
+        });
+
+        // グラフを作成
+        const costCtx = document.getElementById('cost-chart');
+        if (!costCtx) {
+            console.warn('cost-chart canvas not found');
+            return;
+        }
+
+        costChart = new Chart(costCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: uniqueDates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'API Cost と Cost to You 推移'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y;
+                                return `${label}: $${value.toFixed(4)}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return `$${value.toFixed(4)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Cost chart creation error:', error);
+    }
+}
+
+// Total Tokens グラフの作成
+function createTotalTokensChart() {
+    try {
+        if (includedUsageData.length === 0) return;
+
+        // 日付とモデルごとのデータを整理
+        const modelData = {};
+
+        // 日付の重複を除去してソート
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))].sort();
+
+        includedUsageData.forEach(record => {
+            const model = record.model;
+            const dateStr = record.dateStr;
+
+            if (!modelData[model]) {
+                modelData[model] = {
+                    totalTokens: {}
+                };
+            }
+
+            if (!modelData[model].totalTokens[dateStr]) {
+                modelData[model].totalTokens[dateStr] = 0;
+            }
+
+            modelData[model].totalTokens[dateStr] += record.totalTokens || 0;
+        });
+
+        // グラフデータセットを作成
+        const datasets = [];
+        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
+        const models = Object.keys(modelData);
+
+        models.forEach((model, index) => {
+            const color = colors[index % colors.length];
+
+            const totalTokensData = uniqueDates.map(dateStr => modelData[model].totalTokens[dateStr] || 0);
+            datasets.push({
+                label: `${model} - Total Tokens`,
+                data: totalTokensData,
+                borderColor: color,
+                backgroundColor: color + '1a', // 透明度を追加
+                tension: 0.4,
+                fill: false,
+                yAxisID: 'y'
+            });
+        });
+
+        // グラフを作成
+        const totalTokensCtx = document.getElementById('total-tokens-chart');
+        if (!totalTokensCtx) {
+            console.warn('total-tokens-chart canvas not found');
+            return;
+        }
+
+        totalTokensChart = new Chart(totalTokensCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: uniqueDates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Total Tokens 推移'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y;
+                                return `${label}: ${value.toLocaleString()}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Total Tokens chart creation error:', error);
+    }
 }
