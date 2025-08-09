@@ -281,3 +281,72 @@
     height: 150px;
   }
 }
+
+/*
+レスポンシブレイアウト対応:
+- 大画面（lg以上）: 3列横並び
+- 中画面（md）: 2列横並び
+- 小画面（sm以下）: 1列縦並び
+*/
+@media (max-width: 991.98px) {
+  /* 中画面以下での調整 */
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .stat-item {
+    padding: 0.25rem 0;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .stat-value {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* 小画面での調整 */
+  .card-header {
+    padding: 0.75rem;
+  }
+
+  .card-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .card-body {
+    padding: 0.5rem;
+  }
+
+  .usage-stats-summary {
+    gap: 0.25rem;
+  }
+
+  .stat-item {
+    padding: 0.2rem 0;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 0.8rem;
+  }
+
+  .progress {
+    height: 16px;
+  }
+
+  .progress-bar {
+    font-size: 0.75rem;
+    line-height: 16px;
+  }
+}

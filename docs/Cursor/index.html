@@ -48,9 +48,19 @@
         </div>
 
         <!-- メインコンテンツ -->
+        <!--
+        レイアウトルール:
+        - 3つのセクション（最新の使用記録、最新の Usage Tokens、最新の Included Usage）を横並びに配置
+        - 画面幅に応じてレスポンシブ対応：
+          - 大画面（lg以上、992px以上）: 3列横並び（col-lg-4）
+          - 中画面（md、768px-991px）: 2列横並び（col-md-6）
+          - 小画面（sm以下、767px以下）: 1列縦並び（col-12）
+        - 各セクションの高さを統一するため h-100 クラスを使用
+        - グリッド間隔は g-4 クラスで統一（1.5remの間隔）
+        -->
         <div class="row g-4">
             <!-- 最新の使用記録 -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="card-title mb-0">最新の使用記録</h2>
@@ -99,7 +109,7 @@
             </div>
 
             <!-- 最新の Usage Tokens -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="card-title mb-0">最新の Usage Tokens</h2>
@@ -138,11 +148,9 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 最新の Included Usage -->
-        <div class="row g-4 mt-4">
-            <div class="col-12">
+            <!-- 最新の Included Usage -->
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="card-title mb-0">最新の Included Usage</h2>
