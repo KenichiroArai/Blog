@@ -164,28 +164,40 @@ function writeCSV(filePath, data, headers) {
 }
 
 /**
- * Inputフォルダからusage-tokens-*.csvファイルを検索する
+ * Inputフォルダから最新の日付のusage-tokens-*.csvファイルを検索する
  * @param {string} inputDir - Inputフォルダのパス
- * @returns {Array} 見つかったCSVファイルのパス配列
+ * @returns {string|null} 最新の日付のCSVファイルのパス、見つからない場合はnull
  */
-function findInputCSVFiles(inputDir) {
+function findLatestInputCSVFile(inputDir) {
     try {
         const files = fs.readdirSync(inputDir);
-        return files
+        const csvFiles = files
             .filter(file => file.startsWith('usage-tokens-') && file.endsWith('.csv'))
-            .map(file => path.join(inputDir, file))
-            .sort((a, b) => {
-                // ファイル名の日付部分でソート（最新順）
-                const dateA = a.match(/usage-tokens-(\d{4}-\d{2}-\d{2})/);
-                const dateB = b.match(/usage-tokens-(\d{4}-\d{2}-\d{2})/);
-                if (dateA && dateB) {
-                    return new Date(dateB[1]) - new Date(dateA[1]);
+            .map(file => {
+                const dateMatch = file.match(/usage-tokens-(\d{4}-\d{2}-\d{2})/);
+                if (dateMatch) {
+                    return {
+                        file: file,
+                        path: path.join(inputDir, file),
+                        date: new Date(dateMatch[1])
+                    };
                 }
-                return 0;
-            });
+                return null;
+            })
+            .filter(item => item !== null)
+            .sort((a, b) => b.date - a.date); // 最新順でソート
+
+        if (csvFiles.length > 0) {
+            const latestFile = csvFiles[0];
+            console.log(`最新のCSVファイルを発見: ${latestFile.file} (日付: ${latestFile.date.toISOString().split('T')[0]})`);
+            return latestFile.path;
+        } else {
+            console.log('InputフォルダにCSVファイルが見つかりませんでした');
+            return null;
+        }
     } catch (error) {
         console.error(`Inputフォルダの読み込みエラー: ${inputDir}`, error.message);
-        return [];
+        return null;
     }
 }
 
@@ -206,15 +218,10 @@ function main() {
         console.log(`既存のデータを読み込みました: ${existingData.length}件`);
     }
 
-    // InputフォルダからCSVファイルを検索
-    const inputFiles = findInputCSVFiles(inputDir);
-    console.log(`Inputフォルダから${inputFiles.length}件のCSVファイルを発見しました`);
-
-    let allData = [...existingData];
-
-    // 各Inputファイルを処理
-    for (const inputFile of inputFiles) {
-        console.log(`処理中: ${path.basename(inputFile)}`);
+    // Inputフォルダから最新のCSVファイルを検索
+    const inputFile = findLatestInputCSVFile(inputDir);
+    if (inputFile) {
+        console.log(`最新のCSVファイルを処理中: ${path.basename(inputFile)}`);
         const inputData = readCSV(inputFile);
 
         if (inputData.length > 0) {
@@ -228,29 +235,34 @@ function main() {
                 }
             });
 
-            allData = allData.concat(convertedData);
+            // 既存のデータと新しいデータを結合
+            let allData = [...existingData, ...convertedData];
             console.log(`  ${convertedData.length}件のデータを追加しました`);
+
+            // 重複を排除
+            const uniqueData = removeDuplicates(allData);
+            console.log(`重複排除後: ${uniqueData.length}件`);
+
+            // 日付順にソート（最新順）
+            const sortedData = sortByDate(uniqueData);
+            console.log(`日付順にソートしました（最新順）`);
+
+            // ヘッダーを決定（既存のデータのヘッダーを使用）
+            const headers = existingData.length > 0
+                ? Object.keys(existingData[0])
+                : ['Date', 'User', 'Kind', 'Max Mode', 'Model', 'Tokens', 'Cost ($)'];
+
+            // CSVファイルに書き込み
+            writeCSV(outputFile, sortedData, headers);
+
+            console.log('CSVファイルの更新が完了しました！');
+            console.log(`最終的なデータ件数: ${sortedData.length}件`);
+        } else {
+            console.log('最新のCSVファイルにデータが含まれていませんでした');
         }
+    } else {
+        console.log('処理するCSVファイルが見つかりませんでした');
     }
-
-    // 重複を排除
-    const uniqueData = removeDuplicates(allData);
-    console.log(`重複排除後: ${uniqueData.length}件`);
-
-    // 日付順にソート（最新順）
-    const sortedData = sortByDate(uniqueData);
-    console.log(`日付順にソートしました（最新順）`);
-
-    // ヘッダーを決定（既存のデータのヘッダーを使用）
-    const headers = existingData.length > 0
-        ? Object.keys(existingData[0])
-        : ['Date', 'User', 'Kind', 'Max Mode', 'Model', 'Tokens', 'Cost ($)'];
-
-    // CSVファイルに書き込み
-    writeCSV(outputFile, sortedData, headers);
-
-    console.log('CSVファイルの更新が完了しました！');
-    console.log(`最終的なデータ件数: ${sortedData.length}件`);
 }
 
 // スクリプトが直接実行された場合のみmain()を実行
@@ -266,6 +278,6 @@ module.exports = {
     sortByDate,
     removeDuplicates,
     writeCSV,
-    findInputCSVFiles,
+    findLatestInputCSVFile,
     main
 };

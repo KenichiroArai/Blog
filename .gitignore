@@ -8,7 +8,3 @@
 *.webm
 *.mpeg
 *.mpg
-
-
-# 「docs\Cursor\Tool\AllRawEvents\Input」の「*.csv」を対象外に指定
-/docs/Cursor/Tool/AllRawEvents/Input/*.csv
