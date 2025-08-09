@@ -3,8 +3,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         await loadExcelFile();
         await loadTokensData();
+        await loadIncludedUsageData();
         updateLatestRecord();
         updateTokensStats();
+        updateIncludedUsageStats();
     } catch (error) {
         console.error('初期化エラー:', error);
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
@@ -16,6 +18,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             if (tokensData.length > 0) {
                 updateTokensStats();
+            }
+            if (includedUsageData.length > 0) {
+                updateIncludedUsageStats();
             }
         } catch (partialError) {
             console.error('部分的な初期化も失敗:', partialError);

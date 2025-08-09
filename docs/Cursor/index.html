@@ -23,6 +23,7 @@
                 <a class="nav-link active" href="index.html">トップページ</a>
                 <a class="nav-link" href="pages/records.html">使用記録</a>
                 <a class="nav-link" href="pages/tokens.html">Usage Tokens</a>
+                <a class="nav-link" href="pages/included-usage.html">Included Usage</a>
             </div>
         </div>
     </nav>
@@ -133,6 +134,53 @@
                                 </div>
                             </div>
                             <div class="usage-info" id="latest-tokens-info"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最新の Included Usage -->
+        <div class="row g-4 mt-4">
+            <div class="col-12">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="card-title mb-0">最新の Included Usage</h2>
+                        <a href="pages/included-usage.html" class="btn btn-primary btn-sm"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           title="Included Usage Summaryの詳細な記録とグラフを確認できます。">詳細を見る</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="usage-included-stats">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="h5 mb-2">最新使用日統計</h3>
+                                    <div class="usage-stats-summary">
+                                        <div class="stat-item">
+                                            <span class="stat-label">最新使用日:</span>
+                                            <span id="latest-included-usage-date-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Total Tokens:</span>
+                                            <span id="latest-total-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Input:</span>
+                                            <span id="latest-input-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Output:</span>
+                                            <span id="latest-output-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">API Cost:</span>
+                                            <span id="latest-api-cost-value" class="stat-value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="usage-info" id="latest-included-usage-info"></div>
                         </div>
                     </div>
                 </div>
