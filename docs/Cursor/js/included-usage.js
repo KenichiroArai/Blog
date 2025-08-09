@@ -46,11 +46,15 @@ function initializeIncludedUsageTable() {
         columns: [
             {
                 data: 'date',
+                title: '日付',
                 render: function(data) {
                     return data.toLocaleDateString('ja-JP');
                 }
             },
-            { data: 'model' },
+            {
+                data: 'model',
+                title: 'モデル'
+            },
             {
                 data: 'input',
                 className: 'text-end',
@@ -98,7 +102,7 @@ function initializeIncludedUsageTable() {
                 className: 'text-end',
                 render: function(data) {
                     // Cost to Youが0、空、未定義、またはNaNの場合は何も表示しない
-                    if (data === null || data === undefined || data === '' || data === 0) {
+                    if (data === null || data === undefined || data === '' || data === 0 || data === '0') {
                         return '0';
                     }
                     const cost = parseFloat(data);
@@ -106,7 +110,7 @@ function initializeIncludedUsageTable() {
                 }
             }
         ],
-        order: [[0, 'desc']],
+        order: [[0, 'desc'], [1, 'asc']], // 日付の降順、次にモデルの昇順
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json'
         },
@@ -119,25 +123,31 @@ function initializeIncludedUsageTable() {
 function updateIncludedUsageStats() {
     if (includedUsageData.length === 0) return;
 
-    // 最新のデータを取得
-    const latest = includedUsageData[includedUsageData.length - 1];
-    if (!latest) return;
+    // 最新のauto行のデータを取得
+    const latestAutoRecord = includedUsageData
+        .filter(record => record.model.toLowerCase() === 'auto')
+        .sort((a, b) => b.date - a.date)[0];
+
+    if (!latestAutoRecord) {
+        console.warn('No auto record found for stats');
+        return;
+    }
 
     // 最新使用日の統計を表示
     const latestUsageDateValue = document.getElementById('latest-included-usage-date-value');
-    if (latestUsageDateValue) latestUsageDateValue.textContent = latest.dateStr;
+    if (latestUsageDateValue) latestUsageDateValue.textContent = latestAutoRecord.dateStr;
 
     const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
-    if (latestTotalTokensValue) latestTotalTokensValue.textContent = latest.totalTokens.toLocaleString();
+    if (latestTotalTokensValue) latestTotalTokensValue.textContent = latestAutoRecord.totalTokens.toLocaleString();
 
     const latestInputTokensValue = document.getElementById('latest-input-tokens-value');
-    if (latestInputTokensValue) latestInputTokensValue.textContent = latest.input.toLocaleString();
+    if (latestInputTokensValue) latestInputTokensValue.textContent = latestAutoRecord.input.toLocaleString();
 
     const latestOutputTokensValue = document.getElementById('latest-output-tokens-value');
-    if (latestOutputTokensValue) latestOutputTokensValue.textContent = latest.output.toLocaleString();
+    if (latestOutputTokensValue) latestOutputTokensValue.textContent = latestAutoRecord.output.toLocaleString();
 
     const latestApiCostValue = document.getElementById('latest-api-cost-value');
-    if (latestApiCostValue) latestApiCostValue.textContent = latest.apiCost;
+    if (latestApiCostValue) latestApiCostValue.textContent = latestAutoRecord.apiCost;
 }
 
 // Included Usage グラフの作成

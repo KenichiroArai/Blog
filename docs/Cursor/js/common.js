@@ -168,12 +168,13 @@ function processIncludedUsageData(rawData) {
             }
         }
 
-        // auto行のみをデータとして追加（Total行は除外）
-        if (currentDate && model && model.toString().trim().toLowerCase() === 'auto') {
+        // 有効な日付とモデルがある場合にデータとして追加（auto行とTotal行の両方を含む）
+        if (currentDate && model && model.toString().trim()) {
+            const modelStr = model.toString().trim();
             const processedRecord = {
                 date: currentDate,
                 dateStr: currentDate.toLocaleDateString('ja-JP'),
-                model: model.toString().trim(),
+                model: modelStr,
                 input: input,
                 output: output,
                 cacheWrite: cacheWrite,
@@ -192,8 +193,19 @@ function processIncludedUsageData(rawData) {
         }
     }
 
-    // 日付順にソート
-    processedData.sort((a, b) => a.date - b.date);
+    // 日付順にソート（同じ日付の場合はモデル順）
+    processedData.sort((a, b) => {
+        if (a.date.getTime() === b.date.getTime()) {
+            // 同じ日付の場合、Totalを後に、autoを先に
+            if (a.model.toLowerCase() === 'total' && b.model.toLowerCase() === 'auto') {
+                return 1;
+            } else if (a.model.toLowerCase() === 'auto' && b.model.toLowerCase() === 'total') {
+                return -1;
+            }
+            return a.model.localeCompare(b.model);
+        }
+        return a.date - b.date;
+    });
 
     console.log('Processed data length:', processedData.length);
     console.log('Processed data sample:', processedData.slice(0, 3));
