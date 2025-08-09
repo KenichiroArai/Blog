@@ -1,17 +1,41 @@
 // グローバル変数
 let recordsData = [];
+let tokensData = [];
 let dataTable;
+let tokensTable;
 let combinedLinesChart, tabsAcceptedChart;
+let tokensDailyChart, tokensCumulativeChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         await loadExcelFile();
+        await loadTokensData();
         initializeDataTable();
+        initializeTokensTable();
         updateLatestRecord();
+        updateTokensStats();
         createCharts();
+        createTokensCharts();
     } catch (error) {
+        console.error('初期化エラー:', error);
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
+
+        // 部分的な初期化を試行
+        try {
+            if (recordsData.length > 0) {
+                initializeDataTable();
+                updateLatestRecord();
+                createCharts();
+            }
+            if (tokensData.length > 0) {
+                initializeTokensTable();
+                updateTokensStats();
+                createTokensCharts();
+            }
+        } catch (partialError) {
+            console.error('部分的な初期化も失敗:', partialError);
+        }
     }
 });
 
@@ -46,6 +70,79 @@ async function loadExcelFile() {
     }
 }
 
+// CSVファイル読み込み
+async function loadTokensData() {
+    try {
+        const response = await fetch('Tool/AllRawEvents/data/usage-tokens.csv');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+        const lines = csvText.split('\n').filter(line => line.trim());
+
+        if (lines.length < 2) {
+            throw new Error('CSVファイルが空またはヘッダーのみです');
+        }
+
+        const headers = lines[0].split(',').map(header => header.trim());
+        tokensData = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+
+            // CSVの値を正しく分割（カンマを含む値に対応）
+            const values = parseCSVLine(line);
+            if (values.length >= headers.length) {
+                const record = {};
+                headers.forEach((header, index) => {
+                    record[header] = values[index] ? values[index].trim() : '';
+                });
+                tokensData.push(record);
+            }
+        }
+
+        // データの整形
+        tokensData = tokensData.map(record => ({
+            ...record,
+            Date: new Date(record.Date),
+            Tokens: parseInt(record.Tokens) || 0,
+            'Cost ($)': record['Cost ($)'] || 'Included'
+        })).filter(record => !isNaN(record.Date.getTime())); // 無効な日付を除外
+
+        // 日付順にソート
+        tokensData.sort((a, b) => a.Date - b.Date);
+
+        console.log('Tokens data loaded:', tokensData.length, 'records');
+    } catch (error) {
+        console.error('CSVファイルの読み込みに失敗しました:', error);
+        throw new Error('CSVファイルの読み込みに失敗しました: ' + error.message);
+    }
+}
+
+// CSV行を正しくパースする関数
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+
+    result.push(current);
+    return result.map(item => item.replace(/^"|"$/g, '')); // 引用符を除去
+}
+
 // DataTablesの初期化
 function initializeDataTable() {
     dataTable = $('#records-table').DataTable({
@@ -64,6 +161,39 @@ function initializeDataTable() {
             url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json'
         },
         responsive: true
+    });
+}
+
+// Tokens DataTableの初期化
+function initializeTokensTable() {
+    tokensTable = $('#tokens-table').DataTable({
+        data: tokensData,
+        columns: [
+            {
+                data: 'Date',
+                render: function(data) {
+                    return data.toLocaleDateString('ja-JP');
+                }
+            },
+            { data: 'User' },
+            { data: 'Kind' },
+            { data: 'Max Mode' },
+            { data: 'Model' },
+            {
+                data: 'Tokens',
+                render: function(data) {
+                    const className = data > 1000000 ? 'tokens-high' : data > 100000 ? 'tokens-medium' : 'tokens-low';
+                    return `<span class="${className}">${data.toLocaleString()}</span>`;
+                }
+            },
+            { data: 'Cost ($)' }
+        ],
+        order: [[0, 'desc']],
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json'
+        },
+        responsive: true,
+        pageLength: 25
     });
 }
 
@@ -212,6 +342,158 @@ function createCharts() {
     });
 }
 
+// Tokens グラフの作成
+function createTokensCharts() {
+    // 日別データの集計
+    const dailyData = {};
+    tokensData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                total: 0,
+                count: 0,
+                max: 0
+            };
+        }
+        dailyData[dateStr].total += record.Tokens;
+        dailyData[dateStr].count += 1;
+        dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record.Tokens);
+    });
+
+    const dates = Object.keys(dailyData).sort();
+    const dailyTotals = dates.map(date => dailyData[date].total);
+    const dailyAverages = dates.map(date => Math.round(dailyData[date].total / dailyData[date].count));
+    const dailyMaxs = dates.map(date => dailyData[date].max);
+
+    // 累積データの計算
+    const cumulativeData = [];
+    let cumulative = 0;
+    dates.forEach(date => {
+        cumulative += dailyData[date].total;
+        cumulativeData.push(cumulative);
+    });
+
+    // 日別トークン使用量グラフ
+    const tokensDailyCtx = document.getElementById('tokens-daily-chart').getContext('2d');
+    tokensDailyChart = new Chart(tokensDailyCtx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: '日別総トークン数',
+                data: dailyTotals,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: '日別平均トークン数',
+                data: dailyAverages,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: false
+            }, {
+                label: '日別最大トークン数',
+                data: dailyMaxs,
+                borderColor: '#ffc107',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                tension: 0.4,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '日別トークン使用量'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 累積トークン使用量グラフ
+    const tokensCumulativeCtx = document.getElementById('tokens-cumulative-chart').getContext('2d');
+    tokensCumulativeChart = new Chart(tokensCumulativeCtx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: '累積トークン数',
+                data: cumulativeData,
+                borderColor: '#6f42c1',
+                backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: '累積トークン使用量'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 // グラフ詳細情報表示
 function showGraphDetail(date, label, value) {
     // 既存のモーダルがあれば削除
@@ -289,6 +571,32 @@ function updateLatestRecord() {
     if (acceptedLinesElem) acceptedLinesElem.textContent = acceptedLines.toLocaleString();
     const tabsAcceptedElem = document.getElementById('tabs-accepted-value');
     if (tabsAcceptedElem) tabsAcceptedElem.textContent = String(tabsAccepted);
+}
+
+// Tokens統計の更新
+function updateTokensStats() {
+    if (tokensData.length === 0) return;
+
+    const totalTokens = tokensData.reduce((sum, record) => sum + record.Tokens, 0);
+    const avgTokens = Math.round(totalTokens / tokensData.length);
+    const maxTokens = Math.max(...tokensData.map(record => record.Tokens));
+
+    // 使用日数の計算
+    const uniqueDates = new Set(tokensData.map(record => record.Date.toDateString()));
+    const daysCount = uniqueDates.size;
+
+    // 最新の記録
+    const latestToken = tokensData[tokensData.length - 1];
+
+    // 統計の表示
+    document.getElementById('total-tokens-value').textContent = totalTokens.toLocaleString();
+    document.getElementById('avg-tokens-value').textContent = avgTokens.toLocaleString();
+    document.getElementById('max-tokens-value').textContent = maxTokens.toLocaleString();
+    document.getElementById('tokens-days-value').textContent = daysCount;
+
+    // 最新の使用情報
+    const latestTokensInfo = `最新使用日: ${latestToken.Date.toLocaleDateString('ja-JP')}\n最新トークン数: ${latestToken.Tokens.toLocaleString()}\nモデル: ${latestToken.Model}`;
+    document.getElementById('latest-tokens-info').textContent = latestTokensInfo;
 }
 
 // プログレスバーの更新

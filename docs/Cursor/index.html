@@ -103,6 +103,66 @@
             </div>
         </div>
 
+        <!-- Usage Tokens セクション -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <!-- Usage Tokens 統計 -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title text-center mb-3">Usage Tokens 統計</h2>
+                            <div class="usage-tokens-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">トークン使用状況</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">総トークン数:</span>
+                                                <span id="total-tokens-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">平均トークン数:</span>
+                                                <span id="avg-tokens-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">最大トークン数:</span>
+                                                <span id="max-tokens-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">使用日数:</span>
+                                                <span id="tokens-days-value" class="stat-value"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="usage-info" id="latest-tokens-info"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Usage Tokens グラフ -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title text-center mb-3">Usage Tokens グラフ</h2>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="chart-container">
+                                        <canvas id="tokens-daily-chart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="chart-container">
+                                        <canvas id="tokens-cumulative-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 下部 -->
         <!-- 記録一覧 -->
         <div class="card">
@@ -119,6 +179,29 @@
                                 <th>Suggested Lines</th>
                                 <th>Accepted Lines</th>
                                 <th>Tabs Accepted</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Tokens 一覧 -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h2 class="card-title">Usage Tokens 一覧</h2>
+                <div class="table-responsive">
+                    <table id="tokens-table" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>ユーザー</th>
+                                <th>種類</th>
+                                <th>最大モード</th>
+                                <th>モデル</th>
+                                <th>トークン数</th>
+                                <th>コスト</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

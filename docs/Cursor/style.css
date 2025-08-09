@@ -77,6 +77,10 @@
   padding: 0.5rem;
 }
 
+.usage-tokens-stats {
+  padding: 0.5rem;
+}
+
 .dashboard-container {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 12px;
@@ -210,6 +214,50 @@
 
 #graph-detail-modal .modal-body strong {
   color: #495057;
+}
+
+/* Usage Tokens 専用スタイル */
+.usage-tokens-stats .stat-item {
+  border-bottom: 1px solid #f8f9fa;
+  padding: 0.5rem 0;
+}
+
+.usage-tokens-stats .stat-item:last-child {
+  border-bottom: none;
+}
+
+.usage-tokens-stats .stat-value {
+  color: #28a745;
+  font-weight: 700;
+}
+
+#tokens-table {
+  font-size: 0.85rem;
+}
+
+#tokens-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+#tokens-table td {
+  vertical-align: middle;
+}
+
+.tokens-high {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.tokens-medium {
+  color: #ffc107;
+  font-weight: 600;
+}
+
+.tokens-low {
+  color: #28a745;
+  font-weight: 600;
 }
 
 @media (max-width: 900px) {
