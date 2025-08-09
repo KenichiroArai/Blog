@@ -120,17 +120,20 @@ function initializeIncludedUsageTable() {
             {
                 data: 'date',
                 title: '日付',
+                width: '100px',
                 render: function(data) {
                     return data.toLocaleDateString('ja-JP');
                 }
             },
             {
                 data: 'model',
-                title: 'モデル'
+                title: 'モデル',
+                width: '80px'
             },
             {
                 data: 'input',
                 className: 'text-end',
+                width: '120px',
                 render: function(data, type, row) {
                     const inputText = data.toLocaleString();
                     const previousRecord = getPreviousDayRecord(row);
@@ -151,6 +154,7 @@ function initializeIncludedUsageTable() {
             {
                 data: 'output',
                 className: 'text-end',
+                width: '120px',
                 render: function(data, type, row) {
                     const outputText = data.toLocaleString();
                     const previousRecord = getPreviousDayRecord(row);
@@ -171,6 +175,7 @@ function initializeIncludedUsageTable() {
             {
                 data: 'cacheWrite',
                 className: 'text-end',
+                width: '120px',
                 render: function(data, type, row) {
                     const cacheWriteText = data.toLocaleString();
                     const previousRecord = getPreviousDayRecord(row);
@@ -191,6 +196,7 @@ function initializeIncludedUsageTable() {
             {
                 data: 'cacheRead',
                 className: 'text-end',
+                width: '120px',
                 render: function(data, type, row) {
                     const cacheReadText = data.toLocaleString();
                     const previousRecord = getPreviousDayRecord(row);
@@ -211,6 +217,7 @@ function initializeIncludedUsageTable() {
             {
                 data: 'totalTokens',
                 className: 'text-end',
+                width: '120px',
                 render: function(data, type, row) {
                     const totalTokensText = data.toLocaleString();
                     const previousRecord = getPreviousDayRecord(row);
@@ -231,6 +238,7 @@ function initializeIncludedUsageTable() {
             {
                 data: 'apiCost',
                 className: 'text-end',
+                width: '100px',
                 render: function(data, type, row) {
                     const apiCostText = data;
                     const previousRecord = getPreviousDayRecord(row);
@@ -253,6 +261,7 @@ function initializeIncludedUsageTable() {
             {
                 data: 'costToYou',
                 className: 'text-end',
+                width: '100px',
                 render: function(data, type, row) {
                     // Cost to Youが0、空、未定義、またはNaNの場合は何も表示しない
                     if (data === null || data === undefined || data === '' || data === 0 || data === '0') {
@@ -286,8 +295,17 @@ function initializeIncludedUsageTable() {
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json'
         },
-        responsive: true,
-        pageLength: 25
+        responsive: false, // レスポンシブを無効にして幅を固定
+        scrollX: true, // 横スクロールを有効にする
+        scrollCollapse: true,
+        pageLength: 25,
+        autoWidth: false, // 自動幅調整を無効にする
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'text-nowrap'
+            }
+        ]
     });
 }
 
