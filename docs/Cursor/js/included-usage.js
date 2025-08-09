@@ -53,36 +53,58 @@ function initializeIncludedUsageTable() {
             { data: 'model' },
             {
                 data: 'input',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'output',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'cacheWrite',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'cacheRead',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'totalTokens',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
-            { data: 'apiCost' },
-            { data: 'costToYou' }
+            {
+                data: 'apiCost',
+                className: 'text-end',
+                render: function(data) {
+                    return data;
+                }
+            },
+            {
+                data: 'costToYou',
+                className: 'text-end',
+                render: function(data) {
+                    // Cost to Youが0、空、未定義、またはNaNの場合は何も表示しない
+                    if (data === null || data === undefined || data === '' || data === 0) {
+                        return '0';
+                    }
+                    const cost = parseFloat(data);
+                    return (cost === 0 || isNaN(cost)) ? '' : data.toString();
+                }
+            }
         ],
         order: [[0, 'desc']],
         language: {
