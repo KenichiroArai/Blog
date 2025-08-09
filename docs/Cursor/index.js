@@ -542,15 +542,14 @@ function updateTokensStats() {
         const dailyAvgTokens = Math.round(latestDailyData.total / latestDailyData.count);
         const dailyMaxTokens = latestDailyData.max;
 
-        // 最新使用日の統計を表示
+        // 最新使用日の統計を表示（最新使用日の日付を含める）
+        document.getElementById('latest-usage-date-value').textContent = latestDate;
         document.getElementById('daily-total-tokens-value').textContent = dailyTotalTokens.toLocaleString();
         document.getElementById('daily-avg-tokens-value').textContent = dailyAvgTokens.toLocaleString();
         document.getElementById('daily-max-tokens-value').textContent = dailyMaxTokens.toLocaleString();
 
-        // 最新の使用情報
-        const latestToken = tokensData[tokensData.length - 1];
-        const latestTokensInfo = `最新使用日: ${latestDate}\n最新トークン数: ${latestToken.Tokens.toLocaleString()}\nモデル: ${latestToken.Model}`;
-        document.getElementById('latest-tokens-info').textContent = latestTokensInfo;
+        // 最新使用日の日付を統計に含める（latest-tokens-infoは空にする）
+        document.getElementById('latest-tokens-info').textContent = '';
     }
 }
 
