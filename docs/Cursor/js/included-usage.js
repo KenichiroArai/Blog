@@ -44,43 +44,61 @@ function initializeIncludedUsageTable() {
         columns: [
             {
                 data: 'date',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleDateString('ja-JP');
                 }
             },
-            { data: 'model' },
+            {
+                data: 'model',
+                className: 'text-start'
+            },
             {
                 data: 'input',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'output',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'cacheWrite',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'cacheRead',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
             {
                 data: 'totalTokens',
+                className: 'text-end',
                 render: function(data) {
                     return data.toLocaleString();
                 }
             },
-            { data: 'apiCost' },
-            { data: 'costToYou' }
+            {
+                data: 'apiCost',
+                className: 'text-end'
+            },
+            {
+                data: 'costToYou',
+                className: 'text-end',
+                render: function(data) {
+                    return data || '0';
+                }
+            }
         ],
         order: [[0, 'desc']],
         language: {
