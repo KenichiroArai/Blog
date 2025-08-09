@@ -39,8 +39,81 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// 前日との差を計算する関数
+function calculatePreviousDayDifference(currentRecord, previousRecord) {
+    if (!previousRecord) {
+        return {
+            totalTokens: null,
+            input: null,
+            output: null,
+            apiCost: null
+        };
+    }
+
+    return {
+        totalTokens: currentRecord.totalTokens - previousRecord.totalTokens,
+        input: currentRecord.input - previousRecord.input,
+        output: currentRecord.output - previousRecord.output,
+        apiCost: parseFloat(currentRecord.apiCost || 0) - parseFloat(previousRecord.apiCost || 0)
+    };
+}
+
+// 差の表示形式を整形する関数
+function formatDifference(value, isPercentage = false) {
+    if (value === null || value === undefined) {
+        return '-';
+    }
+
+    if (value === 0) {
+        return '±0';
+    }
+
+    const sign = value > 0 ? '+' : '';
+    const formattedValue = Math.abs(value).toLocaleString();
+
+    if (isPercentage) {
+        return `${sign}${value.toFixed(2)}%`;
+    } else {
+        return `${sign}${formattedValue}`;
+    }
+}
+
+// 差の表示クラスを取得する関数
+function getDifferenceClass(value) {
+    if (value === null || value === undefined) {
+        return '';
+    }
+    if (value > 0) {
+        return 'text-success';
+    } else if (value < 0) {
+        return 'text-danger';
+    } else {
+        return 'text-muted';
+    }
+}
+
 // Included Usage DataTableの初期化
 function initializeIncludedUsageTable() {
+    // 前日との差を計算するためのヘルパー関数
+    function getPreviousDayRecord(currentRecord) {
+        // 同じモデルのデータを日付順にソート
+        const sameModelRecords = includedUsageData
+            .filter(record => record.model === currentRecord.model)
+            .sort((a, b) => a.date - b.date);
+
+        // 現在のレコードのインデックスを見つける
+        const currentIndex = sameModelRecords.findIndex(record =>
+            record.date.getTime() === currentRecord.date.getTime()
+        );
+
+        // 前日のレコードがない場合はnullを返す
+        if (currentIndex <= 0) {
+            return null;
+        }
+
+        return sameModelRecords[currentIndex - 1];
+    }
+
     includedUsageTable = $('#included-usage-table').DataTable({
         data: includedUsageData,
         columns: [
@@ -58,55 +131,154 @@ function initializeIncludedUsageTable() {
             {
                 data: 'input',
                 className: 'text-end',
-                render: function(data) {
-                    return data.toLocaleString();
+                render: function(data, type, row) {
+                    const inputText = data.toLocaleString();
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const diff = data - previousRecord.input;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${inputText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return inputText;
                 }
             },
             {
                 data: 'output',
                 className: 'text-end',
-                render: function(data) {
-                    return data.toLocaleString();
+                render: function(data, type, row) {
+                    const outputText = data.toLocaleString();
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const diff = data - previousRecord.output;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${outputText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return outputText;
                 }
             },
             {
                 data: 'cacheWrite',
                 className: 'text-end',
-                render: function(data) {
-                    return data.toLocaleString();
+                render: function(data, type, row) {
+                    const cacheWriteText = data.toLocaleString();
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const diff = data - previousRecord.cacheWrite;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${cacheWriteText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return cacheWriteText;
                 }
             },
             {
                 data: 'cacheRead',
                 className: 'text-end',
-                render: function(data) {
-                    return data.toLocaleString();
+                render: function(data, type, row) {
+                    const cacheReadText = data.toLocaleString();
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const diff = data - previousRecord.cacheRead;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${cacheReadText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return cacheReadText;
                 }
             },
             {
                 data: 'totalTokens',
                 className: 'text-end',
-                render: function(data) {
-                    return data.toLocaleString();
+                render: function(data, type, row) {
+                    const totalTokensText = data.toLocaleString();
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const diff = data - previousRecord.totalTokens;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${totalTokensText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return totalTokensText;
                 }
             },
             {
                 data: 'apiCost',
                 className: 'text-end',
-                render: function(data) {
-                    return data;
+                render: function(data, type, row) {
+                    const apiCostText = data;
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const currentCost = parseFloat(data || 0);
+                        const previousCost = parseFloat(previousRecord.apiCost || 0);
+                        const diff = currentCost - previousCost;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${apiCostText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return apiCostText;
                 }
             },
             {
                 data: 'costToYou',
                 className: 'text-end',
-                render: function(data) {
+                render: function(data, type, row) {
                     // Cost to Youが0、空、未定義、またはNaNの場合は何も表示しない
                     if (data === null || data === undefined || data === '' || data === 0 || data === '0') {
                         return '0';
                     }
                     const cost = parseFloat(data);
-                    return (cost === 0 || isNaN(cost)) ? '' : data.toString();
+                    if (cost === 0 || isNaN(cost)) {
+                        return '';
+                    }
+
+                    const costText = data.toString();
+                    const previousRecord = getPreviousDayRecord(row);
+
+                    if (previousRecord && type === 'display') {
+                        const currentCost = parseFloat(data || 0);
+                        const previousCost = parseFloat(previousRecord.costToYou || 0);
+                        const diff = currentCost - previousCost;
+                        const diffText = formatDifference(diff);
+                        const diffClass = getDifferenceClass(diff);
+
+                        if (diff !== 0) {
+                            return `${costText} <small class="${diffClass}">(${diffText})</small>`;
+                        }
+                    }
+
+                    return costText;
                 }
             }
         ],
@@ -124,30 +296,80 @@ function updateIncludedUsageStats() {
     if (includedUsageData.length === 0) return;
 
     // 最新のauto行のデータを取得
-    const latestAutoRecord = includedUsageData
+    const autoRecords = includedUsageData
         .filter(record => record.model.toLowerCase() === 'auto')
-        .sort((a, b) => b.date - a.date)[0];
+        .sort((a, b) => b.date - a.date);
+
+    const latestAutoRecord = autoRecords[0];
+    const previousAutoRecord = autoRecords[1]; // 前日のデータ
 
     if (!latestAutoRecord) {
         console.warn('No auto record found for stats');
         return;
     }
 
+    // 前日との差を計算
+    const differences = calculatePreviousDayDifference(latestAutoRecord, previousAutoRecord);
+
     // 最新使用日の統計を表示
     const latestUsageDateValue = document.getElementById('latest-included-usage-date-value');
     if (latestUsageDateValue) latestUsageDateValue.textContent = latestAutoRecord.dateStr;
 
+    // Total Tokens（前日との差付き）
     const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
-    if (latestTotalTokensValue) latestTotalTokensValue.textContent = latestAutoRecord.totalTokens.toLocaleString();
+    if (latestTotalTokensValue) {
+        const totalTokensText = latestAutoRecord.totalTokens.toLocaleString();
+        const diffText = formatDifference(differences.totalTokens);
+        const diffClass = getDifferenceClass(differences.totalTokens);
 
+        if (differences.totalTokens !== null) {
+            latestTotalTokensValue.innerHTML = `${totalTokensText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestTotalTokensValue.textContent = totalTokensText;
+        }
+    }
+
+    // Input Tokens（前日との差付き）
     const latestInputTokensValue = document.getElementById('latest-input-tokens-value');
-    if (latestInputTokensValue) latestInputTokensValue.textContent = latestAutoRecord.input.toLocaleString();
+    if (latestInputTokensValue) {
+        const inputText = latestAutoRecord.input.toLocaleString();
+        const diffText = formatDifference(differences.input);
+        const diffClass = getDifferenceClass(differences.input);
 
+        if (differences.input !== null) {
+            latestInputTokensValue.innerHTML = `${inputText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestInputTokensValue.textContent = inputText;
+        }
+    }
+
+    // Output Tokens（前日との差付き）
     const latestOutputTokensValue = document.getElementById('latest-output-tokens-value');
-    if (latestOutputTokensValue) latestOutputTokensValue.textContent = latestAutoRecord.output.toLocaleString();
+    if (latestOutputTokensValue) {
+        const outputText = latestAutoRecord.output.toLocaleString();
+        const diffText = formatDifference(differences.output);
+        const diffClass = getDifferenceClass(differences.output);
 
+        if (differences.output !== null) {
+            latestOutputTokensValue.innerHTML = `${outputText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestOutputTokensValue.textContent = outputText;
+        }
+    }
+
+    // API Cost（前日との差付き）
     const latestApiCostValue = document.getElementById('latest-api-cost-value');
-    if (latestApiCostValue) latestApiCostValue.textContent = latestAutoRecord.apiCost;
+    if (latestApiCostValue) {
+        const apiCostText = latestAutoRecord.apiCost;
+        const diffText = formatDifference(differences.apiCost);
+        const diffClass = getDifferenceClass(differences.apiCost);
+
+        if (differences.apiCost !== null) {
+            latestApiCostValue.innerHTML = `${apiCostText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestApiCostValue.textContent = apiCostText;
+        }
+    }
 }
 
 // Included Usage グラフの作成
