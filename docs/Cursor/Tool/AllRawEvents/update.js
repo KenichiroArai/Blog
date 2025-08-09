@@ -202,6 +202,63 @@ function findLatestInputCSVFile(inputDir) {
 }
 
 /**
+ * データの先頭を比較して新しいデータかどうかを判定する
+ * @param {Array} existingData - 既存のデータ配列
+ * @param {Array} newData - 新しいデータ配列
+ * @returns {boolean} 新しいデータの場合true、既存データと同じまたは古い場合はfalse
+ */
+function isNewData(existingData, newData) {
+    if (existingData.length === 0) {
+        console.log('既存データがないため、新しいデータとして扱います');
+        return true;
+    }
+
+    if (newData.length === 0) {
+        console.log('新しいデータが空のため、処理をスキップします');
+        return false;
+    }
+
+    // 既存データと新しいデータを日付順でソート
+    const sortedExisting = sortByDate([...existingData]);
+    const sortedNew = sortByDate([...newData]);
+
+    // 既存データの最新（先頭）と新しいデータの最新（先頭）を比較
+    const latestExisting = sortedExisting[0];
+    const latestNew = sortedNew[0];
+
+    if (!latestExisting || !latestNew) {
+        console.log('データの比較に失敗しました');
+        return true; // エラーの場合は安全のため新しいデータとして扱う
+    }
+
+    const existingDate = new Date(latestExisting['Date'] || '');
+    const newDate = new Date(latestNew['Date'] || '');
+
+    console.log(`既存データの最新日付: ${existingDate.toISOString().split('T')[0]}`);
+    console.log(`新しいデータの最新日付: ${newDate.toISOString().split('T')[0]}`);
+
+    if (newDate > existingDate) {
+        console.log('新しいデータが既存データより新しいため、取り込みます');
+        return true;
+    } else if (newDate.getTime() === existingDate.getTime()) {
+        // 日付が同じ場合は、より詳細な比較を行う
+        const existingKey = `${latestExisting['Date']}-${latestExisting['User']}-${latestExisting['Model']}-${latestExisting['Tokens']}`;
+        const newKey = `${latestNew['Date']}-${latestNew['User']}-${latestNew['Model']}-${latestNew['Tokens']}`;
+
+        if (existingKey !== newKey) {
+            console.log('日付は同じですが、データ内容が異なるため、取り込みます');
+            return true;
+        } else {
+            console.log('既存データと同じ内容のため、取り込みをスキップします');
+            return false;
+        }
+    } else {
+        console.log('新しいデータが既存データより古いため、取り込みをスキップします');
+        return false;
+    }
+}
+
+/**
  * メイン処理
  */
 function main() {
@@ -235,28 +292,33 @@ function main() {
                 }
             });
 
-            // 既存のデータと新しいデータを結合
-            let allData = [...existingData, ...convertedData];
-            console.log(`  ${convertedData.length}件のデータを追加しました`);
+            // 先頭データを比較して新しいデータかどうかを判定
+            if (isNewData(existingData, convertedData)) {
+                // 既存のデータと新しいデータを結合
+                let allData = [...existingData, ...convertedData];
+                console.log(`  ${convertedData.length}件のデータを追加しました`);
 
-            // 重複を排除
-            const uniqueData = removeDuplicates(allData);
-            console.log(`重複排除後: ${uniqueData.length}件`);
+                // 重複を排除
+                const uniqueData = removeDuplicates(allData);
+                console.log(`重複排除後: ${uniqueData.length}件`);
 
-            // 日付順にソート（最新順）
-            const sortedData = sortByDate(uniqueData);
-            console.log(`日付順にソートしました（最新順）`);
+                // 日付順にソート（最新順）
+                const sortedData = sortByDate(uniqueData);
+                console.log(`日付順にソートしました（最新順）`);
 
-            // ヘッダーを決定（既存のデータのヘッダーを使用）
-            const headers = existingData.length > 0
-                ? Object.keys(existingData[0])
-                : ['Date', 'User', 'Kind', 'Max Mode', 'Model', 'Tokens', 'Cost ($)'];
+                // ヘッダーを決定（既存のデータのヘッダーを使用）
+                const headers = existingData.length > 0
+                    ? Object.keys(existingData[0])
+                    : ['Date', 'User', 'Kind', 'Max Mode', 'Model', 'Tokens', 'Cost ($)'];
 
-            // CSVファイルに書き込み
-            writeCSV(outputFile, sortedData, headers);
+                // CSVファイルに書き込み
+                writeCSV(outputFile, sortedData, headers);
 
-            console.log('CSVファイルの更新が完了しました！');
-            console.log(`最終的なデータ件数: ${sortedData.length}件`);
+                console.log('CSVファイルの更新が完了しました！');
+                console.log(`最終的なデータ件数: ${sortedData.length}件`);
+            } else {
+                console.log('新しいデータではないため、取り込みをスキップしました');
+            }
         } else {
             console.log('最新のCSVファイルにデータが含まれていませんでした');
         }
@@ -279,5 +341,6 @@ module.exports = {
     removeDuplicates,
     writeCSV,
     findLatestInputCSVFile,
+    isNewData,
     main
 };
