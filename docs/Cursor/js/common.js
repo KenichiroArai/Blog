@@ -206,6 +206,18 @@ function parseDate(dateStr) {
 
     console.log('Parsing date:', dateStr);
 
+    // Excelのシリアル番号形式を処理（例：45878）
+    const serialNumber = parseFloat(dateStr);
+    if (!isNaN(serialNumber) && serialNumber > 1) {
+        // Excelのシリアル番号は1900年1月1日からの日数
+        // 25569は1970年1月1日のExcelシリアル番号
+        const date = new Date((serialNumber - 25569) * 86400 * 1000);
+        if (!isNaN(date.getTime())) {
+            console.log('Parsed date (Excel serial):', date);
+            return date;
+        }
+    }
+
     // 2025/7/17 形式を処理（YYYY/M/D）
     const match = dateStr.toString().match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
     if (match) {
