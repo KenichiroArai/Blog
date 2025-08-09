@@ -516,26 +516,42 @@ function updateLatestRecord() {
 function updateTokensStats() {
     if (tokensData.length === 0) return;
 
-    const totalTokens = tokensData.reduce((sum, record) => sum + record.Tokens, 0);
-    const avgTokens = Math.round(totalTokens / tokensData.length);
-    const maxTokens = Math.max(...tokensData.map(record => record.Tokens));
+    // 日別データの集計
+    const dailyData = {};
+    tokensData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                total: 0,
+                count: 0,
+                max: 0
+            };
+        }
+        dailyData[dateStr].total += record.Tokens;
+        dailyData[dateStr].count += 1;
+        dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record.Tokens);
+    });
 
-    // 使用日数の計算
-    const uniqueDates = new Set(tokensData.map(record => record.Date.toDateString()));
-    const daysCount = uniqueDates.size;
+    // 最新使用日のデータを取得
+    const dates = Object.keys(dailyData).sort();
+    const latestDate = dates[dates.length - 1];
+    const latestDailyData = dailyData[latestDate];
 
-    // 最新の記録
-    const latestToken = tokensData[tokensData.length - 1];
+    if (latestDailyData) {
+        const dailyTotalTokens = latestDailyData.total;
+        const dailyAvgTokens = Math.round(latestDailyData.total / latestDailyData.count);
+        const dailyMaxTokens = latestDailyData.max;
 
-    // 統計の表示
-    document.getElementById('total-tokens-value').textContent = totalTokens.toLocaleString();
-    document.getElementById('avg-tokens-value').textContent = avgTokens.toLocaleString();
-    document.getElementById('max-tokens-value').textContent = maxTokens.toLocaleString();
-    document.getElementById('tokens-days-value').textContent = daysCount;
+        // 最新使用日の統計を表示
+        document.getElementById('daily-total-tokens-value').textContent = dailyTotalTokens.toLocaleString();
+        document.getElementById('daily-avg-tokens-value').textContent = dailyAvgTokens.toLocaleString();
+        document.getElementById('daily-max-tokens-value').textContent = dailyMaxTokens.toLocaleString();
 
-    // 最新の使用情報
-    const latestTokensInfo = `最新使用日: ${latestToken.Date.toLocaleDateString('ja-JP')}\n最新トークン数: ${latestToken.Tokens.toLocaleString()}\nモデル: ${latestToken.Model}`;
-    document.getElementById('latest-tokens-info').textContent = latestTokensInfo;
+        // 最新の使用情報
+        const latestToken = tokensData[tokensData.length - 1];
+        const latestTokensInfo = `最新使用日: ${latestDate}\n最新トークン数: ${latestToken.Tokens.toLocaleString()}\nモデル: ${latestToken.Model}`;
+        document.getElementById('latest-tokens-info').textContent = latestTokensInfo;
+    }
 }
 
 // プログレスバーの更新
