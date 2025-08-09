@@ -7,10 +7,8 @@
     <title>Cursor使用記録　v0.4.0</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- DataTables CSS -->
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="style.css?v=1.0.1" rel="stylesheet">
+    <link href="css/common.css?v=1.0.1" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -21,6 +19,11 @@
                     Cursor使用記録　v0.4.0
                 </a>
             </span>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="index.html">トップページ</a>
+                <a class="nav-link" href="pages/records.html">使用記録</a>
+                <a class="nav-link" href="pages/tokens.html">Usage Tokens</a>
+            </div>
         </div>
     </nav>
 
@@ -35,172 +38,128 @@
         <!-- エラーメッセージ -->
         <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
 
-        <!-- 上部 -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
-                <!-- 最新の使用記録 -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="card-title text-center mb-3">最新の使用記録</h2>
-                            <div class="usage-stats">
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <h3 class="h5 mb-2">使用統計</h3>
-                                        <div class="usage-stats-summary">
-                                            <div class="stat-item">
-                                                <span class="stat-label">Suggested Lines:</span>
-                                                <span id="suggested-lines-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">Accepted Lines:</span>
-                                                <span id="accepted-lines-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">Tabs Accepted:</span>
-                                                <span id="tabs-accepted-value" class="stat-value"></span>
-                                            </div>
+        <!-- ページタイトル -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center">Cursor使用記録ダッシュボード</h1>
+                <p class="text-center text-muted">最新の使用状況を確認できます</p>
+            </div>
+        </div>
+
+        <!-- メインコンテンツ -->
+        <div class="row g-4">
+            <!-- 最新の使用記録 -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="card-title mb-0">最新の使用記録</h2>
+                        <a href="pages/records.html" class="btn btn-primary btn-sm">詳細を見る</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="usage-stats">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="h5 mb-2">使用統計</h3>
+                                    <div class="usage-stats-summary">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Suggested Lines:</span>
+                                            <span id="suggested-lines-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Accepted Lines:</span>
+                                            <span id="accepted-lines-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Tabs Accepted:</span>
+                                            <span id="tabs-accepted-value" class="stat-value"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <h3 class="h5 mb-2">使用日数</h3>
-                                        <div class="progress-label">
-                                            <span id="days-label"></span>
-                                            <span id="days-value"></span>
-                                        </div>
-                                        <div class="progress">
-                                            <div id="days-progress" class="progress-bar" role="progressbar"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="usage-info" id="latest-usage-info"></div>
                             </div>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="h5 mb-2">使用日数</h3>
+                                    <div class="progress-label">
+                                        <span id="days-label"></span>
+                                        <span id="days-value"></span>
+                                    </div>
+                                    <div class="progress">
+                                        <div id="days-progress" class="progress-bar" role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="usage-info" id="latest-usage-info"></div>
                         </div>
                     </div>
                 </div>
-                <!-- グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="card-title text-center mb-3">使用状況グラフ</h2>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="chart-container">
-                                        <canvas id="combined-lines-chart"></canvas>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="chart-container">
-                                        <canvas id="tabs-accepted-chart"></canvas>
+            </div>
+
+            <!-- 最新の Usage Tokens -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="card-title mb-0">最新の Usage Tokens</h2>
+                        <a href="pages/tokens.html" class="btn btn-primary btn-sm">詳細を見る</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="usage-tokens-stats">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="h5 mb-2">最新使用日統計</h3>
+                                    <div class="usage-stats-summary">
+                                        <div class="stat-item">
+                                            <span class="stat-label">最新使用日:</span>
+                                            <span id="latest-usage-date-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">日別総トークン数:</span>
+                                            <span id="daily-total-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">日別平均トークン数:</span>
+                                            <span id="daily-avg-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">日別最大トークン数:</span>
+                                            <span id="daily-max-tokens-value" class="stat-value"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="usage-info" id="latest-tokens-info"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Usage Tokens セクション -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
-                <!-- 最新の Usage Tokens -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="card-title text-center mb-3">最新の Usage Tokens</h2>
-                            <div class="usage-tokens-stats">
-                                <div class="card mb-3">
+        <!-- ページリンク -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-3">詳細ページ</h3>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card text-center">
                                     <div class="card-body">
-                                        <h3 class="h5 mb-2">最新使用日統計</h3>
-                                        <div class="usage-stats-summary">
-                                            <div class="stat-item">
-                                                <span class="stat-label">最新使用日:</span>
-                                                <span id="latest-usage-date-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別総トークン数:</span>
-                                                <span id="daily-total-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別平均トークン数:</span>
-                                                <span id="daily-avg-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別最大トークン数:</span>
-                                                <span id="daily-max-tokens-value" class="stat-value"></span>
-                                            </div>
-                                        </div>
+                                        <h4 class="card-title">使用記録</h4>
+                                        <p class="card-text">使用状況の詳細な記録とグラフを確認できます。</p>
+                                        <a href="pages/records.html" class="btn btn-primary">使用記録を見る</a>
                                     </div>
                                 </div>
-                                <div class="usage-info" id="latest-tokens-info"></div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Usage Tokens グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="card-title text-center mb-3">Usage Tokens グラフ</h2>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="chart-container">
-                                        <canvas id="tokens-daily-chart"></canvas>
+                            <div class="col-md-6">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Usage Tokens</h4>
+                                        <p class="card-text">トークン使用量の詳細な記録とグラフを確認できます。</p>
+                                        <a href="pages/tokens.html" class="btn btn-primary">Usage Tokensを見る</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 下部 -->
-        <!-- 記録一覧 -->
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">使用記録一覧</h2>
-                <div class="table-responsive">
-                    <table id="records-table" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>番号</th>
-                                <th>記録日</th>
-                                <th>日数</th>
-                                <th>Fast requests will refresh in X day</th>
-                                <th>Suggested Lines</th>
-                                <th>Accepted Lines</th>
-                                <th>Tabs Accepted</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Usage Tokens 一覧 -->
-        <div class="card mt-4">
-            <div class="card-body">
-                <h2 class="card-title">Usage Tokens 一覧</h2>
-                <div class="table-responsive">
-                    <table id="tokens-table" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>日付</th>
-                                <th>ユーザー</th>
-                                <th>種類</th>
-                                <th>最大モード</th>
-                                <th>モデル</th>
-                                <th>トークン数</th>
-                                <th>コスト</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -209,11 +168,9 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <script src="index.js?v=1.0.1"></script>
+    <script src="js/common.js?v=1.0.1"></script>
+    <script src="js/index.js?v=1.0.1"></script>
     <div class="container mt-4">
         <a href="../" class="btn btn-secondary">← トップページに戻る</a>
     </div>
