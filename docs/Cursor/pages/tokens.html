@@ -10,7 +10,7 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../css/common.css?v=1.0.1" rel="stylesheet">
+    <link href="../css/common.css?v=1.0.2" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -44,8 +44,8 @@
         <!-- ページタイトル -->
         <div class="row mb-4">
             <div class="col-12">
-                <h1 class="text-center">Usage Tokens</h1>
-                <p class="text-center text-muted">トークン使用量の詳細な記録とグラフを確認できます</p>
+                <h1 class="text-center">Usage Tokens（統合データ）</h1>
+                <p class="text-center text-muted">usage-tokens.csvとusage-details.csvを統合した詳細なトークン使用量の記録とグラフを確認できます</p>
             </div>
         </div>
 
@@ -56,7 +56,7 @@
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">最新の Usage Tokens</h2>
+                            <h2 class="card-title mb-0">最新の Usage Tokens（統合データ）</h2>
                         </div>
                         <div class="card-body">
                             <div class="usage-tokens-stats">
@@ -80,6 +80,18 @@
                                                 <span class="stat-label">日別最大トークン数:</span>
                                                 <span id="daily-max-tokens-value" class="stat-value"></span>
                                             </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">日別入力トークン数:</span>
+                                                <span id="daily-input-tokens-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">日別出力トークン数:</span>
+                                                <span id="daily-output-tokens-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">日別キャッシュ読み取り数:</span>
+                                                <span id="daily-cache-read-tokens-value" class="stat-value"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -93,7 +105,7 @@
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">Usage Tokens グラフ</h2>
+                            <h2 class="card-title mb-0">Usage Tokens グラフ（統合データ）</h2>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
@@ -112,19 +124,23 @@
         <!-- Usage Tokens 一覧 -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title mb-0">Usage Tokens 一覧</h2>
+                <h2 class="card-title mb-0">Usage Tokens 一覧（統合データ）</h2>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="tokens-table" class="table table-striped">
+                    <table id="tokens-table" class="table table-striped table-wide">
                         <thead>
                             <tr>
-                                <th>日付</th>
+                                <th>日時</th>
                                 <th>ユーザー</th>
                                 <th>種類</th>
                                 <th>最大モード</th>
                                 <th>モデル</th>
-                                <th>トークン数</th>
+                                <th>総トークン数</th>
+                                <th>入力（キャッシュ書き込み含む）</th>
+                                <th>入力（キャッシュ書き込み除く）</th>
+                                <th>キャッシュ読み取り</th>
+                                <th>出力</th>
                                 <th>コスト</th>
                             </tr>
                         </thead>
@@ -142,8 +158,8 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <script src="../js/common.js?v=1.0.1"></script>
-    <script src="../js/tokens.js?v=1.0.1"></script>
+    <script src="../js/common.js?v=1.0.2"></script>
+    <script src="../js/tokens.js?v=1.0.2"></script>
     <div class="container mt-4">
         <a href="../index.html" class="btn btn-secondary">← トップページに戻る</a>
     </div>

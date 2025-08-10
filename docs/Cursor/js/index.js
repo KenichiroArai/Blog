@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         await loadExcelFile();
-        await loadTokensData();
+        await loadTokensData(); // 統合されたトークンデータを読み込み
         await loadIncludedUsageData();
         updateLatestRecord();
         updateTokensStats();

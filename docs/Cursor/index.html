@@ -8,7 +8,7 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="css/common.css?v=1.0.1" rel="stylesheet">
+    <link href="css/common.css?v=1.0.2" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -43,7 +43,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <h1 class="text-center">Cursor使用記録ダッシュボード</h1>
-                <p class="text-center text-muted">最新の使用状況を確認できます</p>
+                <p class="text-center text-muted">最新の使用状況を確認できます（usage-tokens.csvとusage-details.csvを統合）</p>
             </div>
         </div>
 
@@ -117,12 +117,12 @@
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
-                            <h2 class="card-title mb-2">Usage Tokens</h2>
+                            <h2 class="card-title mb-2">Usage Tokens（統合データ）</h2>
                             <div class="d-flex justify-content-end">
                                 <a href="pages/tokens.html" class="btn btn-primary btn-sm"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="top"
-                                   title="トークン使用量の詳細な記録とグラフを確認できます。日別のトークン使用量、平均値、最大値の推移をグラフで表示し、使用傾向を分析できます。また、月別・週別の集計データや、トークン使用量の予測分析も確認できます。">詳細を見る</a>
+                                   title="usage-tokens.csvとusage-details.csvを統合した詳細なトークン使用量の記録とグラフを確認できます。日別のトークン使用量、入力/出力/キャッシュ読み取りの詳細分析、使用傾向をグラフで表示できます。">詳細を見る</a>
                             </div>
                         </div>
                     </div>
@@ -147,6 +147,18 @@
                                         <div class="stat-item">
                                             <span class="stat-label">日別最大トークン数:</span>
                                             <span id="daily-max-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">日別入力トークン数:</span>
+                                            <span id="daily-input-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">日別出力トークン数:</span>
+                                            <span id="daily-output-tokens-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">日別キャッシュ読み取り数:</span>
+                                            <span id="daily-cache-read-tokens-value" class="stat-value"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -212,8 +224,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="js/common.js?v=1.0.1"></script>
-    <script src="js/index.js?v=1.0.1"></script>
+    <script src="js/common.js?v=1.0.2"></script>
+    <script src="js/index.js?v=1.0.2"></script>
     <script>
         // ツールチップを初期化
         document.addEventListener('DOMContentLoaded', function() {
