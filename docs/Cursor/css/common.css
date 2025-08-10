@@ -9,6 +9,45 @@
     text-decoration: none;
 }
 
+/* コンテナの最大幅設定 */
+.container-fluid {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* 大画面でのパディング調整 */
+@media (min-width: 1400px) {
+    .container-fluid {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+    .container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* 超大画面でのパディング調整 */
+@media (min-width: 1920px) {
+    .container-fluid {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .container {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
 /* カードヘッダーの新しいレイアウト対応 */
 .card-header {
     padding: 1rem;
@@ -470,6 +509,59 @@
   font-weight: 600;
 }
 
+/* 大画面でのレイアウト最適化 */
+@media (min-width: 1400px) {
+  .dashboard-container {
+    padding: 1.5rem;
+  }
+
+  .card-body {
+    padding: 1.25rem;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+
+  .chart-container-large {
+    height: 500px;
+  }
+
+  .stat-card {
+    padding: 1.25rem;
+  }
+
+  .stat-value-large {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .dashboard-container {
+    padding: 2rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .chart-container {
+    height: 350px;
+  }
+
+  .chart-container-large {
+    height: 600px;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+  }
+
+  .stat-value-large {
+    font-size: 1.6rem;
+  }
+}
+
 @media (max-width: 900px) {
   .dashboard-container {
     padding: 1rem;
@@ -605,6 +697,16 @@
 
 @media (max-width: 767.98px) {
   /* 小画面での調整 */
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .card-header {
     padding: 0.75rem;
   }
@@ -735,5 +837,38 @@
 
   .chart-container-large {
     height: 250px;
+  }
+}
+
+/* 超小画面での調整 */
+@media (max-width: 575.98px) {
+  .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .dashboard-container {
+    padding: 0.5rem;
+  }
+
+  .card-body {
+    padding: 0.25rem;
+  }
+
+  .stat-card {
+    padding: 0.25rem;
+  }
+
+  .chart-container {
+    height: 120px;
+  }
+
+  .chart-container-large {
+    height: 200px;
   }
 }
