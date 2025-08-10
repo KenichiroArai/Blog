@@ -112,7 +112,10 @@ function createUsageCharts() {
         dailyData[dateStr].cacheReadTotal += record['Cache Read'] || 0;
     });
 
-    const dates = Object.keys(dailyData).sort();
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
     const dailyTotals = dates.map(date => dailyData[date].total);
     const dailyAverages = dates.map(date => Math.round(dailyData[date].total / dailyData[date].count));
     const dailyMaxs = dates.map(date => dailyData[date].max);
@@ -281,7 +284,10 @@ function updateUsageStats() {
     });
 
     // 最新使用日のデータを取得
-    const dates = Object.keys(dailyData).sort();
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
     const latestDate = dates[dates.length - 1];
     const latestDailyData = dailyData[latestDate];
 
