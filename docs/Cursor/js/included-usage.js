@@ -412,8 +412,11 @@ function createCostChart() {
         // 日付とモデルごとのデータを整理
         const modelData = {};
 
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))].sort();
+        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
+            .map(dateStr => new Date(dateStr))
+            .sort((a, b) => a - b)
+            .map(date => date.toLocaleDateString('ja-JP'));
 
         includedUsageData.forEach(record => {
             const model = record.model;
@@ -539,8 +542,11 @@ function createTotalTokensChart() {
         // 日付とモデルごとのデータを整理
         const modelData = {};
 
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))].sort();
+        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
+            .map(dateStr => new Date(dateStr))
+            .sort((a, b) => a - b)
+            .map(date => date.toLocaleDateString('ja-JP'));
 
         includedUsageData.forEach(record => {
             const model = record.model;
@@ -645,8 +651,11 @@ function createInputOutputChart() {
         // 日付とモデルごとのデータを整理
         const modelData = {};
 
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))].sort();
+        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
+            .map(dateStr => new Date(dateStr))
+            .sort((a, b) => a - b)
+            .map(date => date.toLocaleDateString('ja-JP'));
 
         includedUsageData.forEach(record => {
             const model = record.model;
