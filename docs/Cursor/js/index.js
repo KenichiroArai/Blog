@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         await loadExcelFile();
-        await loadTokensData(); // 統合されたトークンデータを読み込み
+        await loadUsageData(); // 統合されたトークンデータを読み込み
         await loadIncludedUsageData();
         updateLatestRecord();
         updateTokensStats();
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (recordsData.length > 0) {
                 updateLatestRecord();
             }
-            if (tokensData.length > 0) {
+            if (usageData.length > 0) {
                 updateTokensStats();
             }
             if (includedUsageData.length > 0) {

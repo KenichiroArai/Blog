@@ -1,6 +1,6 @@
 // グローバル変数
 let recordsData = [];
-let tokensData = [];
+let usageData = [];
 let includedUsageData = [];
 let usageDetailsData = []; // 追加：usage-details.csvのデータ
 
@@ -320,7 +320,7 @@ async function loadUsageDetailsData() {
 }
 
 // CSVファイル読み込み（統合版）
-async function loadTokensData() {
+async function loadUsageData() {
     try {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
@@ -373,9 +373,9 @@ async function loadTokensData() {
 
         // Usage Detailsデータと統合
         await loadUsageDetailsData();
-        tokensData = mergeTokensData(processedTokensData, usageDetailsData);
+        usageData = mergeTokensData(processedTokensData, usageDetailsData);
 
-        console.log('Merged tokens data loaded:', tokensData.length, 'records');
+        console.log('Merged tokens data loaded:', usageData.length, 'records');
     } catch (error) {
         console.error('CSVファイルの読み込みに失敗しました:', error);
         throw new Error('CSVファイルの読み込みに失敗しました: ' + error.message);
@@ -503,11 +503,11 @@ function updateLatestRecord() {
 
 // Tokens統計の更新
 function updateTokensStats() {
-    if (tokensData.length === 0) return;
+    if (usageData.length === 0) return;
 
     // 日別データの集計
     const dailyData = {};
-    tokensData.forEach(record => {
+    usageData.forEach(record => {
         const dateStr = record.Date.toLocaleDateString('ja-JP');
         if (!dailyData[dateStr]) {
             dailyData[dateStr] = {

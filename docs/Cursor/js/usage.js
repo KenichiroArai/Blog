@@ -1,24 +1,24 @@
 // グローバル変数
-let tokensTable;
-let tokensDailyChart;
+let usageTable;
+let usageDailyChart;
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        await loadTokensData();
-        initializeTokensTable();
-        updateTokensStats();
-        createTokensCharts();
+        await loadUsageData();
+        initializeUsageTable();
+        updateUsageStats();
+        createUsageCharts();
     } catch (error) {
         console.error('初期化エラー:', error);
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
 
         // 部分的な初期化を試行
         try {
-            if (tokensData.length > 0) {
-                initializeTokensTable();
-                updateTokensStats();
-                createTokensCharts();
+            if (usageData.length > 0) {
+                initializeUsageTable();
+                updateUsageStats();
+                createUsageCharts();
             }
         } catch (partialError) {
             console.error('部分的な初期化も失敗:', partialError);
@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Tokens DataTableの初期化
-function initializeTokensTable() {
-    tokensTable = $('#tokens-table').DataTable({
-        data: tokensData,
+// Usage DataTableの初期化
+function initializeUsageTable() {
+    usageTable = $('#usage-table').DataTable({
+        data: usageData,
         columns: [
             {
                 data: 'Date',
@@ -88,11 +88,11 @@ function initializeTokensTable() {
     });
 }
 
-// Tokens グラフの作成
-function createTokensCharts() {
+// Usage グラフの作成
+function createUsageCharts() {
     // 日別データの集計
     const dailyData = {};
-    tokensData.forEach(record => {
+    usageData.forEach(record => {
         const dateStr = record.Date.toLocaleDateString('ja-JP');
         if (!dailyData[dateStr]) {
             dailyData[dateStr] = {
@@ -121,8 +121,8 @@ function createTokensCharts() {
     const dailyCacheReads = dates.map(date => dailyData[date].cacheReadTotal);
 
     // 日別トークン使用量グラフ
-    const tokensDailyCtx = document.getElementById('tokens-daily-chart').getContext('2d');
-    tokensDailyChart = new Chart(tokensDailyCtx, {
+    const usageDailyCtx = document.getElementById('usage-daily-chart').getContext('2d');
+    usageDailyChart = new Chart(usageDailyCtx, {
         type: 'line',
         data: {
             labels: dates,
@@ -254,13 +254,13 @@ function createTokensCharts() {
     });
 }
 
-// 統計情報の更新（tokens.js専用）
-function updateTokensStats() {
-    if (tokensData.length === 0) return;
+// 統計情報の更新（usage.js専用）
+function updateUsageStats() {
+    if (usageData.length === 0) return;
 
     // 日別データの集計
     const dailyData = {};
-    tokensData.forEach(record => {
+    usageData.forEach(record => {
         const dateStr = record.Date.toLocaleDateString('ja-JP');
         if (!dailyData[dateStr]) {
             dailyData[dateStr] = {
@@ -313,6 +313,6 @@ function updateTokensStats() {
 
         // 総レコード数を表示
         const totalRecordsValue = document.getElementById('total-records-value');
-        if (totalRecordsValue) totalRecordsValue.textContent = tokensData.length.toLocaleString();
+        if (totalRecordsValue) totalRecordsValue.textContent = usageData.length.toLocaleString();
     }
 }
