@@ -64,20 +64,8 @@ function parseCSVLine(line) {
  * @returns {Object} 古い形式のデータ行
  */
 function convertNewFormatToOld(row) {
-    // 新しい形式: Date,User,Kind,Model,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output,Total Tokens,Cost ($)
-    // 古い形式: Date,User,Kind,Max Mode,Model,Tokens,Cost ($)
-
-    const totalTokens = parseInt(row['Total Tokens'] || row['Tokens'] || '0', 10);
-
-    return {
-        'Date': row['Date'] || '',
-        'User': row['User'] || '',
-        'Kind': row['Kind'] || 'Unknown',
-        'Max Mode': 'No', // 新しい形式にはないのでデフォルト値
-        'Model': row['Model'] || 'auto',
-        'Tokens': totalTokens.toString(),
-        'Cost ($)': row['Cost ($)'] || 'Included'
-    };
+    // 新しい形式と古い形式が同じなので、変換は不要
+    return row;
 }
 
 /**
@@ -86,23 +74,8 @@ function convertNewFormatToOld(row) {
  * @returns {Object} 新しい形式のデータ行
  */
 function convertOldFormatToNew(row) {
-    // 古い形式: Date,User,Kind,Max Mode,Model,Tokens,Cost ($)
-    // 新しい形式: Date,User,Kind,Model,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output,Total Tokens,Cost ($)
-
-    const tokens = parseInt(row['Tokens'] || '0', 10);
-
-    return {
-        'Date': row['Date'] || '',
-        'User': row['User'] || '',
-        'Kind': row['Kind'] || 'Unknown',
-        'Model': row['Model'] || 'auto',
-        'Input (w/ Cache Write)': '0',
-        'Input (w/o Cache Write)': '0',
-        'Cache Read': '0',
-        'Output': '0',
-        'Total Tokens': tokens.toString(),
-        'Cost ($)': row['Cost ($)'] || 'Included'
-    };
+    // 新しい形式と古い形式が同じなので、変換は不要
+    return row;
 }
 
 /**
@@ -119,7 +92,7 @@ function sortByDate(data) {
 }
 
 /**
- * 重複を排除する（Date, User, Model, Tokensが同じ場合は重複とみなす）
+ * 重複を排除する（Date, User, Model, Total Tokensが同じ場合は重複とみなす）
  * @param {Array} data - データ配列
  * @returns {Array} 重複排除されたデータ配列
  */
@@ -128,7 +101,7 @@ function removeDuplicates(data) {
     const unique = [];
 
     for (const row of data) {
-        const key = `${row['Date']}-${row['User']}-${row['Model']}-${row['Tokens']}`;
+        const key = `${row['Date']}-${row['User']}-${row['Model']}-${row['Total Tokens']}`;
         if (!seen.has(key)) {
             seen.add(key);
             unique.push(row);
@@ -242,8 +215,8 @@ function isNewData(existingData, newData) {
         return true;
     } else if (newDate.getTime() === existingDate.getTime()) {
         // 日付が同じ場合は、より詳細な比較を行う
-        const existingKey = `${latestExisting['Date']}-${latestExisting['User']}-${latestExisting['Model']}-${latestExisting['Tokens']}`;
-        const newKey = `${latestNew['Date']}-${latestNew['User']}-${latestNew['Model']}-${latestNew['Tokens']}`;
+        const existingKey = `${latestExisting['Date']}-${latestExisting['User']}-${latestExisting['Model']}-${latestExisting['Total Tokens']}`;
+        const newKey = `${latestNew['Date']}-${latestNew['User']}-${latestNew['Model']}-${latestNew['Total Tokens']}`;
 
         if (existingKey !== newKey) {
             console.log('日付は同じですが、データ内容が異なるため、取り込みます');
@@ -281,22 +254,12 @@ function main() {
         console.log(`最新のCSVファイルを処理中: ${path.basename(inputFile)}`);
         const inputData = readCSV(inputFile);
 
-        if (inputData.length > 0) {
-            // 新しい形式のデータを古い形式に変換
-            const convertedData = inputData.map(row => {
-                // 新しい形式かどうかを判定（Total Tokens列があるかどうか）
-                if (row['Total Tokens'] !== undefined) {
-                    return convertNewFormatToOld(row);
-                } else {
-                    return row; // 既に古い形式
-                }
-            });
-
+                if (inputData.length > 0) {
             // 先頭データを比較して新しいデータかどうかを判定
-            if (isNewData(existingData, convertedData)) {
+            if (isNewData(existingData, inputData)) {
                 // 既存のデータと新しいデータを結合
-                let allData = [...existingData, ...convertedData];
-                console.log(`  ${convertedData.length}件のデータを追加しました`);
+                let allData = [...existingData, ...inputData];
+                console.log(`  ${inputData.length}件のデータを追加しました`);
 
                 // 重複を排除
                 const uniqueData = removeDuplicates(allData);
@@ -309,7 +272,7 @@ function main() {
                 // ヘッダーを決定（既存のデータのヘッダーを使用）
                 const headers = existingData.length > 0
                     ? Object.keys(existingData[0])
-                    : ['Date', 'User', 'Kind', 'Max Mode', 'Model', 'Tokens', 'Cost ($)'];
+                    : ['Date', 'User', 'Kind', 'Model', 'Input (w/ Cache Write)', 'Input (w/o Cache Write)', 'Cache Read', 'Output', 'Total Tokens', 'Cost ($)'];
 
                 // CSVファイルに書き込み
                 writeCSV(outputFile, sortedData, headers);
