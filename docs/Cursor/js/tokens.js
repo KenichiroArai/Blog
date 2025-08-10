@@ -253,3 +253,66 @@ function createTokensCharts() {
         }
     });
 }
+
+// 統計情報の更新（tokens.js専用）
+function updateTokensStats() {
+    if (tokensData.length === 0) return;
+
+    // 日別データの集計
+    const dailyData = {};
+    tokensData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                total: 0,
+                count: 0,
+                max: 0,
+                inputTotal: 0,
+                outputTotal: 0,
+                cacheReadTotal: 0
+            };
+        }
+        dailyData[dateStr].total += record['Total Tokens'] || record.Tokens || 0;
+        dailyData[dateStr].count += 1;
+        dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record['Total Tokens'] || record.Tokens || 0);
+        dailyData[dateStr].inputTotal += (record['Input (w/ Cache Write)'] || 0) + (record['Input (w/o Cache Write)'] || 0);
+        dailyData[dateStr].outputTotal += record['Output'] || 0;
+        dailyData[dateStr].cacheReadTotal += record['Cache Read'] || 0;
+    });
+
+    // 最新使用日のデータを取得
+    const dates = Object.keys(dailyData).sort();
+    const latestDate = dates[dates.length - 1];
+    const latestDailyData = dailyData[latestDate];
+
+    if (latestDailyData) {
+        const dailyTotalTokens = latestDailyData.total;
+        const dailyAvgTokens = Math.round(latestDailyData.total / latestDailyData.count);
+        const dailyMaxTokens = latestDailyData.max;
+        const dailyInputTokens = latestDailyData.inputTotal;
+        const dailyOutputTokens = latestDailyData.outputTotal;
+        const dailyCacheReadTokens = latestDailyData.cacheReadTotal;
+
+        // 最新使用日の統計を表示
+        const latestUsageDateValue = document.getElementById('latest-usage-date-value');
+        if (latestUsageDateValue) latestUsageDateValue.textContent = latestDate;
+        const dailyTotalTokensValue = document.getElementById('daily-total-tokens-value');
+        if (dailyTotalTokensValue) dailyTotalTokensValue.textContent = dailyTotalTokens.toLocaleString();
+        const dailyAvgTokensValue = document.getElementById('daily-avg-tokens-value');
+        if (dailyAvgTokensValue) dailyAvgTokensValue.textContent = dailyAvgTokens.toLocaleString();
+        const dailyMaxTokensValue = document.getElementById('daily-max-tokens-value');
+        if (dailyMaxTokensValue) dailyMaxTokensValue.textContent = dailyMaxTokens.toLocaleString();
+
+        // 新しい統計項目を追加
+        const dailyInputTokensValue = document.getElementById('daily-input-tokens-value');
+        if (dailyInputTokensValue) dailyInputTokensValue.textContent = dailyInputTokens.toLocaleString();
+        const dailyOutputTokensValue = document.getElementById('daily-output-tokens-value');
+        if (dailyOutputTokensValue) dailyOutputTokensValue.textContent = dailyOutputTokens.toLocaleString();
+        const dailyCacheReadTokensValue = document.getElementById('daily-cache-read-tokens-value');
+        if (dailyCacheReadTokensValue) dailyCacheReadTokensValue.textContent = dailyCacheReadTokens.toLocaleString();
+
+        // 総レコード数を表示
+        const totalRecordsValue = document.getElementById('total-records-value');
+        if (totalRecordsValue) totalRecordsValue.textContent = tokensData.length.toLocaleString();
+    }
+}

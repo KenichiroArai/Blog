@@ -190,6 +190,37 @@
   font-weight: 600;
 }
 
+/* 統計カードのスタイル（新しいレイアウト用） */
+.stat-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #e0e7ef;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card .stat-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.stat-value-large {
+  font-size: 1.2rem;
+  color: #0d6efd;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 /* 前日との差のスタイル */
 .stat-value small {
   font-size: 0.75rem;
@@ -307,13 +338,26 @@
   border: 1px solid #e9ecef;
 }
 
-.chart-container canvas {
+/* 大きなグラフコンテナのスタイル */
+.chart-container-large {
+  position: relative;
+  height: 400px;
+  margin-bottom: 1rem;
+  background: #fff;
+  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid #e9ecef;
+}
+
+.chart-container canvas,
+.chart-container-large canvas {
   width: 100% !important;
   height: 100% !important;
   cursor: pointer;
 }
 
-.chart-container:hover canvas {
+.chart-container:hover canvas,
+.chart-container-large:hover canvas {
   cursor: crosshair;
 }
 
@@ -446,6 +490,10 @@
   .chart-container {
     height: 150px;
   }
+
+  .chart-container-large {
+    height: 300px;
+  }
 }
 
 /*
@@ -474,6 +522,19 @@
 
   .stat-value {
     font-size: 0.85rem;
+  }
+
+  /* 統計カードのレスポンシブ対応 */
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .stat-value-large {
+    font-size: 1rem;
   }
 
   /* 前日との差のスタイル調整 */
@@ -578,6 +639,20 @@
     font-size: 0.8rem;
   }
 
+  /* 統計カードの小画面対応 */
+  .stat-card {
+    padding: 0.5rem;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-value-large {
+    font-size: 0.9rem;
+  }
+
   /* 前日との差のスタイル調整 */
   .stat-value small {
     font-size: 0.65rem;
@@ -656,5 +731,9 @@
   .progress-bar {
     font-size: 0.75rem;
     line-height: 16px;
+  }
+
+  .chart-container-large {
+    height: 250px;
   }
 }

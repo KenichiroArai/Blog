@@ -10,7 +10,7 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../css/common.css?v=1.0.2" rel="stylesheet">
+    <link href="../css/common.css?v=1.0.3" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -49,71 +49,90 @@
             </div>
         </div>
 
-        <!-- 最新の Usage Tokens と Usage Tokens グラフ（2列レイアウト） -->
+        <!-- 最新の Usage Tokens 統計（1行目） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <!-- 最新の Usage Tokens（左列） -->
-                <div class="col-md-6">
-                    <div class="card h-100">
+                <div class="col-12">
+                    <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">最新の Usage Tokens（統合データ）</h2>
+                            <h2 class="card-title mb-0">最新の Usage Tokens 統計（統合データ）</h2>
                         </div>
                         <div class="card-body">
-                            <div class="usage-tokens-stats">
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <h3 class="h5 mb-2">最新使用日統計</h3>
-                                        <div class="usage-stats-summary">
-                                            <div class="stat-item">
-                                                <span class="stat-label">最新使用日:</span>
-                                                <span id="latest-usage-date-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別総トークン数:</span>
-                                                <span id="daily-total-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別平均トークン数:</span>
-                                                <span id="daily-avg-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別最大トークン数:</span>
-                                                <span id="daily-max-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別入力トークン数:</span>
-                                                <span id="daily-input-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別出力トークン数:</span>
-                                                <span id="daily-output-tokens-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">日別キャッシュ読み取り数:</span>
-                                                <span id="daily-cache-read-tokens-value" class="stat-value"></span>
-                                            </div>
-                                        </div>
+                            <div class="row g-3">
+                                <!-- 統計項目1 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">最新使用日</div>
+                                        <div id="latest-usage-date-value" class="stat-value-large"></div>
                                     </div>
                                 </div>
-                                <div class="usage-info" id="latest-tokens-info"></div>
+                                <!-- 統計項目2 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">日別総トークン数</div>
+                                        <div id="daily-total-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目3 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">日別平均トークン数</div>
+                                        <div id="daily-avg-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目4 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">日別最大トークン数</div>
+                                        <div id="daily-max-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目5 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">日別入力トークン数</div>
+                                        <div id="daily-input-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目6 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">日別出力トークン数</div>
+                                        <div id="daily-output-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目7 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">日別キャッシュ読み取り数</div>
+                                        <div id="daily-cache-read-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目8 -->
+                                <div class="col-md-3 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総レコード数</div>
+                                        <div id="total-records-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Usage Tokens グラフ（右列） -->
-                <div class="col-md-6">
-                    <div class="card h-100">
+        <!-- Usage Tokens グラフ（2行目） -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card">
                         <div class="card-header">
                             <h2 class="card-title mb-0">Usage Tokens グラフ（統合データ）</h2>
                         </div>
                         <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="chart-container">
-                                        <canvas id="tokens-daily-chart"></canvas>
-                                    </div>
-                                </div>
+                            <div class="chart-container-large">
+                                <canvas id="tokens-daily-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -158,8 +177,8 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <script src="../js/common.js?v=1.0.2"></script>
-    <script src="../js/tokens.js?v=1.0.2"></script>
+    <script src="../js/common.js?v=1.0.3"></script>
+    <script src="../js/tokens.js?v=1.0.3"></script>
     <div class="container mt-4">
         <a href="../index.html" class="btn btn-secondary">← トップページに戻る</a>
     </div>
