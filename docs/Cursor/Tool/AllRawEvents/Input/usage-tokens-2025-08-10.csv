@@ -1,4 +1,5 @@
 Date,User,Kind,Model,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output,Total Tokens,Cost ($)
+"2025-08-10T09:17:47.114Z","You","Included in Pro","auto",33591,0,183663,3383,220637,"Included"
 "2025-08-10T08:59:36.905Z","You","Included in Pro","auto",0,8557,0,18,8575,"Included"
 "2025-08-10T08:59:22.104Z","You","Included in Pro","auto",0,8394,0,18,8412,"Included"
 "2025-08-09T16:04:32.676Z","You","Included in Pro","auto",21143,0,348357,7751,377251,"Included"
