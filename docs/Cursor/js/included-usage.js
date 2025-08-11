@@ -1,7 +1,9 @@
 // グローバル変数
 let includedUsageTable;
-let inputOutputChart;
-let costChart;
+let apiCostChart;
+let costToYouChart;
+let inputChart;
+let outputChart;
 let totalTokensChart;
 
 // 初期化処理
@@ -396,16 +398,18 @@ function createIncludedUsageCharts() {
 
     // 新しいグラフを作成
     try {
-        createInputOutputChart();
-        createCostChart();
+        createApiCostChart();
+        createCostToYouChart();
+        createInputChart();
+        createOutputChart();
         createTotalTokensChart();
     } catch (error) {
         console.error('新しいグラフの作成中にエラーが発生しました:', error);
     }
 }
 
-// API Cost と Cost to You グラフの作成
-function createCostChart() {
+// API Cost グラフの作成
+function createApiCostChart() {
     try {
         if (includedUsageData.length === 0) return;
 
@@ -424,22 +428,17 @@ function createCostChart() {
 
             if (!modelData[model]) {
                 modelData[model] = {
-                    apiCost: {},
-                    costToYou: {}
+                    apiCost: {}
                 };
             }
 
             if (!modelData[model].apiCost[dateStr]) {
                 modelData[model].apiCost[dateStr] = 0;
-                modelData[model].costToYou[dateStr] = 0;
             }
 
             // 数値に変換（文字列の場合は0として扱う）
             const apiCost = parseFloat(record.apiCost) || 0;
-            const costToYou = parseFloat(record.costToYou) || 0;
-
             modelData[model].apiCost[dateStr] += apiCost;
-            modelData[model].costToYou[dateStr] += costToYou;
         });
 
         // 積立データと差分データを計算
@@ -449,45 +448,33 @@ function createCostChart() {
 
         models.forEach(model => {
             cumulativeData[model] = {
-                apiCost: [],
-                costToYou: []
+                apiCost: []
             };
             diffData[model] = {
-                apiCost: [],
-                costToYou: []
+                apiCost: []
             };
 
             let cumulativeApiCost = 0;
-            let cumulativeCostToYou = 0;
 
             uniqueDates.forEach((dateStr, index) => {
                 const currentApiCost = modelData[model].apiCost[dateStr] || 0;
-                const currentCostToYou = modelData[model].costToYou[dateStr] || 0;
 
                 // 前日までの積立値
                 const previousCumulativeApiCost = cumulativeApiCost;
-                const previousCumulativeCostToYou = cumulativeCostToYou;
 
                 // 当日の増分
                 const apiCostDiff = currentApiCost;
-                const costToYouDiff = currentCostToYou;
 
                 // 積立値を更新
                 cumulativeApiCost += currentApiCost;
-                cumulativeCostToYou += currentCostToYou;
 
                 // データを保存
                 cumulativeData[model].apiCost.push({
                     previous: previousCumulativeApiCost,
                     current: cumulativeApiCost
                 });
-                cumulativeData[model].costToYou.push({
-                    previous: previousCumulativeCostToYou,
-                    current: cumulativeCostToYou
-                });
 
                 diffData[model].apiCost.push(apiCostDiff);
-                diffData[model].costToYou.push(costToYouDiff);
             });
         });
 
@@ -518,37 +505,16 @@ function createCostChart() {
                 type: 'bar',
                 stack: `${model}_apiCost`
             });
-
-            // Cost to You データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Cost to You (前日分)`,
-                data: cumulativeData[model].costToYou.map(item => item.previous),
-                backgroundColor: color + '20', // より薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_costToYou`
-            });
-
-            datasets.push({
-                label: `${model} - Cost to You (当日増分)`,
-                data: diffData[model].costToYou,
-                backgroundColor: color + '60', // 中程度の色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_costToYou`
-            });
         });
 
         // グラフを作成
-        const costCtx = document.getElementById('cost-chart');
-        if (!costCtx) {
-            console.warn('cost-chart canvas not found');
+        const apiCostCtx = document.getElementById('api-cost-chart');
+        if (!apiCostCtx) {
+            console.warn('api-cost-chart canvas not found');
             return;
         }
 
-        costChart = new Chart(costCtx.getContext('2d'), {
+        apiCostChart = new Chart(apiCostCtx.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: uniqueDates,
@@ -560,7 +526,7 @@ function createCostChart() {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'API Cost と Cost to You 積立推移'
+                        text: 'API Cost 積立推移'
                     },
                     tooltip: {
                         mode: 'index',
@@ -599,7 +565,168 @@ function createCostChart() {
             }
         });
     } catch (error) {
-        console.error('Cost chart creation error:', error);
+        console.error('API Cost chart creation error:', error);
+    }
+}
+
+// Cost to You グラフの作成
+function createCostToYouChart() {
+    try {
+        if (includedUsageData.length === 0) return;
+
+        // 日付とモデルごとのデータを整理
+        const modelData = {};
+
+        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
+            .map(dateStr => new Date(dateStr))
+            .sort((a, b) => a - b)
+            .map(date => date.toLocaleDateString('ja-JP'));
+
+        includedUsageData.forEach(record => {
+            const model = record.model;
+            const dateStr = record.dateStr;
+
+            if (!modelData[model]) {
+                modelData[model] = {
+                    costToYou: {}
+                };
+            }
+
+            if (!modelData[model].costToYou[dateStr]) {
+                modelData[model].costToYou[dateStr] = 0;
+            }
+
+            // 数値に変換（文字列の場合は0として扱う）
+            const costToYou = parseFloat(record.costToYou) || 0;
+            modelData[model].costToYou[dateStr] += costToYou;
+        });
+
+        // 積立データと差分データを計算
+        const cumulativeData = {};
+        const diffData = {};
+        const models = Object.keys(modelData);
+
+        models.forEach(model => {
+            cumulativeData[model] = {
+                costToYou: []
+            };
+            diffData[model] = {
+                costToYou: []
+            };
+
+            let cumulativeCostToYou = 0;
+
+            uniqueDates.forEach((dateStr, index) => {
+                const currentCostToYou = modelData[model].costToYou[dateStr] || 0;
+
+                // 前日までの積立値
+                const previousCumulativeCostToYou = cumulativeCostToYou;
+
+                // 当日の増分
+                const costToYouDiff = currentCostToYou;
+
+                // 積立値を更新
+                cumulativeCostToYou += currentCostToYou;
+
+                // データを保存
+                cumulativeData[model].costToYou.push({
+                    previous: previousCumulativeCostToYou,
+                    current: cumulativeCostToYou
+                });
+
+                diffData[model].costToYou.push(costToYouDiff);
+            });
+        });
+
+        // グラフデータセットを作成
+        const datasets = [];
+        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
+
+        models.forEach((model, index) => {
+            const color = colors[index % colors.length];
+
+            // Cost to You データセット（前日分と差分を色分け）
+            datasets.push({
+                label: `${model} - Cost to You (前日分)`,
+                data: cumulativeData[model].costToYou.map(item => item.previous),
+                backgroundColor: color + '20', // より薄い色（前日分）
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_costToYou`
+            });
+
+            datasets.push({
+                label: `${model} - Cost to You (当日増分)`,
+                data: diffData[model].costToYou,
+                backgroundColor: color + '60', // 中程度の色（当日増分）
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_costToYou`
+            });
+        });
+
+        // グラフを作成
+        const costToYouCtx = document.getElementById('cost-to-you-chart');
+        if (!costToYouCtx) {
+            console.warn('cost-to-you-chart canvas not found');
+            return;
+        }
+
+        costToYouChart = new Chart(costToYouCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: uniqueDates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Cost to You 積立推移'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y;
+                                return `${label}: $${value.toFixed(4)}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        stacked: true,
+                        ticks: {
+                            callback: function(value) {
+                                return `$${value.toFixed(4)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Cost to You chart creation error:', error);
     }
 }
 
@@ -762,8 +889,8 @@ function createTotalTokensChart() {
     }
 }
 
-// Input と Output グラフの作成
-function createInputOutputChart() {
+// Input グラフの作成
+function createInputChart() {
     try {
         if (includedUsageData.length === 0) return;
 
@@ -782,18 +909,15 @@ function createInputOutputChart() {
 
             if (!modelData[model]) {
                 modelData[model] = {
-                    input: {},
-                    output: {}
+                    input: {}
                 };
             }
 
             if (!modelData[model].input[dateStr]) {
                 modelData[model].input[dateStr] = 0;
-                modelData[model].output[dateStr] = 0;
             }
 
             modelData[model].input[dateStr] += record.input || 0;
-            modelData[model].output[dateStr] += record.output || 0;
         });
 
         // 積立データと差分データを計算
@@ -803,45 +927,33 @@ function createInputOutputChart() {
 
         models.forEach(model => {
             cumulativeData[model] = {
-                input: [],
-                output: []
+                input: []
             };
             diffData[model] = {
-                input: [],
-                output: []
+                input: []
             };
 
             let cumulativeInput = 0;
-            let cumulativeOutput = 0;
 
             uniqueDates.forEach((dateStr, index) => {
                 const currentInput = modelData[model].input[dateStr] || 0;
-                const currentOutput = modelData[model].output[dateStr] || 0;
 
                 // 前日までの積立値
                 const previousCumulativeInput = cumulativeInput;
-                const previousCumulativeOutput = cumulativeOutput;
 
                 // 当日の増分
                 const inputDiff = currentInput;
-                const outputDiff = currentOutput;
 
                 // 積立値を更新
                 cumulativeInput += currentInput;
-                cumulativeOutput += currentOutput;
 
                 // データを保存
                 cumulativeData[model].input.push({
                     previous: previousCumulativeInput,
                     current: cumulativeInput
                 });
-                cumulativeData[model].output.push({
-                    previous: previousCumulativeOutput,
-                    current: cumulativeOutput
-                });
 
                 diffData[model].input.push(inputDiff);
-                diffData[model].output.push(outputDiff);
             });
         });
 
@@ -872,37 +984,16 @@ function createInputOutputChart() {
                 type: 'bar',
                 stack: `${model}_input`
             });
-
-            // Output データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Output (前日分)`,
-                data: cumulativeData[model].output.map(item => item.previous),
-                backgroundColor: color + '20', // より薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_output`
-            });
-
-            datasets.push({
-                label: `${model} - Output (当日増分)`,
-                data: diffData[model].output,
-                backgroundColor: color + '60', // 中程度の色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_output`
-            });
         });
 
         // グラフを作成
-        const inputOutputCtx = document.getElementById('input-output-chart');
-        if (!inputOutputCtx) {
-            console.warn('input-output-chart canvas not found');
+        const inputCtx = document.getElementById('input-chart');
+        if (!inputCtx) {
+            console.warn('input-chart canvas not found');
             return;
         }
 
-        inputOutputChart = new Chart(inputOutputCtx.getContext('2d'), {
+        inputChart = new Chart(inputCtx.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: uniqueDates,
@@ -914,7 +1005,7 @@ function createInputOutputChart() {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Input と Output 積立推移'
+                        text: 'Input 積立推移'
                     },
                     tooltip: {
                         mode: 'index',
@@ -953,6 +1044,165 @@ function createInputOutputChart() {
             }
         });
     } catch (error) {
-        console.error('Input/Output chart creation error:', error);
+        console.error('Input chart creation error:', error);
+    }
+}
+
+// Output グラフの作成
+function createOutputChart() {
+    try {
+        if (includedUsageData.length === 0) return;
+
+        // 日付とモデルごとのデータを整理
+        const modelData = {};
+
+        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
+        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
+            .map(dateStr => new Date(dateStr))
+            .sort((a, b) => a - b)
+            .map(date => date.toLocaleDateString('ja-JP'));
+
+        includedUsageData.forEach(record => {
+            const model = record.model;
+            const dateStr = record.dateStr;
+
+            if (!modelData[model]) {
+                modelData[model] = {
+                    output: {}
+                };
+            }
+
+            if (!modelData[model].output[dateStr]) {
+                modelData[model].output[dateStr] = 0;
+            }
+
+            modelData[model].output[dateStr] += record.output || 0;
+        });
+
+        // 積立データと差分データを計算
+        const cumulativeData = {};
+        const diffData = {};
+        const models = Object.keys(modelData);
+
+        models.forEach(model => {
+            cumulativeData[model] = {
+                output: []
+            };
+            diffData[model] = {
+                output: []
+            };
+
+            let cumulativeOutput = 0;
+
+            uniqueDates.forEach((dateStr, index) => {
+                const currentOutput = modelData[model].output[dateStr] || 0;
+
+                // 前日までの積立値
+                const previousCumulativeOutput = cumulativeOutput;
+
+                // 当日の増分
+                const outputDiff = currentOutput;
+
+                // 積立値を更新
+                cumulativeOutput += currentOutput;
+
+                // データを保存
+                cumulativeData[model].output.push({
+                    previous: previousCumulativeOutput,
+                    current: cumulativeOutput
+                });
+
+                diffData[model].output.push(outputDiff);
+            });
+        });
+
+        // グラフデータセットを作成
+        const datasets = [];
+        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
+
+        models.forEach((model, index) => {
+            const color = colors[index % colors.length];
+
+            // Output データセット（前日分と差分を色分け）
+            datasets.push({
+                label: `${model} - Output (前日分)`,
+                data: cumulativeData[model].output.map(item => item.previous),
+                backgroundColor: color + '20', // より薄い色（前日分）
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_output`
+            });
+
+            datasets.push({
+                label: `${model} - Output (当日増分)`,
+                data: diffData[model].output,
+                backgroundColor: color + '60', // 中程度の色（当日増分）
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_output`
+            });
+        });
+
+        // グラフを作成
+        const outputCtx = document.getElementById('output-chart');
+        if (!outputCtx) {
+            console.warn('output-chart canvas not found');
+            return;
+        }
+
+        outputChart = new Chart(outputCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: uniqueDates,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Output 積立推移'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y;
+                                return `${label}: ${value.toLocaleString()}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        stacked: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Output chart creation error:', error);
     }
 }
