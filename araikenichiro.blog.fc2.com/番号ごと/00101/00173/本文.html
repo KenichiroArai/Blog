@@ -5,7 +5,7 @@
     <a href="https://kenichiroarai.github.io/Blog/Cursor/index.html" target="_blank">Cursor使用記録</a>を変更してv0.4.0にした。
   </p>
   <p>
-    v0.4.0は過去のバージョンの中で一番変更されている。今まではトップページのみだったが、そこから下記のページを追加して分けている。トークン数や使用量のサマリーを追加している。
+    v0.4.0は、これまでのバージョンの中で最も大きな変更が加えられている。従来はトップページのみであったが、新たに以下のページを追加し、機能ごとに分割した。また、トークン数や使用量のサマリーも追加している。
   </p>
   <ul>
     <li>使用記録</li>
@@ -20,7 +20,7 @@
     </a>
   </p>
   <p>
-    上記の画像通り、トップページは３つの記録の概要を表示し、「詳細を見る」ボタンをから各詳細ページへ移動できるようにしている。
+    上記の画像の通り、トップページでは3つの記録の概要を表示し、「詳細を見る」ボタンから各詳細ページへ遷移できるようにした。
   </p>
 
 <h3>使用記録ページの内容</h3>
@@ -33,7 +33,7 @@
   </a>
 </p>
 <p>
-  上記の画像通り、使用記録ページは、下記3項目の最新状況、折れ線グラフ、一覧を表示している。
+  上記の画像の通り、使用記録ページでは、下記3項目の最新状況、折れ線グラフ、一覧を表示する。
 </p>
 <ul>
   <li>Suggested Lines</li>
@@ -51,7 +51,7 @@
   </a>
 </p>
 <p>
-  上記の画像通り、Usageページは、トークン数の最新状況、折れ線グラフ、一覧を表示している。画像の一覧は10件表示に変更している。
+  上記の画像の通り、Usageページではトークン数の最新状況、折れ線グラフ、一覧を表示している。なお、画像の一覧は10件表示に変更してスクショしている。
 </p>
 
 <h3>Included Usageページの内容</h3>
@@ -63,7 +63,7 @@
     <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00173_007.png" alt="00173_007.png" width="600" border="0">
   </a>
   <p>
-    上記の画像通り、Included Usageページは、トークン総数とAPI Costの最新状況、縦棒グラフ、一覧を表示している。画像の一覧は10件表示に変更している。このページを見るとサマリーとAPI CostがどれくらいかかったかとCost to Youで実際に払ったコストがわかる。
+    上記の画像の通り、Included Usageページではトークン総数とAPI Costの最新状況、縦棒グラフ、一覧を表示している。画像の一覧は10件表示に変更してスクショしている。このページを見ることで、サマリーやAPI Costがどれくらいかかったか、Cost to Youで実際に支払ったコストが把握できる。
   </p>
 
 </p>
@@ -75,7 +75,7 @@
   </a>
 </p>
 <p>
-  上記の画像がツール用のフォルダと実行ファイルです。実行ファイルは、JavaScriptで実装し、node.jsで動かすようにしている。ツールの中身は、<a href="https://github.com/KenichiroArai/Blog/tree/main/docs/Cursor/Tool/AllRawEvents" target="_blank">Tool</a>を参照のこと。
+  上記の画像はツール用のフォルダと実行ファイルである。実行ファイルはJavaScriptで実装し、node.js上で動作する。ツールの詳細については、<a href="https://github.com/KenichiroArai/Blog/tree/main/docs/Cursor/Tool/AllRawEvents" target="_blank">Tool</a>を参照されたい。
 </p>
 <p>
   <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00173_009.png" target="_blank">
@@ -83,14 +83,18 @@
   </a>
 </p>
 <p>
-  上記の画像は、CursorのWebサイトで自分のアカウントの情報を見れる。そこでCSVがエクスポート出来るので、それをツールでマージして、Webサイトでマージしたデータを読み込んでいる。
+  上記の画像は、CursorのWebサイトで自分のアカウント情報を確認できるものである。ここでCSVをエクスポートし、そのCSVをツールでマージし、Webサイトでマージ済みデータを読み込んでいる。
 </p>
 <p>
-  ちなみに、API COSTは$61.26で$20を超えている。僕は年契約をしているため、月々換算にすると$16であるため、3倍近いコストを使っている。だが、全てモデルをautoにしているため、追加の支払いはない。
+  ちなみに、API COSTは$61.26であり、$20を超えている。僕は年契約をしているため、月々換算すると$16となり、約3倍のコストを使用している。しかし、すべてのモデルをautoに設定しているため、追加の支払いは発生しない。
+</p>
 
 <h2>GitHubのProjectとIssueでの管理</h2>
 <p>
-  普段はさくらVPSで構築したRedmineでタスクを管理しているが、最近、GitHubのProjectも使い始め、コードも公開しているので、GitHubのProjectとIssueを使って管理するようにした。Redmineで管理は主に作業時間の記録として継続して使っている。下記が、ProjectとIssueの画面である。Projectは「<a href="https://github.com/users/KenichiroArai/projects/10" target="_blank">everyday-use</a>」である。このプロジェクトはその名前の通りブログだけではなく日常使用として使用している。今回対応したIssueは、「<a href="https://github.com/KenichiroArai/Blog/issues/20" target="_blank">Cursor使用記録のv0.4.0のリリース</a>」である。まだ、このブログの投稿が残っているため、まだDoneになっていなく、本投稿でDoneになる。
+  普段はさくらVPS上に構築したRedmineでタスク管理を行っているが、最近はGitHubのProjectも利用し始め、コードも公開しているため、GitHubのProjectおよびIssueで管理する方針とした。Redmineでの管理は主に作業時間の記録用途として継続している。
+</p>
+<p>
+  以下がProjectおよびIssueの画面である。Projectは「<a href="https://github.com/users/KenichiroArai/projects/10" target="_blank">everyday-use</a>」である。このプロジェクトは名称の通り、ブログだけでなく日常的な用途にも利用している。今回対応したIssueは「<a href="https://github.com/KenichiroArai/Blog/issues/20" target="_blank">Cursor使用記録のv0.4.0のリリース</a>」である。なお、このブログ投稿が未完了のため、現時点ではDoneになっていないが、本投稿をもってDoneとする。
 </p>
 
 <h2>リンク</h2>
