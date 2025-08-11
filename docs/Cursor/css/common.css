@@ -9,6 +9,44 @@
     text-decoration: none;
 }
 
+/* ヘッダー固定化のスタイル */
+.navbar {
+    transition: all 0.3s ease;
+}
+
+/* 画面高さが大きい場合のみヘッダーを固定化 */
+@media (min-height: 600px) {
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ヘッダー固定時のメインコンテンツの調整 */
+    body {
+        padding-top: 76px; /* ナビゲーションバーの高さ分のパディング */
+    }
+
+    /* コンテナの上部マージンを調整 */
+    .container-fluid.mt-3 {
+        margin-top: 1rem !important;
+    }
+}
+
+/* 画面高さが小さい場合はヘッダー固定化を無効にする */
+@media (max-height: 599px) {
+    .navbar {
+        position: static;
+    }
+
+    body {
+        padding-top: 0;
+    }
+}
+
 /* コンテナの最大幅設定 */
 .container-fluid {
     max-width: 1920px;
@@ -707,6 +745,15 @@
     padding-right: 1rem;
   }
 
+  /* 小画面ではヘッダー固定化を無効にする */
+  .navbar {
+    position: static;
+  }
+
+  body {
+    padding-top: 0;
+  }
+
   .card-header {
     padding: 0.75rem;
   }
@@ -850,6 +897,15 @@
   .container {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+  }
+
+  /* 超小画面ではヘッダー固定化を無効にする */
+  .navbar {
+    position: static;
+  }
+
+  body {
+    padding-top: 0;
   }
 
   .dashboard-container {
