@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <!-- 最新の Included Usage と API Cost グラフ（2列レイアウト） -->
+        <!-- 最新の Included Usage と Total Tokens グラフ（2列レイアウト） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
                 <!-- 最新の Included Usage（左列） -->
@@ -101,7 +101,26 @@
                     </div>
                 </div>
 
-                <!-- API Cost グラフ（右列） -->
+                <!-- Total Tokens グラフ（右列） -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Total Tokens グラフ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="total-tokens-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新しいグラフセクション -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <!-- API Cost グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
@@ -114,12 +133,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 新しいグラフセクション -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
                 <!-- Cost to You グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
@@ -133,7 +147,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
+        <!-- さらに新しいグラフセクション -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
                 <!-- Input グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
@@ -147,12 +166,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- さらに新しいグラフセクション -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
                 <!-- Output グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
@@ -162,20 +176,6 @@
                         <div class="card-body">
                             <div class="chart-container">
                                 <canvas id="output-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total Tokens グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">Total Tokens グラフ</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="total-tokens-chart"></canvas>
                             </div>
                         </div>
                     </div>
