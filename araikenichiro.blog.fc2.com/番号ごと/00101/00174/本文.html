@@ -1,9 +1,27 @@
-<h2></h2>
+<h2>本記事の元になるXのポスト</h2>
+<p>
+  下記のXのポストを整理して、本記事にまとめた。
+</p>
+<p>
+  <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Claude codeにガチギレしつつ、こまめなコミットの大事さに気づいた件 <a href="https://t.co/7UsLhgQmLB">https://t.co/7UsLhgQmLB</a><br><br>コミットやブランチ戦略は当然として優秀なIDEなら全部記憶しているので戻せる。VSCodeは微妙かな。使いづらいしプラグイン必須？Eclipseならファイルが消えても戻せる。保存ごとに全部記憶している</p>&mdash; 新井健一朗@want to (@arai_kenichiro) <a href="https://twitter.com/arai_kenichiro/status/1955099711683301601?ref_src=twsrc%5Etfw">August 12, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+
+<h2>まとめた本記事の内容</h2>
 <p>
   コミットやブランチ戦略は当然として優秀なIDEなら全部記憶しているので戻せる。VSCodeは微妙かな。使いづらいしプラグイン必須？Eclipseならファイルが消えても戻せる。保存ごとに全部記憶している。
 
+  Eclipseに関することは下記のXでポストしている。
+
+  <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Eclipseの履歴機能は優れているが、その中に「ローカル・ヒストリーの前回のものと置換」があるけど、これが結構便利。直前に保存したものを元に戻してくれる。 <a href="https://t.co/6kwQM64qtw">pic.twitter.com/6kwQM64qtw</a></p>&mdash; 新井健一朗@want to (@arai_kenichiro) <a href="https://twitter.com/arai_kenichiro/status/1897920954644545631?ref_src=twsrc%5Etfw">March 7, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
   下記の通り、コミット、ブランチ戦略だと今はこれくらい細かくてもいいと思う。
 
+  <a href="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00174_001.png" target="_blank">
+    <img src="https://blog-imgs-163.fc2.com/a/r/a/araikenichiro/00174_001.png" alt="00174_001.png" width="600" border="0">
+  </a>
+
+  図にするとこんな感じのイメージだ。
+issueブランチ、AI作業単位ブランチはもっと細かくてもいいかもしれない。ただ、マージごとに消すということだ。それと、issueブランチ以降はどこまでをリモートブランチにするかだが、マージごとにすぐに消すのであればどちらでも構わないと思っている。
 
   僕の仕事のほとんどはSVNだが、それでもこまめにコミットしていた。開発中、開発用ブランチのみだけど。こまめにコミットするというのはどのように修正するかを意識しているということだ。コミットするときはビルドエラーが起きていない、共通部分の動作は出来るのが最低限のルールである。
 
