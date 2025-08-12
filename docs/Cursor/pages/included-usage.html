@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <!-- 最新の Included Usage と Input/Output グラフ（2列レイアウト） -->
+        <!-- 最新の Included Usage と Total Tokens グラフ（2列レイアウト） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
                 <!-- 最新の Included Usage（左列） -->
@@ -101,19 +101,15 @@
                     </div>
                 </div>
 
-                <!-- API Cost と Cost to You グラフ（右列） -->
+                <!-- Total Tokens グラフ（右列） -->
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">API Cost と Cost to You グラフ</h2>
+                            <h2 class="card-title mb-0">Total Tokens グラフ</h2>
                         </div>
                         <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="chart-container">
-                                        <canvas id="cost-chart"></canvas>
-                                    </div>
-                                </div>
+                            <div class="chart-container">
+                                <canvas id="total-tokens-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -124,29 +120,62 @@
         <!-- 新しいグラフセクション -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <!-- Input と Output グラフ -->
+                <!-- API Cost グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">Input と Output グラフ</h2>
+                            <h2 class="card-title mb-0">API Cost グラフ</h2>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="input-output-chart"></canvas>
+                                <canvas id="api-cost-chart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Total Tokens グラフ -->
+                <!-- Cost to You グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">Total Tokens グラフ</h2>
+                            <h2 class="card-title mb-0">Cost to You グラフ</h2>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="total-tokens-chart"></canvas>
+                                <canvas id="cost-to-you-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- さらに新しいグラフセクション -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <!-- Input グラフ -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Input グラフ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="input-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output グラフ -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Output グラフ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="output-chart"></canvas>
                             </div>
                         </div>
                     </div>

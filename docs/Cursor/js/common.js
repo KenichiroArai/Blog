@@ -528,7 +528,10 @@ function updateTokensStats() {
     });
 
     // 最新使用日のデータを取得
-    const dates = Object.keys(dailyData).sort();
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
     const latestDate = dates[dates.length - 1];
     const latestDailyData = dailyData[latestDate];
 
