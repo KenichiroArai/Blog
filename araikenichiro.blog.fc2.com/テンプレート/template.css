@@ -235,6 +235,44 @@ h5 {
     margin: 0;
     padding: 0;
 }
+
+/* 章立て番号のカウンター初期化 */
+.content-wrapper {
+    counter-reset: chapter;
+}
+
+/* content-wrapper内のh3以降の見出しに章立て番号を追加 */
+.content-wrapper h3 {
+    counter-increment: chapter;
+    counter-reset: section;
+}
+
+.content-wrapper h3::before {
+    content: counter(chapter) ". ";
+    font-weight: bold;
+    color: #4a4a4a;
+}
+
+.content-wrapper h4 {
+    counter-increment: section;
+    counter-reset: subsection;
+}
+
+.content-wrapper h4::before {
+    content: counter(chapter) "." counter(section) ". ";
+    font-weight: bold;
+    color: #666;
+}
+
+.content-wrapper h5 {
+    counter-increment: subsection;
+}
+
+.content-wrapper h5::before {
+    content: counter(chapter) "." counter(section) "." counter(subsection) ". ";
+    font-weight: bold;
+    color: #777;
+}
 /* 見出し */
 
 /* スペース調整 */
