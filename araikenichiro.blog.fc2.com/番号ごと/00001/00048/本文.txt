@@ -2,7 +2,7 @@
 
 ## 本文
 
-<h2>CodeSignalの記録_2025/04/17</h2>
+<h3>CodeSignalの記録_2025/04/17</h3>
 <br>
 <a href="https://codesignal.com/learn/paths/comprehensive-introduction-to-front-end-engineering" target="_blank" title="Comprehensive Introduction to Front-End Engineering">Comprehensive Introduction to Front-End Engineering</a>
 <br>
@@ -16,13 +16,13 @@ Unit 1<br>
 <a href="http://araikenichiro.blog.fc2.com/img/00048_001.png/" target="_blank"><img src="https://blog-imgs-160.fc2.com/a/r/a/araikenichiro/00048_001.png" alt="00048_001.png" width="1862" height="215" border="0"></a>
 </div>
 <br>
-<h2>メモ</h2>
+<h3>メモ</h3>
 <p>
 日付がズレていたため、元に戻す。昨日の記録時点のため、投稿が翌日の場合は-1日なる。
 <p>
 <br>
 
-<h2>前回のリンク</h2>
+<h3>前回のリンク</h3>
 <p>
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-43.html" target="_blank">CodeSignalの記録_2025/04/17</a>
 </p>
