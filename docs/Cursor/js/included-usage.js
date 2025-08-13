@@ -534,6 +534,27 @@ function createApiCostChart() {
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 return `${label}: $${value.toFixed(4)}`;
+                            },
+                            afterBody: function(context) {
+                                // モデルごとの合計を計算
+                                const modelTotals = {};
+
+                                context.forEach(item => {
+                                    const stack = item.dataset.stack;
+                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
+                                    if (!modelTotals[model]) {
+                                        modelTotals[model] = 0;
+                                    }
+                                    modelTotals[model] += item.parsed.y;
+                                });
+
+                                // 合計表示を作成
+                                const totalLines = [];
+                                Object.keys(modelTotals).forEach(model => {
+                                    totalLines.push(`${model}: $${modelTotals[model].toFixed(4)}`);
+                                });
+
+                                return totalLines;
                             }
                         }
                     }
@@ -693,6 +714,27 @@ function createCostToYouChart() {
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 return `${label}: $${value.toFixed(4)}`;
+                            },
+                            afterBody: function(context) {
+                                // モデルごとの合計を計算
+                                const modelTotals = {};
+
+                                context.forEach(item => {
+                                    const stack = item.dataset.stack;
+                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
+                                    if (!modelTotals[model]) {
+                                        modelTotals[model] = 0;
+                                    }
+                                    modelTotals[model] += item.parsed.y;
+                                });
+
+                                // 合計表示を作成
+                                const totalLines = [];
+                                Object.keys(modelTotals).forEach(model => {
+                                    totalLines.push(`${model}: $${modelTotals[model].toFixed(4)}`);
+                                });
+
+                                return totalLines;
                             }
                         }
                     }
@@ -850,6 +892,27 @@ function createTotalTokensChart() {
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 return `${label}: ${value.toLocaleString()}`;
+                            },
+                            afterBody: function(context) {
+                                // モデルごとの合計を計算
+                                const modelTotals = {};
+
+                                context.forEach(item => {
+                                    const stack = item.dataset.stack;
+                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
+                                    if (!modelTotals[model]) {
+                                        modelTotals[model] = 0;
+                                    }
+                                    modelTotals[model] += item.parsed.y;
+                                });
+
+                                // 合計表示を作成
+                                const totalLines = [];
+                                Object.keys(modelTotals).forEach(model => {
+                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
+                                });
+
+                                return totalLines;
                             }
                         }
                     }
@@ -1007,6 +1070,27 @@ function createInputChart() {
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 return `${label}: ${value.toLocaleString()}`;
+                            },
+                            afterBody: function(context) {
+                                // モデルごとの合計を計算
+                                const modelTotals = {};
+
+                                context.forEach(item => {
+                                    const stack = item.dataset.stack;
+                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
+                                    if (!modelTotals[model]) {
+                                        modelTotals[model] = 0;
+                                    }
+                                    modelTotals[model] += item.parsed.y;
+                                });
+
+                                // 合計表示を作成
+                                const totalLines = [];
+                                Object.keys(modelTotals).forEach(model => {
+                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
+                                });
+
+                                return totalLines;
                             }
                         }
                     }
@@ -1164,6 +1248,27 @@ function createOutputChart() {
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 return `${label}: ${value.toLocaleString()}`;
+                            },
+                            afterBody: function(context) {
+                                // モデルごとの合計を計算
+                                const modelTotals = {};
+
+                                context.forEach(item => {
+                                    const stack = item.dataset.stack;
+                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
+                                    if (!modelTotals[model]) {
+                                        modelTotals[model] = 0;
+                                    }
+                                    modelTotals[model] += item.parsed.y;
+                                });
+
+                                // 合計表示を作成
+                                const totalLines = [];
+                                Object.keys(modelTotals).forEach(model => {
+                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
+                                });
+
+                                return totalLines;
                             }
                         }
                     }
