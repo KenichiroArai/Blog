@@ -2,19 +2,19 @@
 
 ## 本文
 
-<h2>今日のまとめ</h2>
+<h3>今日のまとめ</h3>
 <br>
 <p>
 主な学習内容は、昨日に引き続き、PrismaのCURDの学習を行いました。他に、ソート処理、ページネーション、ミドルウェアの学習を行いました。<br>
 </p>
 <br>
-<h3>今日の成果</h2>
+<h3>今日の成果</h3>
 <br>
 <p>
 『Node.js 超入門』 　369/451=81.82%<br>
 </p>
 <br>
-<h2>前回のリンク</h2>
+<h3>前回のリンク</h3>
 <br>
 <p>
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-67.html" target="_blank">フロントエンド（TS、JS）の26日目</a>
