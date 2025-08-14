@@ -1,4 +1,12 @@
 Date,User,Kind,Model,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output,Total Tokens,Cost ($)
+2025-08-13T15:25:23.593Z,You,Included in Pro,auto,7373,0,622338,4367,634078,Included
+2025-08-13T15:22:42.044Z,You,Included in Pro,auto,49794,0,600119,2941,652854,Included
+2025-08-13T15:12:08.122Z,You,Included in Pro,auto,0,8493,0,14,8507,Included
+2025-08-13T15:07:48.336Z,You,Included in Pro,auto,14843,0,750927,6051,771821,Included
+2025-08-13T15:07:04.713Z,You,"Errored, Not Charged",auto,0,0,0,0,0,Included
+2025-08-13T12:06:20.213Z,You,Included in Pro,auto,0,9251,0,10,9261,Included
+2025-08-13T12:05:53.916Z,You,Included in Pro,auto,0,9087,0,14,9101,Included
+2025-08-13T12:05:34.744Z,You,Included in Pro,auto,0,8996,0,10,9006,Included
 2025-08-12T15:31:21.161Z,You,Included in Pro,auto,152,0,10106,222,10480,Included
 2025-08-12T15:30:47.496Z,You,Included in Pro,auto,721,0,28845,347,29913,Included
 2025-08-12T15:30:03.627Z,You,Included in Pro,auto,5548,0,12614,299,18461,Included
