@@ -2,21 +2,21 @@
 
 ## 本文
 
-<h2>今日のまとめ</h2>
+<h3>今日のまとめ</h3>
 <br>
 <p>
 主な学習内容は、WebアプリとDBとの連携でのCURDのDを試した。
 </p>
 <br>
 
-<h2>今日の成果</h2>
+<h3>今日の成果</h3>
 <br>
 <p>
 『Node.js 超入門』 　281/451=62.31%<br>
 </p>
 <br>
 
-<h2>前回のリンク</h2>
+<h3>前回のリンク</h3>
 <br>
 <p>
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-44.html" target="_blank">フロントエンド（TS、JS）の19日目</a>

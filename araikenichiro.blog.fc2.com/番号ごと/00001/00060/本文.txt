@@ -2,20 +2,20 @@
 
 ## 本文
 
-<h2>今日のまとめ</h2>
+<h3>今日のまとめ</h3>
 <br>
 <p>
 主な学習内容は、サニタイズ、エスケープ処理、カスタムバリデーションについてでした。<br>
 それから、Chapter 6に入り、<a href="https://www.prisma.io/" target="_blank">Prisma</a>でORMの学習に入りました。
 </p>
 <br>
-<h3>今日の成果</h2>
+<h3>今日の成果</h3>
 <br>
 <p>
 『Node.js 超入門』 　321/451=71.18%<br>
 </p>
 <br>
-<h2>前回のリンク</h2>
+<h3>前回のリンク</h3>
 <br>
 <p>
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-57.html" target="_blank">フロントエンド（TS、JS）の22日目</a>

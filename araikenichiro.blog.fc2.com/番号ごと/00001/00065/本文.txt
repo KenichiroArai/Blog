@@ -2,19 +2,19 @@
 
 ## 本文
 
-<h2>今日のまとめ</h2>
+<h3>今日のまとめ</h3>
 <br>
 <p>
 主な学習内容は、今日に引き続き、Prismaの学習を行い、特に、PrismaClientを利用しました。
 </p>
 <br>
-<h3>今日の成果</h2>
+<h3>今日の成果</h3>
 <br>
 <p>
 『Node.js 超入門』 　334/451=74.06%<br>
 </p>
 <br>
-<h2>前回のリンク</h2>
+<h3>前回のリンク</h3>
 <br>
 <p>
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-62.html" target="_blank">フロントエンド（TS、JS）の24日目</a>

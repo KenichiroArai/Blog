@@ -2,17 +2,17 @@
 
 ## 本文
 
-<h2>前回のリンク</h2>
+<h3>前回のリンク</h3>
 <p>
 <a href="http://araikenichiro.blog.fc2.com/blog-entry-83.html" target="_blank">フロントエンド（TS、JS）の33日目</a>
 </p>
 
-<h2>今日のまとめ</h2>
+<h3>今日のまとめ</h3>
 <p>
 昨日の続きから「JavaScriptはじめの一歩」を読む。主に、windowオブジェクトについて。
 </p>
 
-<h2>今日の成果</h2>
+<h3>今日の成果</h3>
 <p>
 <a href="https://amzn.asia/d/erAGAwl" target="_blank">『ノンプログラマのためのJavaScriptはじめの一歩』</a> 105/248=42.34%
 </p>
