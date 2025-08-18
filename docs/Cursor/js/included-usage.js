@@ -60,6 +60,42 @@ function calculatePreviousDayDifference(currentRecord, previousRecord) {
     };
 }
 
+// 月ごとのリセットを考慮した前日との差を計算する関数
+function calculatePreviousDayDifferenceWithReset(currentRecord, previousRecord) {
+    if (!previousRecord) {
+        return {
+            totalTokens: null,
+            input: null,
+            output: null,
+            apiCost: null
+        };
+    }
+
+    // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+    const isReset =
+        currentRecord.totalTokens < previousRecord.totalTokens ||
+        currentRecord.input < previousRecord.input ||
+        currentRecord.output < previousRecord.output ||
+        parseFloat(currentRecord.apiCost || 0) < parseFloat(previousRecord.apiCost || 0);
+
+    if (isReset) {
+        // リセットされた場合は、現在の値をそのまま表示（差は0）
+        return {
+            totalTokens: 0,
+            input: 0,
+            output: 0,
+            apiCost: 0
+        };
+    }
+
+    return {
+        totalTokens: currentRecord.totalTokens - previousRecord.totalTokens,
+        input: currentRecord.input - previousRecord.input,
+        output: currentRecord.output - previousRecord.output,
+        apiCost: parseFloat(currentRecord.apiCost || 0) - parseFloat(previousRecord.apiCost || 0)
+    };
+}
+
 // 差の表示形式を整形する関数
 function formatDifference(value, isPercentage = false) {
     if (value === null || value === undefined) {
@@ -116,6 +152,20 @@ function initializeIncludedUsageTable() {
         return sameModelRecords[currentIndex - 1];
     }
 
+    // 月ごとのリセットを考慮した前日との差を計算する関数
+    function calculateDifferenceWithReset(currentValue, previousValue) {
+        if (previousValue === null || previousValue === undefined) {
+            return null;
+        }
+
+        // 前日より下がっている場合はリセット（差は0）
+        if (currentValue < previousValue && previousValue > 0) {
+            return 0;
+        }
+
+        return currentValue - previousValue;
+    }
+
     includedUsageTable = $('#included-usage-table').DataTable({
         data: includedUsageData,
         columns: [
@@ -141,11 +191,11 @@ function initializeIncludedUsageTable() {
                     const previousRecord = getPreviousDayRecord(row);
 
                     if (previousRecord && type === 'display') {
-                        const diff = data - previousRecord.input;
+                        const diff = calculateDifferenceWithReset(data, previousRecord.input);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${inputText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -162,11 +212,11 @@ function initializeIncludedUsageTable() {
                     const previousRecord = getPreviousDayRecord(row);
 
                     if (previousRecord && type === 'display') {
-                        const diff = data - previousRecord.output;
+                        const diff = calculateDifferenceWithReset(data, previousRecord.output);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${outputText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -183,11 +233,11 @@ function initializeIncludedUsageTable() {
                     const previousRecord = getPreviousDayRecord(row);
 
                     if (previousRecord && type === 'display') {
-                        const diff = data - previousRecord.cacheWrite;
+                        const diff = calculateDifferenceWithReset(data, previousRecord.cacheWrite);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${cacheWriteText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -204,11 +254,11 @@ function initializeIncludedUsageTable() {
                     const previousRecord = getPreviousDayRecord(row);
 
                     if (previousRecord && type === 'display') {
-                        const diff = data - previousRecord.cacheRead;
+                        const diff = calculateDifferenceWithReset(data, previousRecord.cacheRead);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${cacheReadText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -225,11 +275,11 @@ function initializeIncludedUsageTable() {
                     const previousRecord = getPreviousDayRecord(row);
 
                     if (previousRecord && type === 'display') {
-                        const diff = data - previousRecord.totalTokens;
+                        const diff = calculateDifferenceWithReset(data, previousRecord.totalTokens);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${totalTokensText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -248,11 +298,11 @@ function initializeIncludedUsageTable() {
                     if (previousRecord && type === 'display') {
                         const currentCost = parseFloat(data || 0);
                         const previousCost = parseFloat(previousRecord.apiCost || 0);
-                        const diff = currentCost - previousCost;
+                        const diff = calculateDifferenceWithReset(currentCost, previousCost);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${apiCostText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -280,11 +330,11 @@ function initializeIncludedUsageTable() {
                     if (previousRecord && type === 'display') {
                         const currentCost = parseFloat(data || 0);
                         const previousCost = parseFloat(previousRecord.costToYou || 0);
-                        const diff = currentCost - previousCost;
+                        const diff = calculateDifferenceWithReset(currentCost, previousCost);
                         const diffText = formatDifference(diff);
                         const diffClass = getDifferenceClass(diff);
 
-                        if (diff !== 0) {
+                        if (diff !== null && diff !== 0) {
                             return `${costText} <small class="${diffClass}">(${diffText})</small>`;
                         }
                     }
@@ -328,8 +378,8 @@ function updateIncludedUsageStats() {
         return;
     }
 
-    // 前日との差を計算
-    const differences = calculatePreviousDayDifference(latestAutoRecord, previousAutoRecord);
+    // 月ごとのリセットを考慮した前日との差を計算
+    const differences = calculatePreviousDayDifferenceWithReset(latestAutoRecord, previousAutoRecord);
 
     // 最新使用日の統計を表示
     const latestUsageDateValue = document.getElementById('latest-included-usage-date-value');
@@ -441,7 +491,7 @@ function createApiCostChart() {
             modelData[model].apiCost[dateStr] += apiCost;
         });
 
-        // 当日値と前日値の差分を計算
+        // 月ごとのリセットを考慮した差分を計算
         const currentData = {};
         const previousData = {};
         const models = Object.keys(modelData);
@@ -454,6 +504,9 @@ function createApiCostChart() {
                 apiCost: []
             };
 
+            let cumulativeApiCost = 0;
+            let previousMonthApiCost = 0;
+
             uniqueDates.forEach((dateStr, index) => {
                 const currentApiCost = modelData[model].apiCost[dateStr] || 0;
 
@@ -461,14 +514,25 @@ function createApiCostChart() {
                 const previousDate = index > 0 ? uniqueDates[index - 1] : null;
                 const previousApiCost = previousDate ? (modelData[model].apiCost[previousDate] || 0) : 0;
 
+                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+                if (currentApiCost < previousApiCost && previousApiCost > 0) {
+                    // 新しい月の開始
+                    cumulativeApiCost = currentApiCost;
+                    previousMonthApiCost = 0;
+                } else {
+                    // 同じ月の継続
+                    cumulativeApiCost = currentApiCost;
+                    previousMonthApiCost = previousApiCost;
+                }
+
                 // 当日の値（前日分）
-                const previousPart = previousApiCost;
+                const previousPart = previousMonthApiCost;
 
                 // 当日の増分
-                const diffPart = currentApiCost - previousApiCost;
+                const diffPart = cumulativeApiCost - previousMonthApiCost;
 
                 // データを保存
-                currentData[model].apiCost.push(currentApiCost);
+                currentData[model].apiCost.push(cumulativeApiCost);
                 previousData[model].apiCost.push({
                     previous: previousPart,
                     diff: diffPart
@@ -621,7 +685,7 @@ function createCostToYouChart() {
             modelData[model].costToYou[dateStr] += costToYou;
         });
 
-        // 当日値と前日値の差分を計算
+        // 月ごとのリセットを考慮した差分を計算
         const currentData = {};
         const previousData = {};
         const models = Object.keys(modelData);
@@ -634,6 +698,9 @@ function createCostToYouChart() {
                 costToYou: []
             };
 
+            let cumulativeCostToYou = 0;
+            let previousMonthCostToYou = 0;
+
             uniqueDates.forEach((dateStr, index) => {
                 const currentCostToYou = modelData[model].costToYou[dateStr] || 0;
 
@@ -641,14 +708,25 @@ function createCostToYouChart() {
                 const previousDate = index > 0 ? uniqueDates[index - 1] : null;
                 const previousCostToYou = previousDate ? (modelData[model].costToYou[previousDate] || 0) : 0;
 
+                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+                if (currentCostToYou < previousCostToYou && previousCostToYou > 0) {
+                    // 新しい月の開始
+                    cumulativeCostToYou = currentCostToYou;
+                    previousMonthCostToYou = 0;
+                } else {
+                    // 同じ月の継続
+                    cumulativeCostToYou = currentCostToYou;
+                    previousMonthCostToYou = previousCostToYou;
+                }
+
                 // 当日の値（前日分）
-                const previousPart = previousCostToYou;
+                const previousPart = previousMonthCostToYou;
 
                 // 当日の増分
-                const diffPart = currentCostToYou - previousCostToYou;
+                const diffPart = cumulativeCostToYou - previousMonthCostToYou;
 
                 // データを保存
-                currentData[model].costToYou.push(currentCostToYou);
+                currentData[model].costToYou.push(cumulativeCostToYou);
                 previousData[model].costToYou.push({
                     previous: previousPart,
                     diff: diffPart
@@ -799,7 +877,7 @@ function createTotalTokensChart() {
             modelData[model].totalTokens[dateStr] += record.totalTokens || 0;
         });
 
-        // 当日値と前日値の差分を計算
+        // 月ごとのリセットを考慮した差分を計算
         const currentData = {};
         const previousData = {};
         const models = Object.keys(modelData);
@@ -812,6 +890,9 @@ function createTotalTokensChart() {
                 totalTokens: []
             };
 
+            let cumulativeTotalTokens = 0;
+            let previousMonthTotalTokens = 0;
+
             uniqueDates.forEach((dateStr, index) => {
                 const currentTotalTokens = modelData[model].totalTokens[dateStr] || 0;
 
@@ -819,14 +900,25 @@ function createTotalTokensChart() {
                 const previousDate = index > 0 ? uniqueDates[index - 1] : null;
                 const previousTotalTokens = previousDate ? (modelData[model].totalTokens[previousDate] || 0) : 0;
 
+                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+                if (currentTotalTokens < previousTotalTokens && previousTotalTokens > 0) {
+                    // 新しい月の開始
+                    cumulativeTotalTokens = currentTotalTokens;
+                    previousMonthTotalTokens = 0;
+                } else {
+                    // 同じ月の継続
+                    cumulativeTotalTokens = currentTotalTokens;
+                    previousMonthTotalTokens = previousTotalTokens;
+                }
+
                 // 当日の値（前日分）
-                const previousPart = previousTotalTokens;
+                const previousPart = previousMonthTotalTokens;
 
                 // 当日の増分
-                const diffPart = currentTotalTokens - previousTotalTokens;
+                const diffPart = cumulativeTotalTokens - previousMonthTotalTokens;
 
                 // データを保存
-                currentData[model].totalTokens.push(currentTotalTokens);
+                currentData[model].totalTokens.push(cumulativeTotalTokens);
                 previousData[model].totalTokens.push({
                     previous: previousPart,
                     diff: diffPart
@@ -977,7 +1069,7 @@ function createInputChart() {
             modelData[model].input[dateStr] += record.input || 0;
         });
 
-        // 当日値と前日値の差分を計算
+        // 月ごとのリセットを考慮した差分を計算
         const currentData = {};
         const previousData = {};
         const models = Object.keys(modelData);
@@ -990,6 +1082,9 @@ function createInputChart() {
                 input: []
             };
 
+            let cumulativeInput = 0;
+            let previousMonthInput = 0;
+
             uniqueDates.forEach((dateStr, index) => {
                 const currentInput = modelData[model].input[dateStr] || 0;
 
@@ -997,14 +1092,25 @@ function createInputChart() {
                 const previousDate = index > 0 ? uniqueDates[index - 1] : null;
                 const previousInput = previousDate ? (modelData[model].input[previousDate] || 0) : 0;
 
+                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+                if (currentInput < previousInput && previousInput > 0) {
+                    // 新しい月の開始
+                    cumulativeInput = currentInput;
+                    previousMonthInput = 0;
+                } else {
+                    // 同じ月の継続
+                    cumulativeInput = currentInput;
+                    previousMonthInput = previousInput;
+                }
+
                 // 当日の値（前日分）
-                const previousPart = previousInput;
+                const previousPart = previousMonthInput;
 
                 // 当日の増分
-                const diffPart = currentInput - previousInput;
+                const diffPart = cumulativeInput - previousMonthInput;
 
                 // データを保存
-                currentData[model].input.push(currentInput);
+                currentData[model].input.push(cumulativeInput);
                 previousData[model].input.push({
                     previous: previousPart,
                     diff: diffPart
@@ -1155,7 +1261,7 @@ function createOutputChart() {
             modelData[model].output[dateStr] += record.output || 0;
         });
 
-        // 当日値と前日値の差分を計算
+        // 月ごとのリセットを考慮した差分を計算
         const currentData = {};
         const previousData = {};
         const models = Object.keys(modelData);
@@ -1168,6 +1274,9 @@ function createOutputChart() {
                 output: []
             };
 
+            let cumulativeOutput = 0;
+            let previousMonthOutput = 0;
+
             uniqueDates.forEach((dateStr, index) => {
                 const currentOutput = modelData[model].output[dateStr] || 0;
 
@@ -1175,14 +1284,25 @@ function createOutputChart() {
                 const previousDate = index > 0 ? uniqueDates[index - 1] : null;
                 const previousOutput = previousDate ? (modelData[model].output[previousDate] || 0) : 0;
 
+                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+                if (currentOutput < previousOutput && previousOutput > 0) {
+                    // 新しい月の開始
+                    cumulativeOutput = currentOutput;
+                    previousMonthOutput = 0;
+                } else {
+                    // 同じ月の継続
+                    cumulativeOutput = currentOutput;
+                    previousMonthOutput = previousOutput;
+                }
+
                 // 当日の値（前日分）
-                const previousPart = previousOutput;
+                const previousPart = previousMonthOutput;
 
                 // 当日の増分
-                const diffPart = currentOutput - previousOutput;
+                const diffPart = cumulativeOutput - previousMonthOutput;
 
                 // データを保存
-                currentData[model].output.push(currentOutput);
+                currentData[model].output.push(cumulativeOutput);
                 previousData[model].output.push({
                     previous: previousPart,
                     diff: diffPart
