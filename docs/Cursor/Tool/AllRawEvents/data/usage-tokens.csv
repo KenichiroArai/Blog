@@ -1,4 +1,9 @@
 Date,User,Kind,Model,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output,Total Tokens,Cost ($)
+2025-08-18T12:06:52.427Z,You,Included in Pro,auto,0,5409,0,105,5514,Included
+2025-08-18T12:06:43.614Z,You,Included in Pro,auto,0,5377,0,104,5481,Included
+2025-08-18T08:58:18.476Z,You,Included in Pro,auto,0,5360,0,15,5375,Included
+2025-08-18T07:05:03.393Z,You,Included in Pro,auto,42554,0,611822,11535,665911,Included
+2025-08-18T05:14:08.530Z,You,Included in Pro,auto,2865,0,26125,1035,30025,Included
 2025-08-17T14:55:43.838Z,You,Included in Pro,auto,0,2629,0,132,2761,Included
 2025-08-17T14:53:13.726Z,You,Included in Pro,auto,0,3741,0,134,3875,Included
 2025-08-17T14:53:06.995Z,You,Included in Pro,auto,0,408,3584,93,4085,Included
