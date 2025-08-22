@@ -1,4 +1,16 @@
 Date,User,Kind,Model,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output,Total Tokens,Cost ($)
+2025-08-21T15:33:46.948Z,You,Included in Pro,auto,1514,0,23246,1142,25902,Included
+2025-08-21T15:31:21.623Z,You,Included in Pro,auto,7450,0,20665,936,29051,Included
+2025-08-21T15:03:50.095Z,You,Included in Pro,auto,0,2139,2048,18,4205,Included
+2025-08-21T15:03:34.954Z,You,Included in Pro,auto,0,3817,0,18,3835,Included
+2025-08-21T15:03:22.390Z,You,Included in Pro,auto,0,3349,0,18,3367,Included
+2025-08-21T15:02:58.490Z,You,Included in Pro,auto,0,2437,0,18,2455,Included
+2025-08-21T14:53:32.151Z,You,Included in Pro,auto,4658,0,26002,1136,31796,Included
+2025-08-21T14:43:55.358Z,You,Included in Pro,auto,5259,0,18148,1017,24424,Included
+2025-08-21T14:36:23.451Z,You,Included in Pro,auto,26381,0,104743,851,131975,Included
+2025-08-21T07:09:11.447Z,You,Included in Pro,auto,2502,0,20578,605,23685,Included
+2025-08-21T07:00:39.135Z,You,Included in Pro,auto,4548,0,57600,1836,63984,Included
+2025-08-21T06:59:03.777Z,You,Included in Pro,auto,4234,0,26094,693,31021,Included
 2025-08-20T16:15:01.009Z,You,Included in Pro,auto,6054,0,17420,1335,24809,Included
 2025-08-20T15:55:27.996Z,You,Included in Pro,auto,35632,0,812916,4286,852834,Included
 2025-08-20T15:21:09.202Z,You,Included in Pro,auto,3781,0,36695,359,40835,Included
