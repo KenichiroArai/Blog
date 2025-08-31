@@ -137,13 +137,16 @@ function processIncludedUsageData(rawData) {
 
         const dateCell = row[0];
         const model = row[1] || '';
-        const input = parseInt(row[2]?.toString().replace(/,/g, '')) || 0;
-        const output = parseInt(row[3]?.toString().replace(/,/g, '')) || 0;
-        const cacheWrite = parseInt(row[4]?.toString().replace(/,/g, '')) || 0;
-        const cacheRead = parseInt(row[5]?.toString().replace(/,/g, '')) || 0;
+        const inputWithCache = parseInt(row[2]?.toString().replace(/,/g, '')) || 0;
+        const inputWithoutCache = parseInt(row[3]?.toString().replace(/,/g, '')) || 0;
+        const cacheRead = parseInt(row[4]?.toString().replace(/,/g, '')) || 0;
+        const output = parseInt(row[5]?.toString().replace(/,/g, '')) || 0;
         const totalTokens = parseInt(row[6]?.toString().replace(/,/g, '')) || 0;
         const apiCost = row[7] || '';
         const costToYou = row[8] || '';
+
+        // Inputは両方の合計
+        const input = inputWithCache + inputWithoutCache;
 
         console.log(`Row ${i}: dateCell="${dateCell}", model="${model}", input=${input}`);
 
@@ -177,8 +180,9 @@ function processIncludedUsageData(rawData) {
                 dateStr: currentDate.toLocaleDateString('ja-JP'),
                 model: modelStr,
                 input: input,
+                inputWithCache: inputWithCache,
+                inputWithoutCache: inputWithoutCache,
                 output: output,
-                cacheWrite: cacheWrite,
                 cacheRead: cacheRead,
                 totalTokens: totalTokens,
                 apiCost: apiCost,

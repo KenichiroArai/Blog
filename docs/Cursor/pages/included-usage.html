@@ -150,18 +150,51 @@
             </div>
         </div>
 
-        <!-- さらに新しいグラフセクション -->
+        <!-- Input W/CACHE WRITE グラフセクション -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <!-- Input グラフ -->
+                <!-- Input W/CACHE WRITE グラフ -->
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">Input グラフ</h2>
+                            <h2 class="card-title mb-0">Input (W/CACHE WRITE) グラフ</h2>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="input-chart"></canvas>
+                                <canvas id="input-with-cache-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input W/O CACHE WRITE グラフ -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Input (W/O CACHE WRITE) グラフ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="input-without-cache-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cache Read と Output グラフセクション -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <!-- Cache Read グラフ -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Cache Read グラフ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="cache-read-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -195,10 +228,10 @@
                             <tr>
                                 <th>日付</th>
                                 <th>モデル</th>
-                                <th>Input</th>
-                                <th>Output</th>
-                                <th>Cache Write</th>
+                                <th>Input (W/CACHE WRITE)</th>
+                                <th>Input (W/O CACHE WRITE)</th>
                                 <th>Cache Read</th>
+                                <th>Output</th>
                                 <th>Total Tokens</th>
                                 <th>API Cost</th>
                                 <th>Cost to You</th>
