@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サマリー - Cursor使用記録　v0.5.0</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/common.css?v=1.0.2" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">
+                <a href="https://github.com/KenichiroArai/Blog/issues/37" target="_blank" rel="noopener">
+                    Cursor使用記録　v0.5.0
+                </a>
+            </span>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="../index.html">トップページ</a>
+                <a class="nav-link" href="records.html">使用記録</a>
+                <a class="nav-link" href="usage.html">Usage</a>
+                <a class="nav-link" href="included-usage.html">Included Usage</a>
+                <a class="nav-link active" href="summary.html">サマリー</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-3">
+        <!-- ローディング表示 -->
+        <div id="loading" class="text-center d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">読み込み中...</span>
+            </div>
+        </div>
+
+        <!-- エラーメッセージ -->
+        <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+
+        <!-- ページタイトル -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center">サマリー</h1>
+                <p class="text-center text-muted">Cursor使用状況の総合的なサマリーを確認できます</p>
+            </div>
+        </div>
+
+        <!-- サマリー統計（1行目） -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">総合サマリー統計</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <!-- 統計項目1 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総使用日数</div>
+                                        <div id="total-usage-days-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目2 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総Suggested Lines</div>
+                                        <div id="total-suggested-lines-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目3 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総Accepted Lines</div>
+                                        <div id="total-accepted-lines-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目4 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総Tabs Accepted</div>
+                                        <div id="total-tabs-accepted-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目5 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総トークン数</div>
+                                        <div id="total-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目6 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総API Cost</div>
+                                        <div id="total-api-cost-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目7 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総Cost to You</div>
+                                        <div id="total-cost-to-you-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目8 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">平均日別トークン数</div>
+                                        <div id="avg-daily-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- サマリーグラフ（2行目） -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">サマリーグラフ</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container-large">
+                                <canvas id="summary-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 詳細サマリー情報 -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <!-- 使用記録サマリー -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">使用記録サマリー</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="usage-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">最新使用日統計</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">最新使用日:</span>
+                                                <span id="latest-usage-date-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Suggested Lines:</span>
+                                                <span id="suggested-lines-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Accepted Lines:</span>
+                                                <span id="accepted-lines-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Tabs Accepted:</span>
+                                                <span id="tabs-accepted-summary" class="stat-value"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage Tokens サマリー -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Usage Tokens サマリー</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="usage-tokens-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">最新使用日統計</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">最新使用日:</span>
+                                                <span id="latest-tokens-date-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">日別総トークン数:</span>
+                                                <span id="daily-total-tokens-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">日別平均トークン数:</span>
+                                                <span id="daily-avg-tokens-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">日別最大トークン数:</span>
+                                                <span id="daily-max-tokens-summary" class="stat-value"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Included Usage サマリー -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title mb-0">Included Usage サマリー</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="usage-included-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">最新使用日統計</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">最新使用日:</span>
+                                                <span id="latest-included-usage-date-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Total Tokens:</span>
+                                                <span id="latest-total-tokens-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Input (W/CACHE WRITE):</span>
+                                                <span id="latest-input-with-cache-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Input (W/O CACHE WRITE):</span>
+                                                <span id="latest-input-without-cache-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Cache Read:</span>
+                                                <span id="latest-cache-read-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Output:</span>
+                                                <span id="latest-output-tokens-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">API Cost:</span>
+                                                <span id="latest-api-cost-summary" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Cost to You:</span>
+                                                <span id="latest-cost-to-you-summary" class="stat-value"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="../js/common.js?v=1.0.2"></script>
+    <script src="../js/summary.js?v=1.0.2"></script>
+    <div class="container mt-4">
+        <a href="../index.html" class="btn btn-secondary">← トップページに戻る</a>
+    </div>
+</body>
+
+</html>
