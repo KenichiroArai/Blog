@@ -55,8 +55,9 @@
         レイアウトルール:
         - 5つのセクション（使用記録、Usage、Summary、Included Usage、Usage Events）を横並びに配置
         - 画面幅に応じてレスポンシブ対応：
-          - 大画面（xl以上、1200px以上）: 5列横並び（col-xl-2）
-          - 大画面（lg、992px-1199px）: 2列横並び（col-lg-6）
+          - 超大画面（xxl以上、1400px以上）: 5列横並び（col-xxl）
+          - 大画面（xl、1200px-1399px）: 3列横並び（col-xl-4）
+          - 中画面（lg、992px-1199px）: 2列横並び（col-lg-6）
           - 中画面（md、768px-991px）: 2列横並び（col-md-6）
           - 小画面（sm以下、767px以下）: 1列縦並び（col-12）
         - 各セクションの高さを統一するため h-100 クラスを使用
@@ -64,7 +65,7 @@
         -->
         <div class="row g-4">
             <!-- 使用記録 -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -117,7 +118,7 @@
             </div>
 
             <!-- Usage Tokens -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -174,7 +175,7 @@
             </div>
 
             <!-- Included Usage -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -235,7 +236,7 @@
             </div>
 
             <!-- Summary -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -302,7 +303,7 @@
             </div>
 
             <!-- Usage Events -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
