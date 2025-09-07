@@ -980,23 +980,10 @@ function updateUsageEventsStats() {
     const totalTokensValue = document.getElementById('total-tokens-value');
     if (totalTokensValue) totalTokensValue.textContent = totalTokens.toLocaleString();
 
-    // 最新の使用情報を表示
+    // 最新の使用情報を表示（他のセクションと統一性を保つため削除）
     const latestUsageEventsInfo = document.getElementById('latest-usage-events-info');
-    if (latestUsageEventsInfo && usageEventsData.length > 0) {
-        const latestEvent = usageEventsData[usageEventsData.length - 1]; // 最新のイベント
-        const eventDate = new Date(latestEvent.Date);
-        const formattedDate = eventDate.toLocaleDateString('ja-JP');
-
-        latestUsageEventsInfo.innerHTML = `
-            <div class="alert alert-info mb-0">
-                <small>
-                    <i class="bi bi-info-circle"></i>
-                    最新イベント: ${formattedDate}<br>
-                    種別: ${latestEvent.Kind}<br>
-                    モデル: ${latestEvent.Model}
-                </small>
-            </div>
-        `;
+    if (latestUsageEventsInfo) {
+        latestUsageEventsInfo.innerHTML = '';
     }
 }
 
