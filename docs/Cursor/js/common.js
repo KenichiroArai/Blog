@@ -675,6 +675,148 @@ function updateTokensStats() {
     }
 }
 
+// Summary統計の更新
+function updateSummaryStats() {
+    if (summaryData.length === 0) return;
+
+    console.log('Summary data:', summaryData);
+
+    // autoモデルのレコードのみを取得して日付順にソート
+    const autoRecords = summaryData
+        .filter(record => record.model.toLowerCase() === 'auto')
+        .sort((a, b) => b.date - a.date);
+
+    const latestRecord = autoRecords[0];
+    const previousRecord = autoRecords[1]; // 前日のautoレコード
+
+    console.log('Auto records:', autoRecords);
+    console.log('Latest auto record:', latestRecord);
+    console.log('Previous auto record:', previousRecord);
+
+    if (!latestRecord) {
+        console.warn('No summary record found for stats');
+        return;
+    }
+
+    // 最新使用日の統計を表示
+    const latestSummaryDateValue = document.getElementById('latest-summary-date-value');
+    if (latestSummaryDateValue) latestSummaryDateValue.textContent = latestRecord.dateStr;
+
+    // Total（前日との差付き）
+    const latestSummaryTotalValue = document.getElementById('latest-summary-total-value');
+    if (latestSummaryTotalValue) {
+        const totalText = latestRecord.total.toLocaleString();
+        const previousTotal = previousRecord ? previousRecord.total : 0;
+        const diff = calculateDifferenceWithReset(latestRecord.total, previousTotal);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryTotalValue.innerHTML = `${totalText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryTotalValue.textContent = totalText;
+        }
+    }
+
+    // Cache Read（前日との差付き）
+    const latestSummaryCacheReadValue = document.getElementById('latest-summary-cache-read-value');
+    if (latestSummaryCacheReadValue) {
+        const cacheReadText = latestRecord.cacheRead.toLocaleString();
+        const previousCacheRead = previousRecord ? previousRecord.cacheRead : 0;
+        const diff = calculateDifferenceWithReset(latestRecord.cacheRead, previousCacheRead);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryCacheReadValue.innerHTML = `${cacheReadText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryCacheReadValue.textContent = cacheReadText;
+        }
+    }
+
+    // Cache Write（前日との差付き）
+    const latestSummaryCacheWriteValue = document.getElementById('latest-summary-cache-write-value');
+    if (latestSummaryCacheWriteValue) {
+        const cacheWriteText = latestRecord.cacheWrite.toLocaleString();
+        const previousCacheWrite = previousRecord ? previousRecord.cacheWrite : 0;
+        const diff = calculateDifferenceWithReset(latestRecord.cacheWrite, previousCacheWrite);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryCacheWriteValue.innerHTML = `${cacheWriteText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryCacheWriteValue.textContent = cacheWriteText;
+        }
+    }
+
+    // Input（前日との差付き）
+    const latestSummaryInputValue = document.getElementById('latest-summary-input-value');
+    if (latestSummaryInputValue) {
+        const inputText = latestRecord.input.toLocaleString();
+        const previousInput = previousRecord ? previousRecord.input : 0;
+        const diff = calculateDifferenceWithReset(latestRecord.input, previousInput);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryInputValue.innerHTML = `${inputText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryInputValue.textContent = inputText;
+        }
+    }
+
+    // Output（前日との差付き）
+    const latestSummaryOutputValue = document.getElementById('latest-summary-output-value');
+    if (latestSummaryOutputValue) {
+        const outputText = latestRecord.output.toLocaleString();
+        const previousOutput = previousRecord ? previousRecord.output : 0;
+        const diff = calculateDifferenceWithReset(latestRecord.output, previousOutput);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryOutputValue.innerHTML = `${outputText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryOutputValue.textContent = outputText;
+        }
+    }
+
+    // API Cost（前日との差付き）
+    const latestSummaryApiCostValue = document.getElementById('latest-summary-api-cost-value');
+    if (latestSummaryApiCostValue) {
+        const apiCostText = latestRecord.apiCost;
+        const previousApiCost = previousRecord ? (parseFloat(String(previousRecord.apiCost || '').replace('$', '')) || 0) : 0;
+        const currentApiCost = parseFloat(String(latestRecord.apiCost || '').replace('$', '')) || 0;
+        const diff = calculateDifferenceWithReset(currentApiCost, previousApiCost);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryApiCostValue.innerHTML = `${apiCostText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryApiCostValue.textContent = apiCostText;
+        }
+    }
+
+    // Cost to You（前日との差付き）
+    const latestSummaryCostToYouValue = document.getElementById('latest-summary-cost-to-you-value');
+    if (latestSummaryCostToYouValue) {
+        const costToYouText = latestRecord.costToYou;
+        const previousCostToYou = previousRecord ? (parseFloat(String(previousRecord.costToYou || '').replace('$', '')) || 0) : 0;
+        const currentCostToYou = parseFloat(String(latestRecord.costToYou || '').replace('$', '')) || 0;
+        const diff = calculateDifferenceWithReset(currentCostToYou, previousCostToYou);
+        const diffText = formatDifference(diff);
+        const diffClass = getDifferenceClass(diff);
+
+        if (diff !== null) {
+            latestSummaryCostToYouValue.innerHTML = `${costToYouText} <small class="${diffClass}">(${diffText})</small>`;
+        } else {
+            latestSummaryCostToYouValue.textContent = costToYouText;
+        }
+    }
+}
+
 // Included Usage統計の更新
 function updateIncludedUsageStats() {
     if (includedUsageData.length === 0) return;
@@ -920,6 +1062,7 @@ async function loadSummaryData() {
         summaryData = processSummaryData(rawData);
 
         console.log('Summary data loaded:', summaryData.length, 'records');
+        console.log('Summary data sample:', summaryData.slice(0, 3));
     } catch (error) {
         console.error('Summaryシートの読み込みに失敗しました:', error);
         throw new Error('Summaryシートの読み込みに失敗しました: ' + error.message);
