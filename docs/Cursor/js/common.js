@@ -4,6 +4,7 @@ let usageData = [];
 let includedUsageData = [];
 let summaryData = []; // 追加：Summaryシートのデータ
 let usageDetailsData = []; // 追加：usage-details.csvのデータ
+let usageEventsData = []; // 追加：usage-events.csvのデータ
 
 // 前日との差を計算する関数
 function calculatePreviousDayDifference(currentRecord, previousRecord) {
@@ -949,6 +950,56 @@ function updateIncludedUsageStats() {
     }
 }
 
+// Usage Events統計の更新
+function updateUsageEventsStats() {
+    if (usageEventsData.length === 0) return;
+
+    console.log('Usage Events data:', usageEventsData);
+
+    // 統計情報を計算
+    const totalEvents = usageEventsData.length;
+    const successfulEvents = usageEventsData.filter(row => row.Kind === 'Included').length;
+    const errorEvents = usageEventsData.filter(row => row.Kind.includes('Errored')).length;
+
+    // 総トークン数を計算
+    const totalTokens = usageEventsData.reduce((sum, row) => {
+        const tokens = parseInt(row['Total Tokens']) || 0;
+        return sum + tokens;
+    }, 0);
+
+    // 統計情報を表示
+    const totalEventsValue = document.getElementById('total-events-value');
+    if (totalEventsValue) totalEventsValue.textContent = totalEvents.toLocaleString();
+
+    const successfulEventsValue = document.getElementById('successful-events-value');
+    if (successfulEventsValue) successfulEventsValue.textContent = successfulEvents.toLocaleString();
+
+    const errorEventsValue = document.getElementById('error-events-value');
+    if (errorEventsValue) errorEventsValue.textContent = errorEvents.toLocaleString();
+
+    const totalTokensValue = document.getElementById('total-tokens-value');
+    if (totalTokensValue) totalTokensValue.textContent = totalTokens.toLocaleString();
+
+    // 最新の使用情報を表示
+    const latestUsageEventsInfo = document.getElementById('latest-usage-events-info');
+    if (latestUsageEventsInfo && usageEventsData.length > 0) {
+        const latestEvent = usageEventsData[usageEventsData.length - 1]; // 最新のイベント
+        const eventDate = new Date(latestEvent.Date);
+        const formattedDate = eventDate.toLocaleDateString('ja-JP');
+
+        latestUsageEventsInfo.innerHTML = `
+            <div class="alert alert-info mb-0">
+                <small>
+                    <i class="bi bi-info-circle"></i>
+                    最新イベント: ${formattedDate}<br>
+                    種別: ${latestEvent.Kind}<br>
+                    モデル: ${latestEvent.Model}
+                </small>
+            </div>
+        `;
+    }
+}
+
 // プログレスバーの更新
 function updateProgressBar(elementId, percentage, text) {
     const progressBar = document.getElementById(elementId);
@@ -1069,6 +1120,62 @@ async function loadSummaryData() {
     } finally {
         showLoading(false);
     }
+}
+
+// Usage Events CSVファイル読み込み
+async function loadUsageEventsData() {
+    showLoading(true);
+    try {
+        // 現在のページのパスに基づいて相対パスを決定
+        const currentPath = window.location.pathname;
+        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
+        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-events.csv' : '../Tool/AllRawEvents/data/usage-events.csv';
+
+        console.log('Loading Usage Events CSV file from:', csvPath);
+        console.log('Current path:', currentPath);
+
+        const response = await fetch(csvPath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        usageEventsData = parseUsageEventsCSV(csvText);
+
+        console.log('Loaded usage events data:', usageEventsData.length, 'records');
+        console.log('Usage events data sample:', usageEventsData.slice(0, 3));
+    } catch (error) {
+        console.error('Usage Events CSVファイルの読み込みエラー:', error);
+        throw new Error('Usage Events CSVファイルの読み込みに失敗しました: ' + error.message);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Usage Events CSVデータの処理
+function parseUsageEventsCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    if (lines.length < 2) {
+        console.warn('Usage Events CSVファイルが空またはヘッダーのみです');
+        return [];
+    }
+
+    const headers = parseCSVLine(lines[0]);
+    const data = [];
+
+    for (let i = 1; i < lines.length; i++) {
+        const values = parseCSVLine(lines[i]);
+        if (values.length === headers.length) {
+            const row = {};
+            headers.forEach((header, index) => {
+                row[header.trim()] = values[index].trim();
+            });
+            data.push(row);
+        }
+    }
+
+    console.log('Parsed usage events data:', data.length, 'records');
+    return data;
 }
 
 // Summaryデータの処理

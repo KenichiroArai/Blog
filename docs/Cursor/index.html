@@ -53,9 +53,9 @@
         <!-- メインコンテンツ -->
         <!--
         レイアウトルール:
-        - 4つのセクション（使用記録、Usage、Summary、Included Usage）を横並びに配置
+        - 5つのセクション（使用記録、Usage、Summary、Included Usage、Usage Events）を横並びに配置
         - 画面幅に応じてレスポンシブ対応：
-          - 大画面（xl以上、1200px以上）: 4列横並び（col-xl-3）
+          - 大画面（xl以上、1200px以上）: 5列横並び（col-xl-2）
           - 大画面（lg、992px-1199px）: 2列横並び（col-lg-6）
           - 中画面（md、768px-991px）: 2列横並び（col-md-6）
           - 小画面（sm以下、767px以下）: 1列縦並び（col-12）
@@ -64,7 +64,7 @@
         -->
         <div class="row g-4">
             <!-- 使用記録 -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -117,7 +117,7 @@
             </div>
 
             <!-- Usage Tokens -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -174,7 +174,7 @@
             </div>
 
             <!-- Summary -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -241,7 +241,7 @@
             </div>
 
             <!-- Included Usage -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
                 <div class="card h-100">
                     <div class="card-header">
                         <div class="d-flex flex-column">
@@ -296,6 +296,51 @@
                                 </div>
                             </div>
                             <div class="usage-info" id="latest-included-usage-info"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Events -->
+            <div class="col-12 col-md-6 col-lg-6 col-xl-2">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="d-flex flex-column">
+                            <h2 class="card-title mb-2">Usage Events</h2>
+                            <div class="d-flex justify-content-end">
+                                <a href="pages/usage-events.html" class="btn btn-primary btn-sm"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Usage Eventsの詳細な記録とグラフを確認できます。日別イベント数、日別トークン使用量、成功/エラーイベントの分析、使用イベント一覧を確認できます。">詳細を見る</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="usage-events-stats">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h3 class="h5 mb-2">最新統計</h3>
+                                    <div class="usage-stats-summary">
+                                        <div class="stat-item">
+                                            <span class="stat-label">総イベント数:</span>
+                                            <span id="total-events-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">成功イベント:</span>
+                                            <span id="successful-events-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">エラーイベント:</span>
+                                            <span id="error-events-value" class="stat-value"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">総トークン数:</span>
+                                            <span id="total-tokens-value" class="stat-value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="usage-info" id="latest-usage-events-info"></div>
                         </div>
                     </div>
                 </div>
