@@ -57,6 +57,8 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - [x] **合計金額計算機能を実装**
   - 選んだ串カツの合計金額表示
   - プルダウン選択後の自動更新
+  - 価格変更時の自動再計算
+  - 個数変更時の確実な合計更新
 
 - [x] **ローカルストレージ機能を実装**
   - 選択した個数と値段の保存
@@ -117,6 +119,8 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 
 - 選んだ串カツの**合計金額**を表示する
 - プルダウン選択後、自動で合計を更新する
+- 価格変更時も自動で合計を再計算する
+- 個数変更時に確実に合計金額が反映される
 
 ### データ保持
 
@@ -174,8 +178,9 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 
 #### script.js
 
-- データ読み込み機能（JSON/CSV形式）
+- データ読み込み機能（Excel形式）
 - 個数選択と合計計算ロジック
+- 価格変更時の自動再計算機能
 - ローカルストレージの読み書き
 - 価格編集機能
 - ボタン機能実装
@@ -233,5 +238,39 @@ function loadExcelData() {
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
       // データを処理
     });
+}
+
+// 個数更新と合計計算
+function updateQuantity(itemId, quantity) {
+  const numQuantity = parseInt(quantity);
+  if (!currentSelections[itemId]) {
+    currentSelections[itemId] = {};
+  }
+  currentSelections[itemId].quantity = numQuantity;
+
+  // 価格が設定されていない場合は元の価格を設定
+  if (currentSelections[itemId].price === undefined) {
+    const originalItem = menuData.find(item => item.id == itemId);
+    if (originalItem) {
+      currentSelections[itemId].price = originalItem.price;
+    }
+  }
+
+  saveToLocalStorage();
+  calculateTotal();
+}
+
+// 合計金額計算（価格変更対応）
+function calculateTotal() {
+  let total = 0;
+  Object.keys(currentSelections).forEach(itemId => {
+    const selection = currentSelections[itemId];
+    if (selection.quantity > 0) {
+      const price = selection.price !== undefined ? selection.price :
+                   menuData.find(item => item.id == itemId)?.price || 0;
+      total += selection.quantity * price;
+    }
+  });
+  totalAmount.textContent = `¥${total.toLocaleString()}`;
 }
 ```

@@ -162,6 +162,14 @@ function updateQuantity(itemId, quantity) {
 
     currentSelections[itemId].quantity = numQuantity;
 
+    // 価格が設定されていない場合は、元の価格を設定
+    if (currentSelections[itemId].price === undefined) {
+        const originalItem = menuData.find(item => item.id == itemId);
+        if (originalItem) {
+            currentSelections[itemId].price = originalItem.price;
+        }
+    }
+
     // ローカルストレージに保存
     saveToLocalStorage();
 
@@ -198,7 +206,9 @@ function calculateTotal() {
     Object.keys(currentSelections).forEach(itemId => {
         const selection = currentSelections[itemId];
         if (selection.quantity > 0) {
-            const price = selection.price || 0;
+            // 価格が変更されている場合はselection.price、そうでなければ元のmenuDataから取得
+            const price = selection.price !== undefined ? selection.price :
+                         menuData.find(item => item.id == itemId)?.price || 0;
             total += selection.quantity * price;
         }
     });
