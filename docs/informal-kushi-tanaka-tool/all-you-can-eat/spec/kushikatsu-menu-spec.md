@@ -8,7 +8,11 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 ## ファイル構成
 
 - ベースパス: `Blog\docs\informal-kushi-tanaka-tool\all-you-can-eat`
-- データファイル: `Blog\docs\informal-kushi-tanaka-tool\all-you-can-eat\data`
+- データファイル: `Blog\docs\informal-kushi-tanaka-tool\all-you-can-eat\data\串メニュー.xlsx`
+- 実装ファイル:
+  - `index.html` - メインHTMLファイル
+  - `style.css` - スタイルシート
+  - `script.js` - JavaScript機能実装
 
 ---
 
@@ -77,3 +81,90 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 
 - 価格情報はExcelファイルから動的に読み込み
 - メニュー項目の追加・削除はExcelファイルの更新で対応
+
+## 技術仕様
+
+### 実装技術
+
+- **HTML5**: セマンティックなマークアップで構造化
+- **CSS3**: レスポンシブデザインとモダンなUI
+- **JavaScript (ES6+)**: 動的機能とローカルストレージ管理
+
+### ファイル構成詳細
+
+#### index.html
+
+- メニュー表示用のテーブル構造
+- プルダウン選択要素
+- 合計金額表示エリア
+- ボタン要素（クリア、初期化）
+
+#### style.css
+
+- レスポンシブデザイン（モバイル・デスクトップ対応）
+- 分類別の色分け表示
+- ユーザビリティを考慮したUI/UX
+
+#### script.js
+
+- データ読み込み機能（JSON/CSV形式）
+- 個数選択と合計計算ロジック
+- ローカルストレージの読み書き
+- 価格編集機能
+- ボタン機能実装
+
+### データ形式
+
+- **Excelファイル直接読み込み**: `data/串メニュー.xlsx`
+- GitHub Pagesでバックエンド無しで動作（フロントエンドのみ）
+- JavaScriptライブラリを使用してExcelファイルを読み込み
+
+### Excel読み込み方法
+
+#### 使用ライブラリ
+
+- **SheetJS (xlsx.js)**: ExcelファイルをJavaScriptで読み込む
+- CDN経由で読み込み: `https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js`
+
+#### データ構造
+
+Excelファイルの列構成:
+
+- A列: 番号
+- B列: 分類
+- C列: 名称
+- D列: 単価
+
+### GitHub Pages対応
+
+- **静的サイト**: バックエンドサーバー不要
+- **データ読み込み**: SheetJSライブラリでExcelファイルを直接読み込み
+- **ファイル配置**:
+
+```text
+  all-you-can-eat/
+  ├── index.html
+  ├── style.css
+  ├── script.js
+  └── data/
+      └── 串メニュー.xlsx
+```
+
+- **CORS制限**: 同一ドメイン内のファイルアクセスのため制限なし
+
+### 実装例
+
+```javascript
+// Excelファイル読み込み
+function loadExcelData() {
+  fetch('./data/串メニュー.xlsx')
+    .then(response => response.arrayBuffer())
+    .then(data => {
+      const workbook = XLSX.read(data, {type: 'array'});
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      // データを処理
+    });
+}
+```
