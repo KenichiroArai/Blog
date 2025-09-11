@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>串カツメニュー計算サイト</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍢 串カツメニュー計算サイト</h1>
+            <p>好きな串カツを選んで合計金額を計算しよう！</p>
+        </header>
+
+        <div class="controls">
+            <button id="clearBtn" class="btn btn-secondary">クリア</button>
+            <button id="resetBtn" class="btn btn-primary">初期化</button>
+        </div>
+
+        <div class="total-section">
+            <h2>合計金額: <span id="totalAmount">¥0</span></h2>
+        </div>
+
+        <div class="menu-container">
+            <div id="loadingMessage">メニューを読み込み中...</div>
+            <div id="menuContent" style="display: none;">
+                <!-- メニュー項目が動的に生成される -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
