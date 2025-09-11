@@ -1,0 +1,368 @@
+/* 基本スタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ヘッダー */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: white;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* コントロールボタン */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(238, 90, 36, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #74b9ff, #0984e3);
+    color: white;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(9, 132, 227, 0.4);
+}
+
+/* 合計金額表示 */
+.total-section {
+    text-align: center;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+.total-section h2 {
+    font-size: 2rem;
+    color: #2d3436;
+}
+
+#totalAmount {
+    color: #e17055;
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+
+/* メニューコンテナ */
+.menu-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+}
+
+#loadingMessage {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #636e72;
+    padding: 40px;
+}
+
+/* 分類別メニュー */
+.category-section {
+    margin-bottom: 40px;
+}
+
+.category-header {
+    background: linear-gradient(45deg, #fd79a8, #e84393);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(232, 67, 147, 0.3);
+}
+
+/* 分類別の色分け */
+.category-その他 .category-header {
+    background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+}
+
+.category-肉串 .category-header {
+    background: linear-gradient(45deg, #fd79a8, #e84393);
+}
+
+.category-海鮮串 .category-header {
+    background: linear-gradient(45deg, #74b9ff, #0984e3);
+}
+
+.category-野菜串 .category-header {
+    background: linear-gradient(45deg, #00b894, #00a085);
+}
+
+.category-他串 .category-header {
+    background: linear-gradient(45deg, #fdcb6e, #e17055);
+}
+
+.category-甘串 .category-header {
+    background: linear-gradient(45deg, #fd79a8, #e84393);
+}
+
+/* メニューテーブル */
+.menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.menu-table th {
+    background: #f8f9fa;
+    padding: 15px 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.menu-table td {
+    padding: 15px 10px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.menu-table tr:hover {
+    background: #f8f9fa;
+}
+
+.menu-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* メニュー項目のスタイル */
+.item-number {
+    font-weight: bold;
+    color: #6c757d;
+    width: 60px;
+}
+
+.item-name {
+    text-align: left;
+    font-weight: 500;
+    color: #2d3436;
+    padding-left: 15px;
+}
+
+.item-price {
+    font-weight: bold;
+    color: #e17055;
+    width: 100px;
+}
+
+.price-input {
+    width: 80px;
+    padding: 5px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    color: #e17055;
+}
+
+.price-input:focus {
+    outline: none;
+    border-color: #74b9ff;
+    box-shadow: 0 0 5px rgba(116, 185, 255, 0.3);
+}
+
+.quantity-select {
+    padding: 8px 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 80px;
+}
+
+.quantity-select:focus {
+    outline: none;
+    border-color: #74b9ff;
+    box-shadow: 0 0 5px rgba(116, 185, 255, 0.3);
+}
+
+.quantity-select:hover {
+    border-color: #74b9ff;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 200px;
+    }
+
+    .total-section h2 {
+        font-size: 1.5rem;
+    }
+
+    #totalAmount {
+        font-size: 2rem;
+    }
+
+    .menu-container {
+        padding: 20px;
+    }
+
+    .menu-table {
+        font-size: 0.9rem;
+    }
+
+    .menu-table th,
+    .menu-table td {
+        padding: 10px 5px;
+    }
+
+    .item-name {
+        padding-left: 10px;
+    }
+
+    .price-input,
+    .quantity-select {
+        width: 70px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-table {
+        font-size: 0.8rem;
+    }
+
+    .menu-table th,
+    .menu-table td {
+        padding: 8px 3px;
+    }
+
+    .item-name {
+        padding-left: 5px;
+    }
+
+    .price-input,
+    .quantity-select {
+        width: 60px;
+        font-size: 0.8rem;
+    }
+
+    .category-header {
+        font-size: 1.1rem;
+        padding: 12px 15px;
+    }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.category-section {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* ローディングアニメーション */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loadingMessage::after {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #74b9ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
