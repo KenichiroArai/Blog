@@ -9,9 +9,12 @@
 </head>
 <body>
     <div class="container">
+        <!-- 固定合計表示（上部） -->
+        <div class="fixed-total">
+            <div class="total-amount">合計: <span id="totalAmount">¥0</span></div>
+        </div>
         <header>
-            <h1>🍢 串カツメニュー計算サイト</h1>
-            <p>好きな串カツを選んで合計金額を計算しよう！</p>
+            <h1>🍢 串カツメニュー計算</h1>
             <div class="notice">
                 <p><strong>⚠️ 非公式ツールです</strong></p>
                 <p>このツールは非公式のツールです。串カツ田中様とは一切関係ありません。</p>
@@ -22,10 +25,6 @@
         <div class="controls">
             <button id="clearBtn" class="btn btn-secondary">クリア</button>
             <button id="resetBtn" class="btn btn-primary">初期化</button>
-        </div>
-
-        <div class="total-section">
-            <h2>合計金額: <span id="totalAmount">¥0</span></h2>
         </div>
 
         <div class="menu-container">
