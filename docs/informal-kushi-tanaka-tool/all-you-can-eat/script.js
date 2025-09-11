@@ -128,6 +128,9 @@ function displayMenu() {
     });
 
     menuContent.innerHTML = html;
+
+    // 分類ごとの合計金額を表示
+    updateCategoryTotals();
 }
 
 // 分類別グループ化
@@ -214,6 +217,53 @@ function calculateTotal() {
     });
 
     totalAmount.textContent = `¥${total.toLocaleString()}`;
+
+    // 分類ごとの合計金額も更新
+    updateCategoryTotals();
+}
+
+// 分類ごとの合計金額計算機能
+function calculateCategoryTotal(category) {
+    let categoryTotal = 0;
+
+    const categoryItems = menuData.filter(item => item.category === category);
+
+    categoryItems.forEach(item => {
+        const selection = currentSelections[item.id];
+        if (selection && selection.quantity > 0) {
+            const price = selection.price !== undefined ? selection.price : item.price;
+            categoryTotal += selection.quantity * price;
+        }
+    });
+
+    return categoryTotal;
+}
+
+// 分類ごとの合計金額表示更新
+function updateCategoryTotals() {
+    const categoryHeaders = document.querySelectorAll('.category-header');
+
+    categoryHeaders.forEach(header => {
+        // 既存の合計金額表示を削除
+        const existingTotal = header.querySelector('.category-total');
+        if (existingTotal) {
+            existingTotal.remove();
+        }
+
+        // 分類名を取得
+        const categoryName = header.textContent.trim();
+
+        // 分類ごとの合計金額を計算
+        const categoryTotal = calculateCategoryTotal(categoryName);
+
+        // 合計金額が0より大きい場合のみ表示
+        if (categoryTotal > 0) {
+            const totalElement = document.createElement('span');
+            totalElement.className = 'category-total';
+            totalElement.textContent = ` ¥${categoryTotal.toLocaleString()}`;
+            header.appendChild(totalElement);
+        }
+    });
 }
 
 // ローカルストレージ保存

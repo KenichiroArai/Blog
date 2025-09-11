@@ -4,6 +4,7 @@
 
 Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する計算サイトを作成する。
 ユーザーは串カツの種類・個数を選び、合計金額を確認できる。
+**スマートフォンでの使用を主な目的とし、PCでも快適に利用できるレスポンシブデザインを採用。合計金額は常に画面下部に固定表示される。**
 
 ## ファイル構成
 
@@ -31,13 +32,15 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - [x] **index.htmlファイルを作成**
   - メニュー表示テーブル構造
   - プルダウン選択要素
-  - 合計金額表示エリア
+  - **固定合計金額表示エリア（画面下部固定）**
   - ボタン要素（クリア、初期化）
 
 - [x] **style.cssファイルを作成**
-  - レスポンシブデザイン（モバイル・デスクトップ対応）
+  - **スマートフォンファーストのレスポンシブデザイン**
+  - **PCとスマホで異なるレイアウト調整**
   - 分類別の色分け表示
   - ユーザビリティを考慮したUI/UX
+  - **合計金額の固定表示（画面下部に常時表示）**
 
 ### ⚙️ 機能実装
 
@@ -59,6 +62,7 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
   - プルダウン選択後の自動更新
   - 価格変更時の自動再計算
   - 個数変更時の確実な合計更新
+  - **分類ごとの合計金額表示機能**
 
 - [x] **ローカルストレージ機能を実装**
   - 選択した個数と値段の保存
@@ -114,6 +118,9 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - 番号、分類、名称、単価を表形式で表示する
 - 個数はプルダウンで選択できる
 - 分類ごとにグループ化して表示する
+- **スマートフォンに最適化されたレイアウト**
+- **PCではより大きなフォントサイズと余白で見やすく表示**
+- **合計金額は画面下部に固定表示（常時見える状態）**
 
 ### 計算
 
@@ -121,6 +128,8 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - プルダウン選択後、自動で合計を更新する
 - 価格変更時も自動で合計を再計算する
 - 個数変更時に確実に合計金額が反映される
+- **合計金額は画面下部に固定表示され、常に確認可能**
+- **分類ごとの合計金額を分類ヘッダーに表示**（選択した項目がある場合のみ）
 
 ### データ保持
 
@@ -158,8 +167,38 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 ### 実装技術
 
 - **HTML5**: セマンティックなマークアップで構造化
-- **CSS3**: レスポンシブデザインとモダンなUI
+- **CSS3**: スマートフォンファーストのレスポンシブデザインとモダンなUI
 - **JavaScript (ES6+)**: 動的機能とローカルストレージ管理
+
+### レスポンシブデザイン仕様
+
+#### デザイン方針
+
+- **スマートフォンファースト**: モバイル端末での使用を前提とした設計
+- **PC対応**: デスクトップでも快適に利用できるレイアウト調整
+- **固定合計表示**: 合計金額を画面下部に常時固定表示
+- **タッチ操作最適化**: ボタンや入力フィールドをタッチしやすいサイズに調整
+
+#### スマートフォン最適化（768px以下）
+
+- **コンパクトなヘッダー**: タイトルと注意書きを簡潔に表示
+- **最適化されたテーブル**: 小画面でも見やすいフォントサイズとパディング
+- **固定合計エリア**: `position: fixed` で画面下部に固定
+- **適切な余白**: 固定合計表示のための `padding-bottom` を設定
+
+#### PC最適化（769px以上）
+
+- **大きなヘッダー**: より大きなフォントサイズと余白
+- **見やすいテーブル**: 大きなフォントサイズとパディング
+- **固定合計エリア**: `position: sticky` で自然な表示
+- **ホバーエフェクト**: マウスオーバー時の視覚的フィードバック
+
+#### タッチ操作対応
+
+- **ボタンサイズ**: タッチしやすい 44px 以上のサイズを確保
+- **入力フィールド**: タッチ操作に適したサイズとパディング
+- **アクティブ状態**: `:active` 疑似クラスでタッチフィードバック
+- **touch-action**: `manipulation` でダブルタップズームを無効化
 
 ### ファイル構成詳細
 
@@ -167,14 +206,17 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 
 - メニュー表示用のテーブル構造
 - プルダウン選択要素
-- 合計金額表示エリア
+- **固定合計金額表示エリア（画面下部固定）**
 - ボタン要素（クリア、初期化）
 
 #### style.css
 
-- レスポンシブデザイン（モバイル・デスクトップ対応）
+- **スマートフォンファーストのレスポンシブデザイン**
+- **PC用（769px以上）とスマホ用（768px以下）で異なるレイアウト**
 - 分類別の色分け表示
 - ユーザビリティを考慮したUI/UX
+- **固定合計表示の実装（position: fixed）**
+- **タッチ操作に最適化されたボタンサイズ**
 
 #### script.js
 
@@ -184,6 +226,7 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - ローカルストレージの読み書き
 - 価格編集機能
 - ボタン機能実装
+- **分類ごとの合計金額計算・表示機能**
 
 ### データ形式
 
@@ -223,6 +266,31 @@ Excelファイルの列構成:
 ```
 
 - **CORS制限**: 同一ドメイン内のファイルアクセスのため制限なし
+
+---
+
+## 更新履歴
+
+### 2024年12月 - 分類ごとの合計金額表示機能追加
+
+#### 追加機能
+
+- **分類ごとの合計金額表示**: 各分類ヘッダーに選択した項目の合計金額を表示
+- **動的表示**: 選択した項目がある分類のみ合計金額を表示
+- **レスポンシブ対応**: スマートフォン・PC・タブレットで適切なサイズで表示
+
+#### 実装詳細
+
+- `calculateCategoryTotal(category)`: 指定された分類の合計金額を計算
+- `updateCategoryTotals()`: 分類ヘッダーに合計金額を動的に表示・更新
+- CSS: `.category-total` クラスで絶対位置指定により幅高さを取らない表示を実現
+
+#### 表示仕様
+
+- **表示条件**: 分類内で選択した項目（個数 > 0）がある場合のみ表示
+- **表示位置**: 分類ヘッダーの右端に絶対位置で配置
+- **スタイル**: 半透明の背景とボーダーで視認性を確保
+- **レスポンシブ**: 画面サイズに応じてフォントサイズとパディングを調整
 
 ### 実装例
 
@@ -272,5 +340,49 @@ function calculateTotal() {
     }
   });
   totalAmount.textContent = `¥${total.toLocaleString()}`;
+}
+
+// 分類ごとの合計金額計算機能
+function calculateCategoryTotal(category) {
+  let categoryTotal = 0;
+
+  const categoryItems = menuData.filter(item => item.category === category);
+
+  categoryItems.forEach(item => {
+    const selection = currentSelections[item.id];
+    if (selection && selection.quantity > 0) {
+      const price = selection.price !== undefined ? selection.price : item.price;
+      categoryTotal += selection.quantity * price;
+    }
+  });
+
+  return categoryTotal;
+}
+
+// 分類ごとの合計金額表示更新
+function updateCategoryTotals() {
+  const categoryHeaders = document.querySelectorAll('.category-header');
+
+  categoryHeaders.forEach(header => {
+    // 既存の合計金額表示を削除
+    const existingTotal = header.querySelector('.category-total');
+    if (existingTotal) {
+      existingTotal.remove();
+    }
+
+    // 分類名を取得
+    const categoryName = header.textContent.trim();
+
+    // 分類ごとの合計金額を計算
+    const categoryTotal = calculateCategoryTotal(categoryName);
+
+    // 合計金額が0より大きい場合のみ表示
+    if (categoryTotal > 0) {
+      const totalElement = document.createElement('span');
+      totalElement.className = 'category-total';
+      totalElement.textContent = ` ¥${categoryTotal.toLocaleString()}`;
+      header.appendChild(totalElement);
+    }
+  });
 }
 ```
