@@ -62,6 +62,7 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
   - プルダウン選択後の自動更新
   - 価格変更時の自動再計算
   - 個数変更時の確実な合計更新
+  - **分類ごとの合計金額表示機能**
 
 - [x] **ローカルストレージ機能を実装**
   - 選択した個数と値段の保存
@@ -128,6 +129,7 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - 価格変更時も自動で合計を再計算する
 - 個数変更時に確実に合計金額が反映される
 - **合計金額は画面下部に固定表示され、常に確認可能**
+- **分類ごとの合計金額を分類ヘッダーに表示**（選択した項目がある場合のみ）
 
 ### データ保持
 
@@ -224,6 +226,7 @@ Excelにまとめた串カツ名と値段を元に、GitHub Pagesで公開する
 - ローカルストレージの読み書き
 - 価格編集機能
 - ボタン機能実装
+- **分類ごとの合計金額計算・表示機能**
 
 ### データ形式
 
@@ -263,6 +266,31 @@ Excelファイルの列構成:
 ```
 
 - **CORS制限**: 同一ドメイン内のファイルアクセスのため制限なし
+
+---
+
+## 更新履歴
+
+### 2024年12月 - 分類ごとの合計金額表示機能追加
+
+#### 追加機能
+
+- **分類ごとの合計金額表示**: 各分類ヘッダーに選択した項目の合計金額を表示
+- **動的表示**: 選択した項目がある分類のみ合計金額を表示
+- **レスポンシブ対応**: スマートフォン・PC・タブレットで適切なサイズで表示
+
+#### 実装詳細
+
+- `calculateCategoryTotal(category)`: 指定された分類の合計金額を計算
+- `updateCategoryTotals()`: 分類ヘッダーに合計金額を動的に表示・更新
+- CSS: `.category-total` クラスで絶対位置指定により幅高さを取らない表示を実現
+
+#### 表示仕様
+
+- **表示条件**: 分類内で選択した項目（個数 > 0）がある場合のみ表示
+- **表示位置**: 分類ヘッダーの右端に絶対位置で配置
+- **スタイル**: 半透明の背景とボーダーで視認性を確保
+- **レスポンシブ**: 画面サイズに応じてフォントサイズとパディングを調整
 
 ### 実装例
 
@@ -312,5 +340,49 @@ function calculateTotal() {
     }
   });
   totalAmount.textContent = `¥${total.toLocaleString()}`;
+}
+
+// 分類ごとの合計金額計算機能
+function calculateCategoryTotal(category) {
+  let categoryTotal = 0;
+
+  const categoryItems = menuData.filter(item => item.category === category);
+
+  categoryItems.forEach(item => {
+    const selection = currentSelections[item.id];
+    if (selection && selection.quantity > 0) {
+      const price = selection.price !== undefined ? selection.price : item.price;
+      categoryTotal += selection.quantity * price;
+    }
+  });
+
+  return categoryTotal;
+}
+
+// 分類ごとの合計金額表示更新
+function updateCategoryTotals() {
+  const categoryHeaders = document.querySelectorAll('.category-header');
+
+  categoryHeaders.forEach(header => {
+    // 既存の合計金額表示を削除
+    const existingTotal = header.querySelector('.category-total');
+    if (existingTotal) {
+      existingTotal.remove();
+    }
+
+    // 分類名を取得
+    const categoryName = header.textContent.trim();
+
+    // 分類ごとの合計金額を計算
+    const categoryTotal = calculateCategoryTotal(categoryName);
+
+    // 合計金額が0より大きい場合のみ表示
+    if (categoryTotal > 0) {
+      const totalElement = document.createElement('span');
+      totalElement.className = 'category-total';
+      totalElement.textContent = ` ¥${categoryTotal.toLocaleString()}`;
+      header.appendChild(totalElement);
+    }
+  });
 }
 ```
