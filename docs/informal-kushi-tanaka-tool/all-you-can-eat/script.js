@@ -250,7 +250,12 @@ function restoreFromLocalStorage() {
 // クリアボタン機能
 function clearSelections() {
     if (confirm('選択した個数をすべてクリアしますか？')) {
-        currentSelections = {};
+        // 個数のみを0に初期化（価格は保持）
+        Object.keys(currentSelections).forEach(itemId => {
+            if (currentSelections[itemId]) {
+                currentSelections[itemId].quantity = 0;
+            }
+        });
         saveToLocalStorage();
         displayMenu();
         calculateTotal();
@@ -260,6 +265,7 @@ function clearSelections() {
 // 初期化ボタン機能
 function resetToOriginal() {
     if (confirm('価格と個数を初期状態に戻しますか？')) {
+        // 価格と個数を初期化（Excelデータに戻す）
         menuData = JSON.parse(JSON.stringify(originalMenuData));
         currentSelections = {};
         saveToLocalStorage();
