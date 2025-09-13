@@ -9,8 +9,10 @@ $(document).ready(function() {
         showLoading(true);
         hideError();
 
-        // CSVファイルのパス
-        const csvPath = '../Tool/AllRawEvents/data/usage-events.csv';
+        // 現在のページのパスに基づいて相対パスを決定
+        const currentPath = window.location.pathname;
+        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
+        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-events.csv' : '../Tool/AllRawEvents/data/usage-events.csv';
 
         fetch(csvPath)
             .then(response => {

@@ -26,6 +26,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// 最新の記録を表示
+function updateLatestRecord() {
+    const latest = recordsData[recordsData.length - 1];
+    if (!latest) return;
+
+    const days = latest.日数;
+    const fastRequestsDays = latest['Fast requests will refresh in X day'];
+    const suggestedLines = latest['Suggested Lines: X lines'];
+    const acceptedLines = latest['Accepted Lines: X Lines'];
+    const tabsAccepted = latest['Tabs Accepted: X tabs'];
+
+    // 固定値
+    const totalDays = 30;
+
+    // パーセンテージ計算
+    const daysPercentage = (days / totalDays * 100).toFixed(2);
+    const remainingDays = totalDays - days;
+
+    // プログレスバーの更新
+    updateProgressBar('days-progress', daysPercentage, `${days}日 / ${totalDays}日`);
+
+    // 使用情報のテキスト作成
+    const usageInfo = `Suggested Lines: ${suggestedLines.toLocaleString()}\nAccepted Lines: ${acceptedLines.toLocaleString()}\nTabs Accepted: ${tabsAccepted}\nFast requests will refresh in ${fastRequestsDays} day`;
+
+    // 表示
+    const latestUsageInfo = document.getElementById('latest-usage-info');
+    if (latestUsageInfo) latestUsageInfo.textContent = usageInfo;
+
+    // 使用統計の表示
+    const suggestedLinesElem = document.getElementById('suggested-lines-value');
+    if (suggestedLinesElem) suggestedLinesElem.textContent = suggestedLines.toLocaleString();
+    const acceptedLinesElem = document.getElementById('accepted-lines-value');
+    if (acceptedLinesElem) acceptedLinesElem.textContent = acceptedLines.toLocaleString();
+    const tabsAcceptedElem = document.getElementById('tabs-accepted-value');
+    if (tabsAcceptedElem) tabsAcceptedElem.textContent = String(tabsAccepted);
+}
+
 // DataTablesの初期化
 function initializeDataTable() {
     dataTable = $('#records-table').DataTable({
