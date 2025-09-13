@@ -8,6 +8,18 @@ let inputChart;
 let outputChart;
 let totalChart;
 
+// 共通のグラフ設定
+const CHART_COLORS = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
+const CHART_OPTIONS = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
+    }
+};
+
 // Summaryシート読み込み
 async function loadSummaryData() {
     showLoading(true);
@@ -206,6 +218,87 @@ function calculatePreviousDayDifference(currentRecord, previousRecord) {
     };
 }
 
+// 共通のデータ処理関数
+function processModelData(summaryData, fieldName) {
+    const modelData = {};
+
+    // 日付の重複を除去してソート
+    const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
+
+    summaryData.forEach(record => {
+        const model = record.model;
+        const dateStr = record.dateStr;
+
+        if (!modelData[model]) {
+            modelData[model] = {};
+        }
+
+        if (!modelData[model][dateStr]) {
+            modelData[model][dateStr] = 0;
+        }
+
+        // 数値に変換
+        const value = fieldName === 'apiCost' || fieldName === 'costToYou'
+            ? parseFloat(record[fieldName]) || 0
+            : parseInt(record[fieldName]) || 0;
+        modelData[model][dateStr] += value;
+    });
+
+    return { modelData, uniqueDates };
+}
+
+// 月ごとのリセットを考慮した差分を計算する共通関数
+function calculateCumulativeData(modelData, uniqueDates) {
+    const currentData = {};
+    const previousData = {};
+    const models = Object.keys(modelData);
+
+    models.forEach(model => {
+        currentData[model] = [];
+        previousData[model] = [];
+
+        let cumulativeValue = 0;
+        let previousMonthValue = 0;
+
+        uniqueDates.forEach((dateStr, index) => {
+            const currentValue = modelData[model][dateStr] || 0;
+
+            // 前日の値を取得
+            const previousDate = index > 0 ? uniqueDates[index - 1] : null;
+            const previousValue = previousDate ? (modelData[model][previousDate] || 0) : 0;
+
+            // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
+            if (currentValue < previousValue && previousValue > 0) {
+                // 新しい月の開始
+                cumulativeValue = currentValue;
+                previousMonthValue = 0;
+            } else {
+                // 同じ月の継続
+                cumulativeValue = currentValue;
+                previousMonthValue = previousValue;
+            }
+
+            // 当日の値（前日分）
+            const previousPart = previousMonthValue;
+
+            // 当日の増分
+            const diffPart = cumulativeValue - previousMonthValue;
+
+            // データを保存
+            currentData[model].push(cumulativeValue);
+            previousData[model].push({
+                previous: previousPart,
+                diff: diffPart
+            });
+        });
+    });
+
+    return { currentData, previousData };
+}
+
 // 月ごとのリセットを考慮した前日との差を計算する関数
 function calculatePreviousDayDifferenceWithReset(currentRecord, previousRecord) {
     if (!previousRecord) {
@@ -281,6 +374,131 @@ function getDifferenceClass(value) {
         return 'text-danger';
     } else {
         return 'text-muted';
+    }
+}
+
+// 共通のグラフ作成関数
+function createCommonChart(canvasId, title, fieldName, isCurrency = false) {
+    try {
+        if (summaryData.length === 0) return;
+
+        // データ処理
+        const { modelData, uniqueDates } = processModelData(summaryData, fieldName);
+        const { currentData, previousData } = calculateCumulativeData(modelData, uniqueDates);
+        const models = Object.keys(modelData);
+
+        // グラフデータセットを作成
+        const datasets = [];
+
+        models.forEach((model, index) => {
+            const color = CHART_COLORS[index % CHART_COLORS.length];
+
+            // 前日分と差分を色分け
+            datasets.push({
+                label: `${model} - ${title} (前日分)`,
+                data: previousData[model].map(item => item.previous),
+                backgroundColor: color + '40', // 薄い色（前日分）
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_${fieldName}`
+            });
+
+            datasets.push({
+                label: `${model} - ${title} (当日増分)`,
+                data: previousData[model].map(item => item.diff),
+                backgroundColor: color + '80', // 濃い色（当日増分）
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_${fieldName}`
+            });
+        });
+
+        // グラフを作成
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) {
+            console.warn(`${canvasId} canvas not found`);
+            return;
+        }
+
+        const chart = new Chart(ctx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: uniqueDates,
+                datasets: datasets
+            },
+            options: {
+                ...CHART_OPTIONS,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${title} 積立推移`
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y;
+                                const formattedValue = isCurrency
+                                    ? `$${value.toFixed(4)}`
+                                    : value.toLocaleString();
+                                return `${label}: ${formattedValue}`;
+                            },
+                            afterBody: function(context) {
+                                // モデルごとの合計を計算
+                                const modelTotals = {};
+
+                                context.forEach(item => {
+                                    const stack = item.dataset.stack;
+                                    const model = stack.split('_')[0];
+                                    if (!modelTotals[model]) {
+                                        modelTotals[model] = 0;
+                                    }
+                                    modelTotals[model] += item.parsed.y;
+                                });
+
+                                // 合計表示を作成
+                                const totalLines = [];
+                                Object.keys(modelTotals).forEach(model => {
+                                    const formattedTotal = isCurrency
+                                        ? `$${modelTotals[model].toFixed(4)}`
+                                        : modelTotals[model].toLocaleString();
+                                    totalLines.push(`${model}: ${formattedTotal}`);
+                                });
+
+                                return totalLines;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        beginAtZero: true,
+                        stacked: true,
+                        ticks: {
+                            callback: function(value) {
+                                return isCurrency
+                                    ? `$${value.toFixed(4)}`
+                                    : value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return chart;
+    } catch (error) {
+        console.error(`${title} chart creation error:`, error);
     }
 }
 
@@ -651,1367 +869,16 @@ function createSummaryCharts() {
 
     // 新しいグラフを作成
     try {
-        createApiCostChart();
-        createCostToYouChart();
-        createCacheReadChart();
-        createCacheWriteChart();
-        createInputChart();
-        createOutputChart();
-        createTotalChart();
+        apiCostChart = createCommonChart('api-cost-chart', 'API Cost', 'apiCost', true);
+        costToYouChart = createCommonChart('cost-to-you-chart', 'Cost to You', 'costToYou', true);
+        cacheReadChart = createCommonChart('cache-read-chart', 'Cache Read', 'cacheRead', false);
+        cacheWriteChart = createCommonChart('cache-write-chart', 'Cache Write', 'cacheWrite', false);
+        inputChart = createCommonChart('input-chart', 'Input', 'input', false);
+        outputChart = createCommonChart('output-chart', 'Output', 'output', false);
+        totalChart = createCommonChart('total-chart', 'Total', 'total', false);
     } catch (error) {
         console.error('新しいグラフの作成中にエラーが発生しました:', error);
     }
 }
 
-// API Cost グラフの作成
-function createApiCostChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    apiCost: {}
-                };
-            }
-
-            if (!modelData[model].apiCost[dateStr]) {
-                modelData[model].apiCost[dateStr] = 0;
-            }
-
-            // 数値に変換（文字列の場合は0として扱う）
-            const apiCost = parseFloat(record.apiCost) || 0;
-            modelData[model].apiCost[dateStr] += apiCost;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                apiCost: []
-            };
-            previousData[model] = {
-                apiCost: []
-            };
-
-            let cumulativeApiCost = 0;
-            let previousMonthApiCost = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentApiCost = modelData[model].apiCost[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousApiCost = previousDate ? (modelData[model].apiCost[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentApiCost < previousApiCost && previousApiCost > 0) {
-                    // 新しい月の開始
-                    cumulativeApiCost = currentApiCost;
-                    previousMonthApiCost = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeApiCost = currentApiCost;
-                    previousMonthApiCost = previousApiCost;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthApiCost;
-
-                // 当日の増分
-                const diffPart = cumulativeApiCost - previousMonthApiCost;
-
-                // データを保存
-                currentData[model].apiCost.push(cumulativeApiCost);
-                previousData[model].apiCost.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // API Cost データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - API Cost (前日分)`,
-                data: previousData[model].apiCost.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_apiCost`
-            });
-
-            datasets.push({
-                label: `${model} - API Cost (当日増分)`,
-                data: previousData[model].apiCost.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_apiCost`
-            });
-        });
-
-        // グラフを作成
-        const apiCostCtx = document.getElementById('api-cost-chart');
-        if (!apiCostCtx) {
-            console.warn('api-cost-chart canvas not found');
-            return;
-        }
-
-        apiCostChart = new Chart(apiCostCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'API Cost 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: $${value.toFixed(4)}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: $${modelTotals[model].toFixed(4)}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return `$${value.toFixed(4)}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('API Cost chart creation error:', error);
-    }
-}
-
-// 他のグラフ作成関数（簡略版）
-function createCostToYouChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    costToYou: {}
-                };
-            }
-
-            if (!modelData[model].costToYou[dateStr]) {
-                modelData[model].costToYou[dateStr] = 0;
-            }
-
-            // 数値に変換（文字列の場合は0として扱う）
-            const costToYou = parseFloat(record.costToYou) || 0;
-            modelData[model].costToYou[dateStr] += costToYou;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                costToYou: []
-            };
-            previousData[model] = {
-                costToYou: []
-            };
-
-            let cumulativeCostToYou = 0;
-            let previousMonthCostToYou = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentCostToYou = modelData[model].costToYou[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousCostToYou = previousDate ? (modelData[model].costToYou[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentCostToYou < previousCostToYou && previousCostToYou > 0) {
-                    // 新しい月の開始
-                    cumulativeCostToYou = currentCostToYou;
-                    previousMonthCostToYou = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeCostToYou = currentCostToYou;
-                    previousMonthCostToYou = previousCostToYou;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthCostToYou;
-
-                // 当日の増分
-                const diffPart = cumulativeCostToYou - previousMonthCostToYou;
-
-                // データを保存
-                currentData[model].costToYou.push(cumulativeCostToYou);
-                previousData[model].costToYou.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // Cost to You データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Cost to You (前日分)`,
-                data: previousData[model].costToYou.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_costToYou`
-            });
-
-            datasets.push({
-                label: `${model} - Cost to You (当日増分)`,
-                data: previousData[model].costToYou.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_costToYou`
-            });
-        });
-
-        // グラフを作成
-        const costToYouCtx = document.getElementById('cost-to-you-chart');
-        if (!costToYouCtx) {
-            console.warn('cost-to-you-chart canvas not found');
-            return;
-        }
-
-        costToYouChart = new Chart(costToYouCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Cost to You 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: $${value.toFixed(4)}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: $${modelTotals[model].toFixed(4)}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return `$${value.toFixed(4)}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Cost to You chart creation error:', error);
-    }
-}
-
-function createCacheReadChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    cacheRead: {}
-                };
-            }
-
-            if (!modelData[model].cacheRead[dateStr]) {
-                modelData[model].cacheRead[dateStr] = 0;
-            }
-
-            // 数値に変換
-            const cacheRead = parseInt(record.cacheRead) || 0;
-            modelData[model].cacheRead[dateStr] += cacheRead;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                cacheRead: []
-            };
-            previousData[model] = {
-                cacheRead: []
-            };
-
-            let cumulativeCacheRead = 0;
-            let previousMonthCacheRead = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentCacheRead = modelData[model].cacheRead[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousCacheRead = previousDate ? (modelData[model].cacheRead[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentCacheRead < previousCacheRead && previousCacheRead > 0) {
-                    // 新しい月の開始
-                    cumulativeCacheRead = currentCacheRead;
-                    previousMonthCacheRead = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeCacheRead = currentCacheRead;
-                    previousMonthCacheRead = previousCacheRead;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthCacheRead;
-
-                // 当日の増分
-                const diffPart = cumulativeCacheRead - previousMonthCacheRead;
-
-                // データを保存
-                currentData[model].cacheRead.push(cumulativeCacheRead);
-                previousData[model].cacheRead.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // Cache Read データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Cache Read (前日分)`,
-                data: previousData[model].cacheRead.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_cacheRead`
-            });
-
-            datasets.push({
-                label: `${model} - Cache Read (当日増分)`,
-                data: previousData[model].cacheRead.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_cacheRead`
-            });
-        });
-
-        // グラフを作成
-        const cacheReadCtx = document.getElementById('cache-read-chart');
-        if (!cacheReadCtx) {
-            console.warn('cache-read-chart canvas not found');
-            return;
-        }
-
-        cacheReadChart = new Chart(cacheReadCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Cache Read 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: ${value.toLocaleString()}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Cache Read chart creation error:', error);
-    }
-}
-
-function createCacheWriteChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    cacheWrite: {}
-                };
-            }
-
-            if (!modelData[model].cacheWrite[dateStr]) {
-                modelData[model].cacheWrite[dateStr] = 0;
-            }
-
-            // 数値に変換
-            const cacheWrite = parseInt(record.cacheWrite) || 0;
-            modelData[model].cacheWrite[dateStr] += cacheWrite;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                cacheWrite: []
-            };
-            previousData[model] = {
-                cacheWrite: []
-            };
-
-            let cumulativeCacheWrite = 0;
-            let previousMonthCacheWrite = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentCacheWrite = modelData[model].cacheWrite[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousCacheWrite = previousDate ? (modelData[model].cacheWrite[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentCacheWrite < previousCacheWrite && previousCacheWrite > 0) {
-                    // 新しい月の開始
-                    cumulativeCacheWrite = currentCacheWrite;
-                    previousMonthCacheWrite = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeCacheWrite = currentCacheWrite;
-                    previousMonthCacheWrite = previousCacheWrite;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthCacheWrite;
-
-                // 当日の増分
-                const diffPart = cumulativeCacheWrite - previousMonthCacheWrite;
-
-                // データを保存
-                currentData[model].cacheWrite.push(cumulativeCacheWrite);
-                previousData[model].cacheWrite.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // Cache Write データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Cache Write (前日分)`,
-                data: previousData[model].cacheWrite.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_cacheWrite`
-            });
-
-            datasets.push({
-                label: `${model} - Cache Write (当日増分)`,
-                data: previousData[model].cacheWrite.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_cacheWrite`
-            });
-        });
-
-        // グラフを作成
-        const cacheWriteCtx = document.getElementById('cache-write-chart');
-        if (!cacheWriteCtx) {
-            console.warn('cache-write-chart canvas not found');
-            return;
-        }
-
-        cacheWriteChart = new Chart(cacheWriteCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Cache Write 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: ${value.toLocaleString()}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Cache Write chart creation error:', error);
-    }
-}
-
-function createInputChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    input: {}
-                };
-            }
-
-            if (!modelData[model].input[dateStr]) {
-                modelData[model].input[dateStr] = 0;
-            }
-
-            // 数値に変換
-            const input = parseInt(record.input) || 0;
-            modelData[model].input[dateStr] += input;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                input: []
-            };
-            previousData[model] = {
-                input: []
-            };
-
-            let cumulativeInput = 0;
-            let previousMonthInput = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentInput = modelData[model].input[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousInput = previousDate ? (modelData[model].input[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentInput < previousInput && previousInput > 0) {
-                    // 新しい月の開始
-                    cumulativeInput = currentInput;
-                    previousMonthInput = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeInput = currentInput;
-                    previousMonthInput = previousInput;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthInput;
-
-                // 当日の増分
-                const diffPart = cumulativeInput - previousMonthInput;
-
-                // データを保存
-                currentData[model].input.push(cumulativeInput);
-                previousData[model].input.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // Input データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Input (前日分)`,
-                data: previousData[model].input.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_input`
-            });
-
-            datasets.push({
-                label: `${model} - Input (当日増分)`,
-                data: previousData[model].input.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_input`
-            });
-        });
-
-        // グラフを作成
-        const inputCtx = document.getElementById('input-chart');
-        if (!inputCtx) {
-            console.warn('input-chart canvas not found');
-            return;
-        }
-
-        inputChart = new Chart(inputCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Input 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: ${value.toLocaleString()}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Input chart creation error:', error);
-    }
-}
-
-function createOutputChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    output: {}
-                };
-            }
-
-            if (!modelData[model].output[dateStr]) {
-                modelData[model].output[dateStr] = 0;
-            }
-
-            // 数値に変換
-            const output = parseInt(record.output) || 0;
-            modelData[model].output[dateStr] += output;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                output: []
-            };
-            previousData[model] = {
-                output: []
-            };
-
-            let cumulativeOutput = 0;
-            let previousMonthOutput = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentOutput = modelData[model].output[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousOutput = previousDate ? (modelData[model].output[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentOutput < previousOutput && previousOutput > 0) {
-                    // 新しい月の開始
-                    cumulativeOutput = currentOutput;
-                    previousMonthOutput = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeOutput = currentOutput;
-                    previousMonthOutput = previousOutput;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthOutput;
-
-                // 当日の増分
-                const diffPart = cumulativeOutput - previousMonthOutput;
-
-                // データを保存
-                currentData[model].output.push(cumulativeOutput);
-                previousData[model].output.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // Output データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Output (前日分)`,
-                data: previousData[model].output.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_output`
-            });
-
-            datasets.push({
-                label: `${model} - Output (当日増分)`,
-                data: previousData[model].output.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_output`
-            });
-        });
-
-        // グラフを作成
-        const outputCtx = document.getElementById('output-chart');
-        if (!outputCtx) {
-            console.warn('output-chart canvas not found');
-            return;
-        }
-
-        outputChart = new Chart(outputCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Output 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: ${value.toLocaleString()}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Output chart creation error:', error);
-    }
-}
-
-function createTotalChart() {
-    try {
-        if (summaryData.length === 0) return;
-
-        // 日付とモデルごとのデータを整理
-        const modelData = {};
-
-        // 日付の重複を除去してソート（日付オブジェクトに変換してからソート）
-        const uniqueDates = [...new Set(summaryData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        summaryData.forEach(record => {
-            const model = record.model;
-            const dateStr = record.dateStr;
-
-            if (!modelData[model]) {
-                modelData[model] = {
-                    total: {}
-                };
-            }
-
-            if (!modelData[model].total[dateStr]) {
-                modelData[model].total[dateStr] = 0;
-            }
-
-            // 数値に変換
-            const total = parseInt(record.total) || 0;
-            modelData[model].total[dateStr] += total;
-        });
-
-        // 月ごとのリセットを考慮した差分を計算
-        const currentData = {};
-        const previousData = {};
-        const models = Object.keys(modelData);
-
-        models.forEach(model => {
-            currentData[model] = {
-                total: []
-            };
-            previousData[model] = {
-                total: []
-            };
-
-            let cumulativeTotal = 0;
-            let previousMonthTotal = 0;
-
-            uniqueDates.forEach((dateStr, index) => {
-                const currentTotal = modelData[model].total[dateStr] || 0;
-
-                // 前日の値を取得
-                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
-                const previousTotal = previousDate ? (modelData[model].total[previousDate] || 0) : 0;
-
-                // 月ごとのリセットをチェック（前日より下がっている場合はリセット）
-                if (currentTotal < previousTotal && previousTotal > 0) {
-                    // 新しい月の開始
-                    cumulativeTotal = currentTotal;
-                    previousMonthTotal = 0;
-                } else {
-                    // 同じ月の継続
-                    cumulativeTotal = currentTotal;
-                    previousMonthTotal = previousTotal;
-                }
-
-                // 当日の値（前日分）
-                const previousPart = previousMonthTotal;
-
-                // 当日の増分
-                const diffPart = cumulativeTotal - previousMonthTotal;
-
-                // データを保存
-                currentData[model].total.push(cumulativeTotal);
-                previousData[model].total.push({
-                    previous: previousPart,
-                    diff: diffPart
-                });
-            });
-        });
-
-        // グラフデータセットを作成
-        const datasets = [];
-        const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
-
-        models.forEach((model, index) => {
-            const color = colors[index % colors.length];
-
-            // Total データセット（前日分と差分を色分け）
-            datasets.push({
-                label: `${model} - Total (前日分)`,
-                data: previousData[model].total.map(item => item.previous),
-                backgroundColor: color + '40', // 薄い色（前日分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_total`
-            });
-
-            datasets.push({
-                label: `${model} - Total (当日増分)`,
-                data: previousData[model].total.map(item => item.diff),
-                backgroundColor: color + '80', // 濃い色（当日増分）
-                borderColor: color,
-                borderWidth: 1,
-                type: 'bar',
-                stack: `${model}_total`
-            });
-        });
-
-        // グラフを作成
-        const totalCtx = document.getElementById('total-chart');
-        if (!totalCtx) {
-            console.warn('total-chart canvas not found');
-            return;
-        }
-
-        totalChart = new Chart(totalCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Total 積立推移'
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y;
-                                return `${label}: ${value.toLocaleString()}`;
-                            },
-                            afterBody: function(context) {
-                                // モデルごとの合計を計算
-                                const modelTotals = {};
-
-                                context.forEach(item => {
-                                    const stack = item.dataset.stack;
-                                    const model = stack.split('_')[0]; // stack名からモデル名を抽出
-                                    if (!modelTotals[model]) {
-                                        modelTotals[model] = 0;
-                                    }
-                                    modelTotals[model] += item.parsed.y;
-                                });
-
-                                // 合計表示を作成
-                                const totalLines = [];
-                                Object.keys(modelTotals).forEach(model => {
-                                    totalLines.push(`${model}: ${modelTotals[model].toLocaleString()}`);
-                                });
-
-                                return totalLines;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        stacked: true
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        stacked: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    } catch (error) {
-        console.error('Total chart creation error:', error);
-    }
-}
+// 個別のグラフ作成関数は共通関数に統合されました
