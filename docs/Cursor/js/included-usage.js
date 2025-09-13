@@ -787,8 +787,19 @@ function createIncludedUsageCharts() {
     }
 }
 
-// API Cost グラフの作成
-function createApiCostChart() {
+// 共通のグラフ作成関数
+function createIncludedUsageChart(config) {
+    const {
+        fieldName,
+        fieldLabel,
+        chartId,
+        chartTitle,
+        isCurrency = false,
+        previousColorOpacity = '40',
+        diffColorOpacity = '80',
+        chartVariable
+    } = config;
+
     try {
         if (includedUsageData.length === 0) return;
 
@@ -799,249 +810,117 @@ function createApiCostChart() {
             .map(date => date.toLocaleDateString('ja-JP'));
 
         // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'apiCost', uniqueDates);
+        const { previousData, models } = createChartDataWithReset(includedUsageData, fieldName, uniqueDates);
 
         // 共通のデータセット作成関数を使用
-        const datasets = createChartDatasets(models, previousData, 'apiCost', 'API Cost');
+        const datasets = createChartDatasets(models, previousData, fieldName, fieldLabel, previousColorOpacity, diffColorOpacity);
 
         // グラフを作成
-        const apiCostCtx = document.getElementById('api-cost-chart');
-        if (!apiCostCtx) {
-            console.warn('api-cost-chart canvas not found');
+        const ctx = document.getElementById(chartId);
+        if (!ctx) {
+            console.warn(`${chartId} canvas not found`);
             return;
         }
 
-        apiCostChart = new Chart(apiCostCtx.getContext('2d'), {
+        window[chartVariable] = new Chart(ctx.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: uniqueDates,
                 datasets: datasets
             },
-            options: createChartOptions('API Cost 積立推移', true)
+            options: createChartOptions(chartTitle, isCurrency)
         });
     } catch (error) {
-        console.error('API Cost chart creation error:', error);
+        console.error(`${fieldLabel} chart creation error:`, error);
     }
+}
+
+// API Cost グラフの作成
+function createApiCostChart() {
+    createIncludedUsageChart({
+        fieldName: 'apiCost',
+        fieldLabel: 'API Cost',
+        chartId: 'api-cost-chart',
+        chartTitle: 'API Cost 積立推移',
+        isCurrency: true,
+        chartVariable: 'apiCostChart'
+    });
 }
 
 // Cost to You グラフの作成
 function createCostToYouChart() {
-    try {
-        if (includedUsageData.length === 0) return;
-
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'costToYou', uniqueDates);
-
-        // 共通のデータセット作成関数を使用（色の透明度を調整）
-        const datasets = createChartDatasets(models, previousData, 'costToYou', 'Cost to You', '20', '60');
-
-        // グラフを作成
-        const costToYouCtx = document.getElementById('cost-to-you-chart');
-        if (!costToYouCtx) {
-            console.warn('cost-to-you-chart canvas not found');
-            return;
-        }
-
-        costToYouChart = new Chart(costToYouCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: createChartOptions('Cost to You 積立推移', true)
-        });
-    } catch (error) {
-        console.error('Cost to You chart creation error:', error);
-    }
+    createIncludedUsageChart({
+        fieldName: 'costToYou',
+        fieldLabel: 'Cost to You',
+        chartId: 'cost-to-you-chart',
+        chartTitle: 'Cost to You 積立推移',
+        isCurrency: true,
+        previousColorOpacity: '20',
+        diffColorOpacity: '60',
+        chartVariable: 'costToYouChart'
+    });
 }
 
 // Total Tokens グラフの作成
 function createTotalTokensChart() {
-    try {
-        if (includedUsageData.length === 0) return;
-
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'totalTokens', uniqueDates);
-
-        // 共通のデータセット作成関数を使用
-        const datasets = createChartDatasets(models, previousData, 'totalTokens', 'Total Tokens');
-
-        // グラフを作成
-        const totalTokensCtx = document.getElementById('total-tokens-chart');
-        if (!totalTokensCtx) {
-            console.warn('total-tokens-chart canvas not found');
-            return;
-        }
-
-        totalTokensChart = new Chart(totalTokensCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: createChartOptions('Total Tokens 積立推移', false)
-        });
-    } catch (error) {
-        console.error('Total Tokens chart creation error:', error);
-    }
+    createIncludedUsageChart({
+        fieldName: 'totalTokens',
+        fieldLabel: 'Total Tokens',
+        chartId: 'total-tokens-chart',
+        chartTitle: 'Total Tokens 積立推移',
+        isCurrency: false,
+        chartVariable: 'totalTokensChart'
+    });
 }
 
 // Input W/CACHE WRITE グラフの作成
 function createInputWithCacheChart() {
-    try {
-        if (includedUsageData.length === 0) return;
-
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'inputWithCache', uniqueDates);
-
-        // 共通のデータセット作成関数を使用
-        const datasets = createChartDatasets(models, previousData, 'inputWithCache', 'Input W/CACHE WRITE');
-
-        // グラフを作成
-        const inputWithCacheCtx = document.getElementById('input-with-cache-chart');
-        if (!inputWithCacheCtx) {
-            console.warn('input-with-cache-chart canvas not found');
-            return;
-        }
-
-        inputWithCacheChart = new Chart(inputWithCacheCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: createChartOptions('Input (W/CACHE WRITE) 積立推移', false)
-        });
-    } catch (error) {
-        console.error('Input W/CACHE WRITE chart creation error:', error);
-    }
+    createIncludedUsageChart({
+        fieldName: 'inputWithCache',
+        fieldLabel: 'Input W/CACHE WRITE',
+        chartId: 'input-with-cache-chart',
+        chartTitle: 'Input (W/CACHE WRITE) 積立推移',
+        isCurrency: false,
+        chartVariable: 'inputWithCacheChart'
+    });
 }
 
 // Input W/O CACHE WRITE グラフの作成
 function createInputWithoutCacheChart() {
-    try {
-        if (includedUsageData.length === 0) return;
-
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'inputWithoutCache', uniqueDates);
-
-        // 共通のデータセット作成関数を使用
-        const datasets = createChartDatasets(models, previousData, 'inputWithoutCache', 'Input W/O CACHE WRITE');
-
-        // グラフを作成
-        const inputWithoutCacheCtx = document.getElementById('input-without-cache-chart');
-        if (!inputWithoutCacheCtx) {
-            console.warn('input-without-cache-chart canvas not found');
-            return;
-        }
-
-        inputWithoutCacheChart = new Chart(inputWithoutCacheCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: createChartOptions('Input (W/O CACHE WRITE) 積立推移', false)
-        });
-    } catch (error) {
-        console.error('Input W/O CACHE WRITE chart creation error:', error);
-    }
+    createIncludedUsageChart({
+        fieldName: 'inputWithoutCache',
+        fieldLabel: 'Input W/O CACHE WRITE',
+        chartId: 'input-without-cache-chart',
+        chartTitle: 'Input (W/O CACHE WRITE) 積立推移',
+        isCurrency: false,
+        chartVariable: 'inputWithoutCacheChart'
+    });
 }
 
 // Cache Read グラフの作成
 function createCacheReadChart() {
-    try {
-        if (includedUsageData.length === 0) return;
-
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'cacheRead', uniqueDates);
-
-        // 共通のデータセット作成関数を使用（色の透明度を調整）
-        const datasets = createChartDatasets(models, previousData, 'cacheRead', 'Cache Read', '30', '70');
-
-        // グラフを作成
-        const cacheReadCtx = document.getElementById('cache-read-chart');
-        if (!cacheReadCtx) {
-            console.warn('cache-read-chart canvas not found');
-            return;
-        }
-
-        cacheReadChart = new Chart(cacheReadCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: createChartOptions('Cache Read 積立推移', false)
-        });
-    } catch (error) {
-        console.error('Cache Read chart creation error:', error);
-    }
+    createIncludedUsageChart({
+        fieldName: 'cacheRead',
+        fieldLabel: 'Cache Read',
+        chartId: 'cache-read-chart',
+        chartTitle: 'Cache Read 積立推移',
+        isCurrency: false,
+        previousColorOpacity: '30',
+        diffColorOpacity: '70',
+        chartVariable: 'cacheReadChart'
+    });
 }
 
 // Output グラフの作成
 function createOutputChart() {
-    try {
-        if (includedUsageData.length === 0) return;
-
-        // 日付の重複を除去してソート
-        const uniqueDates = [...new Set(includedUsageData.map(record => record.dateStr))]
-            .map(dateStr => new Date(dateStr))
-            .sort((a, b) => a - b)
-            .map(date => date.toLocaleDateString('ja-JP'));
-
-        // 共通のデータ処理関数を使用
-        const { previousData, models } = createChartDataWithReset(includedUsageData, 'output', uniqueDates);
-
-        // 共通のデータセット作成関数を使用（色の透明度を調整）
-        const datasets = createChartDatasets(models, previousData, 'output', 'Output', '20', '60');
-
-        // グラフを作成
-        const outputCtx = document.getElementById('output-chart');
-        if (!outputCtx) {
-            console.warn('output-chart canvas not found');
-            return;
-        }
-
-        outputChart = new Chart(outputCtx.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: uniqueDates,
-                datasets: datasets
-            },
-            options: createChartOptions('Output 積立推移', false)
-        });
-    } catch (error) {
-        console.error('Output chart creation error:', error);
-    }
+    createIncludedUsageChart({
+        fieldName: 'output',
+        fieldLabel: 'Output',
+        chartId: 'output-chart',
+        chartTitle: 'Output 積立推移',
+        isCurrency: false,
+        previousColorOpacity: '20',
+        diffColorOpacity: '60',
+        chartVariable: 'outputChart'
+    });
 }
