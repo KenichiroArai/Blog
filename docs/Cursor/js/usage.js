@@ -2,6 +2,183 @@
 let usageTable;
 let usageDailyChart;
 
+// CSVファイル読み込み（統合版）
+async function loadUsageData() {
+    try {
+        // 現在のページのパスに基づいて相対パスを決定
+        const currentPath = window.location.pathname;
+        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
+        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-tokens.csv' : '../Tool/AllRawEvents/data/usage-tokens.csv';
+
+        const response = await fetch(csvPath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+        const lines = csvText.split('\n').filter(line => line.trim());
+
+        if (lines.length < 2) {
+            throw new Error('CSVファイルが空またはヘッダーのみです');
+        }
+
+        const headers = lines[0].split(',').map(header => header.trim());
+        const rawTokensData = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+
+            // CSVの値を正しく分割（カンマを含む値に対応）
+            const values = parseCSVLine(line);
+            if (values.length >= headers.length) {
+                const record = {};
+                headers.forEach((header, index) => {
+                    record[header] = values[index] ? values[index].trim() : '';
+                });
+                rawTokensData.push(record);
+            }
+        }
+
+        // データの整形
+        const processedTokensData = rawTokensData.map(record => ({
+            ...record,
+            Date: new Date(record.Date),
+            'Input (w/ Cache Write)': parseInt(record['Input (w/ Cache Write)']) || 0,
+            'Input (w/o Cache Write)': parseInt(record['Input (w/o Cache Write)']) || 0,
+            'Cache Read': parseInt(record['Cache Read']) || 0,
+            'Output': parseInt(record['Output']) || 0,
+            'Total Tokens': parseInt(record['Total Tokens']) || 0,
+            'Cost ($)': record['Cost ($)'] || 'Included'
+        })).filter(record => !isNaN(record.Date.getTime())); // 無効な日付を除外
+
+        // 日付順にソート
+        processedTokensData.sort((a, b) => a.Date - b.Date);
+
+        // Usage Detailsデータと統合
+        await loadUsageDetailsData();
+        usageData = mergeTokensData(processedTokensData, usageDetailsData);
+
+        console.log('Merged tokens data loaded:', usageData.length, 'records');
+    } catch (error) {
+        console.error('CSVファイルの読み込みに失敗しました:', error);
+        throw new Error('CSVファイルの読み込みに失敗しました: ' + error.message);
+    }
+}
+
+// Usage Details CSVファイル読み込み
+async function loadUsageDetailsData() {
+    try {
+        // 現在のページのパスに基づいて相対パスを決定
+        const currentPath = window.location.pathname;
+        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
+        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-details.csv' : '../Tool/AllRawEvents/data/usage-details.csv';
+
+        const response = await fetch(csvPath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+        const lines = csvText.split('\n').filter(line => line.trim());
+
+        if (lines.length < 2) {
+            throw new Error('Usage Details CSVファイルが空またはヘッダーのみです');
+        }
+
+        const headers = lines[0].split(',').map(header => header.trim());
+        usageDetailsData = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+
+            // CSVの値を正しく分割（カンマを含む値に対応）
+            const values = parseCSVLine(line);
+            if (values.length >= headers.length) {
+                const record = {};
+                headers.forEach((header, index) => {
+                    record[header] = values[index] ? values[index].trim() : '';
+                });
+                usageDetailsData.push(record);
+            }
+        }
+
+        // データの整形
+        usageDetailsData = usageDetailsData.map(record => ({
+            ...record,
+            Date: new Date(record.Date),
+            Tokens: parseInt(record.Tokens) || 0,
+            'Cost ($)': record['Cost ($)'] || 'Included'
+        })).filter(record => !isNaN(record.Date.getTime())); // 無効な日付を除外
+
+        // 日付順にソート
+        usageDetailsData.sort((a, b) => a.Date - b.Date);
+
+        console.log('Usage Details data loaded:', usageDetailsData.length, 'records');
+    } catch (error) {
+        console.error('Usage Details CSVファイルの読み込みに失敗しました:', error);
+        throw new Error('Usage Details CSVファイルの読み込みに失敗しました: ' + error.message);
+    }
+}
+
+// トークンデータの統合
+function mergeTokensData(tokensData, detailsData) {
+    const mergedData = [];
+    const detailsMap = new Map();
+
+    // Usage Detailsデータをマップに変換（日時をキーとして）
+    detailsData.forEach(detail => {
+        const key = detail.Date.toISOString();
+        detailsMap.set(key, detail);
+    });
+
+    // Tokensデータをベースに統合
+    tokensData.forEach(token => {
+        const key = token.Date.toISOString();
+        const detail = detailsMap.get(key);
+
+        if (detail) {
+            // 両方のデータが存在する場合、詳細情報を統合
+            mergedData.push({
+                ...token,
+                // Usage Detailsから追加情報を取得
+                'Max Mode': detail['Max Mode'] || token['Max Mode'] || 'No',
+                'Kind': detail['Kind'] || token['Kind'] || 'Included in Pro'
+            });
+        } else {
+            // Tokensデータのみの場合
+            mergedData.push(token);
+        }
+    });
+
+    // Usage Detailsのみに存在するデータを追加
+    detailsData.forEach(detail => {
+        const key = detail.Date.toISOString();
+        const existingToken = mergedData.find(token => token.Date.toISOString() === key);
+
+        if (!existingToken) {
+            // Tokensデータにない場合は、基本的な情報で追加
+            mergedData.push({
+                Date: detail.Date,
+                User: detail.User || 'You',
+                Kind: detail.Kind || 'Included in Pro',
+                'Max Mode': detail['Max Mode'] || 'No',
+                Model: detail.Model || 'auto',
+                'Input (w/ Cache Write)': 0,
+                'Input (w/o Cache Write)': 0,
+                'Cache Read': 0,
+                'Output': 0,
+                'Total Tokens': detail.Tokens || 0,
+                'Cost ($)': detail['Cost ($)'] || 'Included'
+            });
+        }
+    });
+
+    // 日付順にソート
+    mergedData.sort((a, b) => a.Date - b.Date);
+
+    return mergedData;
+}
+
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
     try {
