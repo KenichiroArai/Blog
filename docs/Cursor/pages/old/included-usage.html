@@ -16,22 +16,8 @@
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1">
-                <a href="https://github.com/KenichiroArai/Blog/issues/36" target="_blank" rel="noopener">
-                    Cursor使用記録　v0.5.4
-                </a>
-            </span>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="../../index.html">トップページ</a>
-                <a class="nav-link" href="../records.html">使用記録</a>
-                <a class="nav-link" href="../summary.html">サマリー</a>
-                <a class="nav-link" href="../usage-events.html">Usage Events</a>
-                <a class="nav-link" href="../old-format.html">旧形式</a>
-            </div>
-        </div>
-    </nav>
+    <!-- ヘッダーはJavaScriptで動的に読み込まれます -->
+    <div id="header-container"></div>
 
     <div class="container-fluid mt-3">
         <!-- ローディング表示 -->
@@ -265,6 +251,7 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script src="../../js/common.js?v=1.0.1"></script>
+    <script src="../../js/header-loader.js?v=1.0.1"></script>
     <script src="../../js/old/included-usage.js?v=1.0.1"></script>
     <div class="container mt-4">
         <a href="../../index.html" class="btn btn-secondary">← トップページに戻る</a>
