@@ -182,7 +182,7 @@ async function loadIncludedUsageData() {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
         const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
-        const excelPath = isTopPage ? 'record.xlsx' : '../record.xlsx';
+        const excelPath = isTopPage ? 'record.xlsx' : '../../record.xlsx';
 
         console.log('Loading Excel file from:', excelPath);
         console.log('Current path:', currentPath);

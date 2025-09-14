@@ -4,7 +4,7 @@ async function loadUsageData() {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
         const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
-        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-tokens.csv' : '../Tool/AllRawEvents/data/usage-tokens.csv';
+        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/old/usage-tokens.csv' : '../Tool/AllRawEvents/data/old/usage-tokens.csv';
 
         const response = await fetch(csvPath);
         if (!response.ok) {
@@ -67,7 +67,7 @@ async function loadUsageDetailsData() {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
         const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
-        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-details.csv' : '../Tool/AllRawEvents/data/usage-details.csv';
+        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/old/usage-details.csv' : '../Tool/AllRawEvents/data/old/usage-details.csv';
 
         const response = await fetch(csvPath);
         if (!response.ok) {
@@ -585,203 +585,7 @@ function updateLatestRecord() {
     if (tabsAcceptedElem) tabsAcceptedElem.textContent = String(tabsAccepted);
 }
 
-// Tokens統計の更新
-function updateTokensStats() {
-    if (usageData.length === 0) return;
 
-    // 日別データの集計
-    const dailyData = {};
-    usageData.forEach(record => {
-        const dateStr = record.Date.toLocaleDateString('ja-JP');
-        if (!dailyData[dateStr]) {
-            dailyData[dateStr] = {
-                total: 0,
-                count: 0,
-                max: 0,
-                inputTotal: 0,
-                outputTotal: 0,
-                cacheReadTotal: 0
-            };
-        }
-        dailyData[dateStr].total += record['Total Tokens'] || record.Tokens || 0;
-        dailyData[dateStr].count += 1;
-        dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record['Total Tokens'] || record.Tokens || 0);
-        dailyData[dateStr].inputTotal += (record['Input (w/ Cache Write)'] || 0) + (record['Input (w/o Cache Write)'] || 0);
-        dailyData[dateStr].outputTotal += record['Output'] || 0;
-        dailyData[dateStr].cacheReadTotal += record['Cache Read'] || 0;
-    });
-
-    // 最新使用日のデータを取得
-    const dates = Object.keys(dailyData)
-        .map(dateStr => new Date(dateStr))
-        .sort((a, b) => a - b)
-        .map(date => date.toLocaleDateString('ja-JP'));
-    const latestDate = dates[dates.length - 1];
-    const latestDailyData = dailyData[latestDate];
-
-    if (latestDailyData) {
-        const dailyTotalTokens = latestDailyData.total;
-        const dailyAvgTokens = Math.round(latestDailyData.total / latestDailyData.count);
-        const dailyMaxTokens = latestDailyData.max;
-        const dailyInputTokens = latestDailyData.inputTotal;
-        const dailyOutputTokens = latestDailyData.outputTotal;
-        const dailyCacheReadTokens = latestDailyData.cacheReadTotal;
-
-        // 最新使用日の統計を表示（最新使用日の日付を含める）
-        const latestUsageDateValue = document.getElementById('latest-usage-date-value');
-        if (latestUsageDateValue) latestUsageDateValue.textContent = latestDate;
-        const dailyTotalTokensValue = document.getElementById('daily-total-tokens-value');
-        if (dailyTotalTokensValue) dailyTotalTokensValue.textContent = dailyTotalTokens.toLocaleString();
-        const dailyAvgTokensValue = document.getElementById('daily-avg-tokens-value');
-        if (dailyAvgTokensValue) dailyAvgTokensValue.textContent = dailyAvgTokens.toLocaleString();
-        const dailyMaxTokensValue = document.getElementById('daily-max-tokens-value');
-        if (dailyMaxTokensValue) dailyMaxTokensValue.textContent = dailyMaxTokens.toLocaleString();
-
-        // 新しい統計項目を追加
-        const dailyInputTokensValue = document.getElementById('daily-input-tokens-value');
-        if (dailyInputTokensValue) dailyInputTokensValue.textContent = dailyInputTokens.toLocaleString();
-        const dailyOutputTokensValue = document.getElementById('daily-output-tokens-value');
-        if (dailyOutputTokensValue) dailyOutputTokensValue.textContent = dailyOutputTokens.toLocaleString();
-        const dailyCacheReadTokensValue = document.getElementById('daily-cache-read-tokens-value');
-        if (dailyCacheReadTokensValue) dailyCacheReadTokensValue.textContent = dailyCacheReadTokens.toLocaleString();
-
-        // 最新使用日の日付を統計に含める（latest-tokens-infoは空にする）
-        const latestTokensInfo = document.getElementById('latest-tokens-info');
-        if (latestTokensInfo) latestTokensInfo.textContent = '';
-    }
-}
-
-// Included Usage統計の更新
-function updateIncludedUsageStats() {
-    if (includedUsageData.length === 0) return;
-
-    // 最新のauto行のデータを取得
-    const autoRecords = includedUsageData
-        .filter(record => record.model.toLowerCase() === 'auto')
-        .sort((a, b) => b.date - a.date);
-
-    const latestAutoRecord = autoRecords[0];
-    const previousAutoRecord = autoRecords[1]; // 前日のデータ
-
-    if (!latestAutoRecord) {
-        console.warn('No auto record found for stats');
-        return;
-    }
-
-    // 月ごとのリセットを考慮した前日との差を計算
-    const differences = calculatePreviousDayDifferenceWithReset(latestAutoRecord, previousAutoRecord);
-
-    // 最新使用日の統計を表示
-    const latestUsageDateValue = document.getElementById('latest-included-usage-date-value');
-    if (latestUsageDateValue) latestUsageDateValue.textContent = latestAutoRecord.dateStr;
-
-    // Total Tokens（前日との差付き）
-    const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
-    if (latestTotalTokensValue) {
-        const totalTokensText = latestAutoRecord.totalTokens.toLocaleString();
-        const diffText = formatDifference(differences.totalTokens);
-        const diffClass = getDifferenceClass(differences.totalTokens);
-
-        if (differences.totalTokens !== null) {
-            latestTotalTokensValue.innerHTML = `${totalTokensText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestTotalTokensValue.textContent = totalTokensText;
-        }
-    }
-
-    // Input (W/CACHE WRITE)（前日との差付き）
-    const latestInputWithCacheValue = document.getElementById('latest-input-with-cache-value');
-    if (latestInputWithCacheValue) {
-        const inputWithCacheText = latestAutoRecord.inputWithCache.toLocaleString();
-        const previousInputWithCache = previousAutoRecord ? previousAutoRecord.inputWithCache : 0;
-        const diff = calculateDifferenceWithReset(latestAutoRecord.inputWithCache, previousInputWithCache);
-        const diffText = formatDifference(diff);
-        const diffClass = getDifferenceClass(diff);
-
-        if (diff !== null) {
-            latestInputWithCacheValue.innerHTML = `${inputWithCacheText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestInputWithCacheValue.textContent = inputWithCacheText;
-        }
-    }
-
-    // Input (W/O CACHE WRITE)（前日との差付き）
-    const latestInputWithoutCacheValue = document.getElementById('latest-input-without-cache-value');
-    if (latestInputWithoutCacheValue) {
-        const inputWithoutCacheText = latestAutoRecord.inputWithoutCache.toLocaleString();
-        const previousInputWithoutCache = previousAutoRecord ? previousAutoRecord.inputWithoutCache : 0;
-        const diff = calculateDifferenceWithReset(latestAutoRecord.inputWithoutCache, previousInputWithoutCache);
-        const diffText = formatDifference(diff);
-        const diffClass = getDifferenceClass(diff);
-
-        if (diff !== null) {
-            latestInputWithoutCacheValue.innerHTML = `${inputWithoutCacheText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestInputWithoutCacheValue.textContent = inputWithoutCacheText;
-        }
-    }
-
-    // Cache Read（前日との差付き）
-    const latestCacheReadValue = document.getElementById('latest-cache-read-value');
-    if (latestCacheReadValue) {
-        const cacheReadText = latestAutoRecord.cacheRead.toLocaleString();
-        const previousCacheRead = previousAutoRecord ? previousAutoRecord.cacheRead : 0;
-        const diff = calculateDifferenceWithReset(latestAutoRecord.cacheRead, previousCacheRead);
-        const diffText = formatDifference(diff);
-        const diffClass = getDifferenceClass(diff);
-
-        if (diff !== null) {
-            latestCacheReadValue.innerHTML = `${cacheReadText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestCacheReadValue.textContent = cacheReadText;
-        }
-    }
-
-    // Output Tokens（前日との差付き）
-    const latestOutputTokensValue = document.getElementById('latest-output-tokens-value');
-    if (latestOutputTokensValue) {
-        const outputText = latestAutoRecord.output.toLocaleString();
-        const diffText = formatDifference(differences.output);
-        const diffClass = getDifferenceClass(differences.output);
-
-        if (differences.output !== null) {
-            latestOutputTokensValue.innerHTML = `${outputText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestOutputTokensValue.textContent = outputText;
-        }
-    }
-
-    // API Cost（前日との差付き）
-    const latestApiCostValue = document.getElementById('latest-api-cost-value');
-    if (latestApiCostValue) {
-        const apiCostText = latestAutoRecord.apiCost;
-        const diffText = formatDifference(differences.apiCost);
-        const diffClass = getDifferenceClass(differences.apiCost);
-
-        if (differences.apiCost !== null) {
-            latestApiCostValue.innerHTML = `${apiCostText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestApiCostValue.textContent = apiCostText;
-        }
-    }
-
-    // Cost to You（前日との差付き）
-    const latestCostToYouValue = document.getElementById('latest-cost-to-you-value');
-    if (latestCostToYouValue) {
-        const costToYou = parseFloat(latestAutoRecord.costToYou) || 0;
-        const costToYouText = costToYou === 0 ? '0' : costToYou.toString();
-        const previousCostToYou = previousAutoRecord ? (parseFloat(previousAutoRecord.costToYou) || 0) : 0;
-        const diff = calculateDifferenceWithReset(costToYou, previousCostToYou);
-        const diffText = formatDifference(diff);
-        const diffClass = getDifferenceClass(diff);
-
-        if (diff !== null) {
-            latestCostToYouValue.innerHTML = `${costToYouText} <small class="${diffClass}">(${diffText})</small>`;
-        } else {
-            latestCostToYouValue.textContent = costToYouText;
-        }
-    }
-}
 
 // Summary統計の更新
 function updateSummaryStats() {
@@ -971,8 +775,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadSummaryData(); // Summaryデータを読み込み
         await loadUsageEventsData(); // Usage Eventsデータを読み込み
         updateLatestRecord();
-        updateTokensStats();
-        updateIncludedUsageStats();
         updateSummaryStats(); // Summary統計を更新
         updateUsageEventsStats(); // Usage Events統計を更新
     } catch (error) {
@@ -983,12 +785,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             if (recordsData.length > 0) {
                 updateLatestRecord();
-            }
-            if (usageData.length > 0) {
-                updateTokensStats();
-            }
-            if (includedUsageData.length > 0) {
-                updateIncludedUsageStats();
             }
             if (summaryData.length > 0) {
                 updateSummaryStats();

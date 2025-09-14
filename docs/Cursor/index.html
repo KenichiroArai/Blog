@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursor使用記録　v0.5.3</title>
+    <title>Cursor使用記録　v0.5.4</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -18,16 +18,15 @@
         <div class="container">
             <span class="navbar-brand mb-0 h1">
                 <a href="https://github.com/KenichiroArai/Blog/issues/36" target="_blank" rel="noopener">
-                    Cursor使用記録　v0.5.3
+                    Cursor使用記録　v0.5.4
                 </a>
             </span>
             <div class="navbar-nav ms-auto">
                 <a class="nav-link active" href="index.html">トップページ</a>
                 <a class="nav-link" href="pages/records.html">使用記録</a>
-                <a class="nav-link" href="pages/usage.html">Usage</a>
-                <a class="nav-link" href="pages/included-usage.html">Included Usage</a>
                 <a class="nav-link" href="pages/summary.html">サマリー</a>
                 <a class="nav-link" href="pages/usage-events.html">Usage Events</a>
+                <a class="nav-link" href="pages/old-format.html">旧形式</a>
             </div>
         </div>
     </nav>
@@ -53,295 +52,178 @@
         <!-- メインコンテンツ -->
         <!--
         レイアウトルール:
-        - 5つのセクション（使用記録、Usage、Summary、Included Usage、Usage Events）を横並びに配置
+        - 3つのセクション（使用記録、Summary、Usage Events）を中央に配置
         - 画面幅に応じてレスポンシブ対応：
-          - 超大画面（xxl以上、1400px以上）: 5列横並び（col-xxl）
-          - 大画面（xl、1200px-1399px）: 3列横並び（col-xl-4）
-          - 中画面（lg、992px-1199px）: 2列横並び（col-lg-6）
+          - 大画面（lg以上、992px以上）: 3列横並び（col-lg-4）
           - 中画面（md、768px-991px）: 2列横並び（col-md-6）
           - 小画面（sm以下、767px以下）: 1列縦並び（col-12）
         - 各セクションの高さを統一するため h-100 クラスを使用
         - グリッド間隔は g-4 クラスで統一（1.5remの間隔）
+        - コンテンツを中央に配置するため container を使用し、最大幅を制限
         -->
-        <div class="row g-4">
-            <!-- 使用記録 -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div class="d-flex flex-column">
-                            <h2 class="card-title mb-2">使用記録</h2>
-                            <div class="d-flex justify-content-end">
-                                <a href="pages/records.html" class="btn btn-primary btn-sm"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="使用状況の詳細な記録とグラフを確認できます。日別の使用統計、Suggested Lines、Accepted Lines、Tabs Acceptedの推移をグラフで表示し、使用傾向を分析できます。また、月別・週別の集計データも確認できます。">詳細を見る</a>
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                <!-- 使用記録 -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <div class="d-flex flex-column">
+                                <h2 class="card-title mb-2">使用記録</h2>
+                                <div class="d-flex justify-content-end">
+                                    <a href="pages/records.html" class="btn btn-primary btn-sm"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title="使用状況の詳細な記録とグラフを確認できます。日別の使用統計、Suggested Lines、Accepted Lines、Tabs Acceptedの推移をグラフで表示し、使用傾向を分析できます。また、月別・週別の集計データも確認できます。">詳細を見る</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="usage-stats">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-2">使用統計</h3>
-                                    <div class="usage-stats-summary">
-                                        <div class="stat-item">
-                                            <span class="stat-label">Suggested Lines:</span>
-                                            <span id="suggested-lines-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Accepted Lines:</span>
-                                            <span id="accepted-lines-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Tabs Accepted:</span>
-                                            <span id="tabs-accepted-value" class="stat-value"></span>
+                        <div class="card-body">
+                            <div class="usage-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">使用統計</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">Suggested Lines:</span>
+                                                <span id="suggested-lines-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Accepted Lines:</span>
+                                                <span id="accepted-lines-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Tabs Accepted:</span>
+                                                <span id="tabs-accepted-value" class="stat-value"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-2">使用日数</h3>
-                                    <div class="progress-label">
-                                        <span id="days-label"></span>
-                                        <span id="days-value"></span>
-                                    </div>
-                                    <div class="progress">
-                                        <div id="days-progress" class="progress-bar" role="progressbar"></div>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">使用日数</h3>
+                                        <div class="progress-label">
+                                            <span id="days-label"></span>
+                                            <span id="days-value"></span>
+                                        </div>
+                                        <div class="progress">
+                                            <div id="days-progress" class="progress-bar" role="progressbar"></div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="usage-info" id="latest-usage-info"></div>
                             </div>
-                            <div class="usage-info" id="latest-usage-info"></div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Usage Tokens -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div class="d-flex flex-column">
-                            <h2 class="card-title mb-2">Usage（統合データ）</h2>
-                            <div class="d-flex justify-content-end">
-                                <a href="pages/usage.html" class="btn btn-primary btn-sm"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="usage-tokens.csvとusage-details.csvを統合した詳細なトークン使用量の記録とグラフを確認できます。日別のトークン使用量、入力/出力/キャッシュ読み取りの詳細分析、使用傾向をグラフで表示できます。">詳細を見る</a>
+                <!-- Summary -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <div class="d-flex flex-column">
+                                <h2 class="card-title mb-2">Summary</h2>
+                                <div class="d-flex justify-content-end">
+                                    <a href="pages/summary.html" class="btn btn-primary btn-sm"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title="Summaryの詳細な記録とグラフを確認できます。Total、Cache Read、Cache Write、Input、Output、API Cost、Cost to Youの推移をグラフで表示し、総合的な使用状況分析ができます。">詳細を見る</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="usage-tokens-stats">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-2">最新使用日統計</h3>
-                                    <div class="usage-stats-summary">
-                                        <div class="stat-item">
-                                            <span class="stat-label">最新使用日:</span>
-                                            <span id="latest-usage-date-value" class="stat-value"></span>
+                        <div class="card-body">
+                            <div class="usage-summary-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">最新使用日統計</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">最新使用日:</span>
+                                                <span id="latest-summary-date-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Total:</span>
+                                                <span id="latest-summary-total-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Cache Read:</span>
+                                                <span id="latest-summary-cache-read-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Cache Write:</span>
+                                                <span id="latest-summary-cache-write-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Input:</span>
+                                                <span id="latest-summary-input-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Output:</span>
+                                                <span id="latest-summary-output-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">API Cost:</span>
+                                                <span id="latest-summary-api-cost-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Cost to You:</span>
+                                                <span id="latest-summary-cost-to-you-value" class="stat-value"></span>
+                                            </div>
                                         </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">日別総トークン数:</span>
-                                            <span id="daily-total-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">日別平均トークン数:</span>
-                                            <span id="daily-avg-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">日別最大トークン数:</span>
-                                            <span id="daily-max-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">日別入力トークン数:</span>
-                                            <span id="daily-input-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">日別出力トークン数:</span>
-                                            <span id="daily-output-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">日別キャッシュ読み取り数:</span>
-                                            <span id="daily-cache-read-tokens-value" class="stat-value"></span>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i>
+                                                括弧内の数値は前日との差です。<span class="text-success">緑色</span>は増加、<span class="text-danger">赤色</span>は減少、<span class="text-muted">グレー</span>は変化なしを示します。
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="usage-info" id="latest-summary-info"></div>
                             </div>
-                            <div class="usage-info" id="latest-tokens-info"></div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Included Usage -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div class="d-flex flex-column">
-                            <h2 class="card-title mb-2">Included Usage</h2>
-                            <div class="d-flex justify-content-end">
-                                <a href="pages/included-usage.html" class="btn btn-primary btn-sm"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Included Usage Summaryの詳細な記録とグラフを確認できます。Total Tokens、Input、Output、API Costの推移をグラフで表示し、コスト分析ができます。また、月別・週別のコスト集計や、予算管理のための分析データも確認できます。">詳細を見る</a>
+                <!-- Usage Events -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <div class="d-flex flex-column">
+                                <h2 class="card-title mb-2">Usage Events</h2>
+                                <div class="d-flex justify-content-end">
+                                    <a href="pages/usage-events.html" class="btn btn-primary btn-sm"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title="Usage Eventsの詳細な記録とグラフを確認できます。日別イベント数、日別トークン使用量、成功/エラーイベントの分析、使用イベント一覧を確認できます。">詳細を見る</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="usage-included-stats">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-2">最新使用日統計</h3>
-                                    <div class="usage-stats-summary">
-                                        <div class="stat-item">
-                                            <span class="stat-label">最新使用日:</span>
-                                            <span id="latest-included-usage-date-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Total Tokens:</span>
-                                            <span id="latest-total-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Input (W/CACHE WRITE):</span>
-                                            <span id="latest-input-with-cache-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Input (W/O CACHE WRITE):</span>
-                                            <span id="latest-input-without-cache-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Cache Read:</span>
-                                            <span id="latest-cache-read-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Output:</span>
-                                            <span id="latest-output-tokens-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">API Cost:</span>
-                                            <span id="latest-api-cost-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Cost to You:</span>
-                                            <span id="latest-cost-to-you-value" class="stat-value"></span>
+                        <div class="card-body">
+                            <div class="usage-events-stats">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-2">最新統計</h3>
+                                        <div class="usage-stats-summary">
+                                            <div class="stat-item">
+                                                <span class="stat-label">総イベント数:</span>
+                                                <span id="total-events-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">成功イベント:</span>
+                                                <span id="successful-events-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">エラーイベント:</span>
+                                                <span id="error-events-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">総トークン数:</span>
+                                                <span id="total-tokens-value" class="stat-value"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="usage-info" id="latest-usage-events-info"></div>
                             </div>
-                            <div class="usage-info" id="latest-included-usage-info"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Summary -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div class="d-flex flex-column">
-                            <h2 class="card-title mb-2">Summary</h2>
-                            <div class="d-flex justify-content-end">
-                                <a href="pages/summary.html" class="btn btn-primary btn-sm"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Summaryの詳細な記録とグラフを確認できます。Total、Cache Read、Cache Write、Input、Output、API Cost、Cost to Youの推移をグラフで表示し、総合的な使用状況分析ができます。">詳細を見る</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="usage-summary-stats">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-2">最新使用日統計</h3>
-                                    <div class="usage-stats-summary">
-                                        <div class="stat-item">
-                                            <span class="stat-label">最新使用日:</span>
-                                            <span id="latest-summary-date-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Total:</span>
-                                            <span id="latest-summary-total-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Cache Read:</span>
-                                            <span id="latest-summary-cache-read-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Cache Write:</span>
-                                            <span id="latest-summary-cache-write-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Input:</span>
-                                            <span id="latest-summary-input-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Output:</span>
-                                            <span id="latest-summary-output-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">API Cost:</span>
-                                            <span id="latest-summary-api-cost-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">Cost to You:</span>
-                                            <span id="latest-summary-cost-to-you-value" class="stat-value"></span>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2">
-                                        <small class="text-muted">
-                                            <i class="bi bi-info-circle"></i>
-                                            括弧内の数値は前日との差です。<span class="text-success">緑色</span>は増加、<span class="text-danger">赤色</span>は減少、<span class="text-muted">グレー</span>は変化なしを示します。
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="usage-info" id="latest-summary-info"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Usage Events -->
-            <div class="col-12 col-md-6 col-lg-6 col-xl-4 col-xxl">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <div class="d-flex flex-column">
-                            <h2 class="card-title mb-2">Usage Events</h2>
-                            <div class="d-flex justify-content-end">
-                                <a href="pages/usage-events.html" class="btn btn-primary btn-sm"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Usage Eventsの詳細な記録とグラフを確認できます。日別イベント数、日別トークン使用量、成功/エラーイベントの分析、使用イベント一覧を確認できます。">詳細を見る</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="usage-events-stats">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h3 class="h5 mb-2">最新統計</h3>
-                                    <div class="usage-stats-summary">
-                                        <div class="stat-item">
-                                            <span class="stat-label">総イベント数:</span>
-                                            <span id="total-events-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">成功イベント:</span>
-                                            <span id="successful-events-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">エラーイベント:</span>
-                                            <span id="error-events-value" class="stat-value"></span>
-                                        </div>
-                                        <div class="stat-item">
-                                            <span class="stat-label">総トークン数:</span>
-                                            <span id="total-tokens-value" class="stat-value"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="usage-info" id="latest-usage-events-info"></div>
                         </div>
                     </div>
                 </div>
