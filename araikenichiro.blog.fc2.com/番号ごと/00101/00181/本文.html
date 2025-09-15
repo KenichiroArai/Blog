@@ -1,0 +1,144 @@
+<h3>学習内容</h3>
+
+<h4>リレーショナルデータベース入門について</h4>
+<p>
+  前回からの進捗となるが、しばらくは、じっくりと読み進めていたが、とても時間がかかるのと代数、数論などの基礎力が無いと厳しいと判断して、途中から運動しながら用の読書に変更した。『システムテスト自動化 標準ガイド』と交互に毎日30分ぐらい読み進めているため、途中から進むスピードが上がった。
+</p>
+
+<h4>システムテスト自動化について</h4>
+<p>
+  「<a href="https://araikenichiro.blog.fc2.com/blog-entry-180.html" target="_blank">フロントエンド（TS、JS）#0068：『Web標準の教科書』　読了</a>」で『Web標準の教科書』が読み終わり、それからは、『リレーショナルデータベース入門』と交互に読んでいた。今日で最後まで読了した。
+</p>
+<p>
+  内容としては、目新しさはなく、一般的なことが書かれているなと思った。システムテスト自動化に限らず、開発、設計・実装の進め方、プロジェクト管理で言われているベストプラクティスのような内容と共通しているからだ。もちろん、システムテストを説明した内容なのでそこを知りたい人は開発の本よりは置き返しながら読む必要はないがいい点ではないだろうか。実践的な内容とは追わなかったが、実際にプロジェクトに適用しようとして読めばもっと役に立つなと思う部分はあったかもしれない。
+</p>
+<p>
+  これに代わる本は要しておらず、『リレーショナルデータベース入門』に集中していく。
+</p>
+
+<h4>書籍の進捗状況</h4>
+<table>
+  <tr>
+    <th>書籍名</th>
+    <th>現在ページ</th>
+    <th>全体ページ</th>
+    <th>進捗率</th>
+    <th>開始日</th>
+    <th>現在日</th>
+    <th>経過日数</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/7AZhIZM" target="_blank">
+        リレーショナルデータベース入門
+      </a>
+    </td>
+    <td class="current-page">219</td>
+    <td class="total-pages">400</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+    <td class="start-date">2025/06/14</td>
+    <td class="current-date">2025/09/15</td>
+    <td class="elapsed-days"></td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://amzn.asia/d/fFpKTmP" target="_blank">
+        システムテスト自動化 標準ガイド
+      </a>
+    </td>
+    <td class="current-page">453</td>
+    <td class="total-pages">453</td>
+    <td class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text"></span>
+    </td>
+    <td class="start-date">2025/06/25</td>
+    <td class="current-date">2025/09/15</td>
+    <td class="elapsed-days"></td>
+  </tr>
+</table>
+
+<h3>リンク</h3>
+<ol>
+    <li>
+        <a href="https://github.com/KenichiroArai/Blog/tree/main/araikenichiro.blog.fc2.com/%E7%95%AA%E5%8F%B7%E3%81%94%E3%81%A8/00101/00181"
+            target="_blank">本記事のGitHubでの管理</a>
+    </li>
+    <li>
+        前回の記事：
+        <a href="https://araikenichiro.blog.fc2.com/blog-entry-170.html" target="_blank">
+          読書#001：リレーションデータベース入門#02とシステムテスト自動化標準ガイド#01
+        </a>
+    </li>
+    <li>
+        <a href="https://amzn.asia/d/7AZhIZM" target="_blank">
+            リレーショナルデータベース入門: データモデル・SQL・管理システム・NoSQL
+        </a>
+    </li>
+    <li>
+        <a href="https://amzn.asia/d/fFpKTmP" target="_blank">
+          システムテスト自動化 標準ガイド
+        </a>
+    </li>
+    <li>
+      GitHub Issue：
+      <a href="https://github.com/KenichiroArai/everyday-use-git/issues/1" target="_blank">
+        リレーショナルデータベース入門#01の読書 #1
+      </a>
+    </li>
+    <li>
+      GitHub Issue：
+      <a href="https://github.com/KenichiroArai/everyday-use-git/issues/3" target="_blank">
+        システムテスト自動化 標準ガイド#01の読書 #3
+      </a>
+    </li>
+</ol>
+
+<script>
+  // ページ読み込み時に実行
+  window.onload = () => {
+    try {
+      const startDateElements = document.querySelectorAll('.start-date');
+      const currentDateElements = document.querySelectorAll('.current-date');
+      const elapsedDaysElements = document.querySelectorAll('.elapsed-days');
+
+      if (startDateElements.length === 0 || currentDateElements.length === 0 || elapsedDaysElements.length === 0) {
+        throw new Error('必要な要素が見つかりません');
+      }
+
+             startDateElements.forEach((startDateElement, index) => {
+         const currentDateElement = currentDateElements[index];
+         const elapsedDaysElement = elapsedDaysElements[index];
+
+         // 経過日数を計算
+         const startDate = new Date(startDateElement.textContent);
+         const targetDate = new Date(currentDateElement.textContent);
+         const timeDiff = targetDate.getTime() - startDate.getTime();
+         const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+         // 経過日数を表示
+         elapsedDaysElement.textContent = `${daysDiff}日`;
+       });
+
+      // 進捗率の計算と表示
+      calculateProgressRates();
+    } catch (error) {
+      console.error('エラーが発生しました:', error);
+      const errorElement = document.createElement('div');
+      errorElement.style.color = 'red';
+      errorElement.style.padding = '10px';
+      errorElement.style.margin = '10px 0';
+      errorElement.style.border = '1px solid red';
+      errorElement.style.borderRadius = '5px';
+      errorElement.textContent = `エラーが発生しました: ${error.message}`;
+      document.body.insertBefore(errorElement, document.body.firstChild);
+    }
+  };
+</script>
