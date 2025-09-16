@@ -9,8 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="../css/common.css?v=1.0.2" rel="stylesheet">
 </head>
@@ -38,53 +36,86 @@
             </div>
         </div>
 
-        <!-- 統計情報 -->
+        <!-- 最新の Usage Events 統計（1行目） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <div class="col-md-3">
-                    <div class="card h-100">
+                <div class="col-12">
+                    <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">総イベント数</h3>
+                            <h2 class="card-title mb-0">最新の Usage Events 統計</h2>
                         </div>
                         <div class="card-body">
-                            <div class="text-center">
-                                <h2 id="total-events" class="text-primary mb-0">-</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h3 class="card-title mb-0">成功イベント</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-center">
-                                <h2 id="successful-events" class="text-success mb-0">-</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h3 class="card-title mb-0">エラーイベント</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-center">
-                                <h2 id="error-events" class="text-danger mb-0">-</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h3 class="card-title mb-0">総トークン数</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-center">
-                                <h2 id="total-tokens" class="text-info mb-0">-</h2>
+                            <div class="row g-3">
+                                <!-- 統計項目1 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">最新使用日</div>
+                                        <div id="latest-usage-date-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目2 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総イベント数</div>
+                                        <div id="total-events-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目3 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">成功イベント数</div>
+                                        <div id="successful-events-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目4 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">エラーイベント数</div>
+                                        <div id="error-events-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目5 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">総トークン数</div>
+                                        <div id="total-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目6 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">Input (w/ Cache Write)</div>
+                                        <div id="latest-input-with-cache-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目7 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">Input (w/o Cache Write)</div>
+                                        <div id="latest-input-without-cache-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目8 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">Cache Read</div>
+                                        <div id="latest-cache-read-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目9 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">Output Tokens</div>
+                                        <div id="latest-output-tokens-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
+                                <!-- 統計項目10 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">コスト</div>
+                                        <div id="latest-cost-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -92,179 +123,17 @@
             </div>
         </div>
 
-        <!-- 最新の使用統計 -->
+        <!-- Usage Events グラフ（2行目） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <div class="col-md-12">
-                    <div class="card h-100">
+                <div class="col-12">
+                    <div class="card">
                         <div class="card-header">
-                            <h2 class="card-title mb-0">最新使用日統計</h2>
+                            <h2 class="card-title mb-0">Usage Events グラフ</h2>
                         </div>
                         <div class="card-body">
-                            <div class="usage-stats-summary">
-                                <div class="stat-item">
-                                    <span class="stat-label">最新使用日:</span>
-                                    <span id="latest-usage-date-value" class="stat-value"></span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Total Tokens:</span>
-                                    <span id="latest-total-tokens-value" class="stat-value"></span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Input (W/CACHE WRITE):</span>
-                                    <span id="latest-input-with-cache-value" class="stat-value"></span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Input (W/O CACHE WRITE):</span>
-                                    <span id="latest-input-without-cache-value" class="stat-value"></span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Cache Read:</span>
-                                    <span id="latest-cache-read-value" class="stat-value"></span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">Output:</span>
-                                    <span id="latest-output-tokens-value" class="stat-value"></span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-label">コスト:</span>
-                                    <span id="latest-cost-value" class="stat-value"></span>
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="bi bi-info-circle"></i>
-                                    括弧内の数値は前日との差です。<span class="text-success">緑色</span>は増加、<span class="text-danger">赤色</span>は減少、<span class="text-muted">グレー</span>は変化なしを示します。
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- グラフ表示 -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">日別イベント数</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="daily-events-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">Total Tokens 積立推移</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="total-tokens-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Input W/CACHE WRITE グラフセクション -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
-                <!-- Input W/CACHE WRITE グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">Input (W/CACHE WRITE) グラフ</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="input-with-cache-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input W/O CACHE WRITE グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">Input (W/O CACHE WRITE) グラフ</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="input-without-cache-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cache Read と Output グラフセクション -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
-                <!-- Cache Read グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">Cache Read グラフ</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="cache-read-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Output グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">Output グラフ</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="output-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- コスト関連グラフセクション -->
-        <div class="dashboard-container mb-4">
-            <div class="row g-3">
-                <!-- コストグラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">コスト グラフ</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="cost-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- モデル別使用量グラフ -->
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">モデル別使用量</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="model-usage-chart"></canvas>
+                            <div class="chart-container-large">
+                                <canvas id="usage-events-daily-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -279,7 +148,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="usage-events-table" class="table table-striped">
+                    <table id="usage-events-table" class="table table-striped table-wide">
                         <thead>
                             <tr>
                                 <th>日時</th>
