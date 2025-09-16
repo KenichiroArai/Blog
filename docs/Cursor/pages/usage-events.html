@@ -44,78 +44,70 @@
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title mb-0">最新の Usage Events 統計</h2>
-                            <small class="text-muted" data-bs-toggle="tooltip" data-bs-placement="top"
-                                   title="最終データの日時から24時間前までの統計を表示します。例：9月15日02:00:00が最終データの場合、9月14日02:00:01から9月15日02:00までのデータが表示されます。">
-                                <span class="text-decoration-underline">ℹ️ 統計の表示範囲について</span>
-                            </small>
                         </div>
                         <div class="card-body">
-                            <div class="row g-3">
-                                <!-- 統計項目1 -->
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                                    <div class="stat-card">
-                                        <div class="stat-label">最新使用日</div>
+                            <!-- 最新使用日（1行表示） -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="stat-card text-center">
+                                        <div class="stat-label">
+                                            最新使用日
+                                            <small class="text-muted ms-1" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                   title="最終データの日時から24時間前までの統計を表示します。例：9月15日02:00:00が最終データの場合、9月14日02:00:01から9月15日02:00までのデータが表示されます。">
+                                                <span class="text-decoration-underline">ℹ️</span>
+                                            </small>
+                                        </div>
                                         <div id="latest-usage-date-value" class="stat-value-large"></div>
                                         <div class="stat-subtitle">（24時間以内の範囲）</div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- 統計項目（2行構成） -->
+                            <div class="row g-3">
+                                <!-- 統計項目1 -->
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                    <div class="stat-card">
+                                        <div class="stat-label">イベント数</div>
+                                        <div id="latest-events-combined-value" class="stat-value-large"></div>
+                                    </div>
+                                </div>
                                 <!-- 統計項目2 -->
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                                    <div class="stat-card">
-                                        <div class="stat-label">総イベント数</div>
-                                        <div id="latest-total-events-value" class="stat-value-large"></div>
-                                    </div>
-                                </div>
-                                <!-- 統計項目3 -->
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                                    <div class="stat-card">
-                                        <div class="stat-label">成功イベント数</div>
-                                        <div id="latest-successful-events-value" class="stat-value-large"></div>
-                                    </div>
-                                </div>
-                                <!-- 統計項目4 -->
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                                    <div class="stat-card">
-                                        <div class="stat-label">エラーイベント数</div>
-                                        <div id="latest-error-events-value" class="stat-value-large"></div>
-                                    </div>
-                                </div>
-                                <!-- 統計項目5 -->
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="stat-card">
                                         <div class="stat-label">総トークン数</div>
                                         <div id="latest-total-tokens-value" class="stat-value-large"></div>
                                     </div>
                                 </div>
-                                <!-- 統計項目6 -->
+                                <!-- 統計項目3 -->
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="stat-card">
                                         <div class="stat-label">Input (w/ Cache Write)</div>
                                         <div id="latest-input-with-cache-value" class="stat-value-large"></div>
                                     </div>
                                 </div>
-                                <!-- 統計項目7 -->
+                                <!-- 統計項目4 -->
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="stat-card">
                                         <div class="stat-label">Input (w/o Cache Write)</div>
                                         <div id="latest-input-without-cache-value" class="stat-value-large"></div>
                                     </div>
                                 </div>
-                                <!-- 統計項目8 -->
+                                <!-- 統計項目5 -->
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="stat-card">
                                         <div class="stat-label">Cache Read</div>
                                         <div id="latest-cache-read-value" class="stat-value-large"></div>
                                     </div>
                                 </div>
-                                <!-- 統計項目9 -->
+                                <!-- 統計項目6 -->
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="stat-card">
                                         <div class="stat-label">Output Tokens</div>
                                         <div id="latest-output-tokens-value" class="stat-value-large"></div>
                                     </div>
                                 </div>
-                                <!-- 統計項目10 -->
+                                <!-- 統計項目7 -->
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
                                     <div class="stat-card">
                                         <div class="stat-label">コスト</div>

@@ -863,14 +863,11 @@ function updateUsageEventsStats() {
         const latestUsageDateValue = document.getElementById('latest-usage-date-value');
         if (latestUsageDateValue) latestUsageDateValue.textContent = latestDateTime;
 
-        const latestTotalEventsValue = document.getElementById('latest-total-events-value');
-        if (latestTotalEventsValue) latestTotalEventsValue.textContent = latestDailyData.count.toLocaleString();
-
-        const latestSuccessfulEventsValue = document.getElementById('latest-successful-events-value');
-        if (latestSuccessfulEventsValue) latestSuccessfulEventsValue.textContent = latestDailyData.successful.toLocaleString();
-
-        const latestErrorEventsValue = document.getElementById('latest-error-events-value');
-        if (latestErrorEventsValue) latestErrorEventsValue.textContent = latestDailyData.error.toLocaleString();
+        // イベント数を統合表示（成功/総数）
+        const latestEventsCombinedValue = document.getElementById('latest-events-combined-value');
+        if (latestEventsCombinedValue) {
+            latestEventsCombinedValue.textContent = `${latestDailyData.successful.toLocaleString()}/${latestDailyData.count.toLocaleString()}`;
+        }
 
         const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
         if (latestTotalTokensValue) latestTotalTokensValue.textContent = latestDailyData.total.toLocaleString();
