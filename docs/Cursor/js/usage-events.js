@@ -1,4 +1,5 @@
 // グローバル変数
+// usageEventsData は common.js で宣言済み
 let usageEventsTable;
 let costChart;
 let inputWithCacheChart;
@@ -16,11 +17,16 @@ async function loadUsageEventsData() {
         const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
         const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-events.csv' : '../Tool/AllRawEvents/data/usage-events.csv';
 
+        console.log('Current path:', currentPath);
+        console.log('Is top page:', isTopPage);
+        console.log('CSV path:', csvPath);
+
         const response = await fetch(csvPath);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const csvText = await response.text();
+        console.log('CSV loaded, length:', csvText.length);
         const lines = csvText.split('\n').filter(line => line.trim());
 
         if (lines.length < 2) {
@@ -92,13 +98,21 @@ function parseCSVLine(line) {
 
 // 初期化処理
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM Content Loaded, starting initialization...');
     try {
+        console.log('Loading usage events data...');
         await loadUsageEventsData();
+        console.log('Initializing usage events table...');
         initializeUsageEventsTable();
+        console.log('Updating usage events stats...');
         updateUsageEventsStats();
+        console.log('Creating cost chart...');
         createCostChart();
+        console.log('Creating column charts...');
         createColumnCharts();
+        console.log('Initializing tooltips...');
         initializeTooltips();
+        console.log('Initialization completed successfully');
     } catch (error) {
         console.error('初期化エラー:', error);
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
@@ -286,6 +300,8 @@ function createCostChart() {
 
 // カラム別グラフの作成
 function createColumnCharts() {
+    console.log('createColumnCharts called, data length:', usageEventsData.length);
+
     // 日別データの集計
     const dailyData = {};
     usageEventsData.forEach(record => {
@@ -316,18 +332,33 @@ function createColumnCharts() {
         .sort((a, b) => a - b)
         .map(date => date.toLocaleDateString('ja-JP'));
 
+    console.log('Daily data keys:', Object.keys(dailyData));
+    console.log('Dates array:', dates);
+
     // 各カラムのグラフを作成
+    console.log('Creating Input (w/ Cache Write) chart...');
     createInputWithCacheChart(dates, dailyData);
+    console.log('Creating Input (w/o Cache Write) chart...');
     createInputWithoutCacheChart(dates, dailyData);
+    console.log('Creating Cache Read chart...');
     createCacheReadChart(dates, dailyData);
+    console.log('Creating Output Tokens chart...');
     createOutputTokensChart(dates, dailyData);
+    console.log('Creating Total Tokens chart...');
     createTotalTokensChart(dates, dailyData);
+    console.log('Creating Kind chart...');
     createKindChart(dates, dailyData);
 }
 
 // Input (w/ Cache Write) グラフ
 function createInputWithCacheChart(dates, dailyData) {
-    const ctx = document.getElementById('input-with-cache-chart').getContext('2d');
+    const canvasElement = document.getElementById('input-with-cache-chart');
+    if (!canvasElement) {
+        console.error('Canvas element input-with-cache-chart not found');
+        return;
+    }
+    console.log('Chart.js available:', typeof Chart !== 'undefined');
+    const ctx = canvasElement.getContext('2d');
     const data = dates.map(date => dailyData[date].inputWithCache);
 
     inputWithCacheChart = new Chart(ctx, {
@@ -346,6 +377,9 @@ function createInputWithCacheChart(dates, dailyData) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                duration: 1000
+            },
             plugins: {
                 title: {
                     display: true,
@@ -893,6 +927,16 @@ function updateUsageEventsStats() {
             }
         }
     }
+}
+
+// エラーメッセージの表示
+function showError(message) {
+    const errorElement = document.getElementById('error-message');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('d-none');
+    }
+    console.error(message);
 }
 
 // ツールチップの初期化
