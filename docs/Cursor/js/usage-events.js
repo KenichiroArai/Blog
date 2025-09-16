@@ -763,19 +763,29 @@ function updateUsageEventsStats() {
                 total: 0,
                 count: 0,
                 max: 0,
-                inputTotal: 0,
+                inputWithCacheTotal: 0,
+                inputWithoutCacheTotal: 0,
                 outputTotal: 0,
                 cacheReadTotal: 0,
                 successful: 0,
-                error: 0
+                error: 0,
+                cost: 0
             };
         }
         dailyData[dateStr].total += record['Total Tokens'] || 0;
         dailyData[dateStr].count += 1;
         dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record['Total Tokens'] || 0);
-        dailyData[dateStr].inputTotal += (record['Input (w/ Cache Write)'] || 0) + (record['Input (w/o Cache Write)'] || 0);
+        dailyData[dateStr].inputWithCacheTotal += record['Input (w/ Cache Write)'] || 0;
+        dailyData[dateStr].inputWithoutCacheTotal += record['Input (w/o Cache Write)'] || 0;
         dailyData[dateStr].outputTotal += record['Output Tokens'] || 0;
         dailyData[dateStr].cacheReadTotal += record['Cache Read'] || 0;
+
+        // コストの計算（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+        dailyData[dateStr].cost += costValue;
 
         if (record.Kind === 'Included') {
             dailyData[dateStr].successful++;
@@ -793,50 +803,42 @@ function updateUsageEventsStats() {
     const latestDailyData = dailyData[latestDate];
 
     if (latestDailyData) {
-        const dailyTotalTokens = latestDailyData.total;
-        const dailyAvgTokens = Math.round(latestDailyData.total / latestDailyData.count);
-        const dailyMaxTokens = latestDailyData.max;
-        const dailyInputTokens = latestDailyData.inputTotal;
-        const dailyOutputTokens = latestDailyData.outputTotal;
-        const dailyCacheReadTokens = latestDailyData.cacheReadTotal;
-        const totalEvents = usageEventsData.length;
-        const successfulEvents = usageEventsData.filter(row => row.Kind === 'Included').length;
-        const errorEvents = usageEventsData.filter(row => row.Kind.includes('Errored')).length;
-        const totalTokens = usageEventsData.reduce((sum, row) => {
-            const tokens = parseInt(row['Total Tokens']) || 0;
-            return sum + tokens;
-        }, 0);
-
         // 最新使用日の統計を表示
         const latestUsageDateValue = document.getElementById('latest-usage-date-value');
         if (latestUsageDateValue) latestUsageDateValue.textContent = latestDate;
 
-        const totalEventsValue = document.getElementById('total-events-value');
-        if (totalEventsValue) totalEventsValue.textContent = totalEvents.toLocaleString();
+        const latestTotalEventsValue = document.getElementById('latest-total-events-value');
+        if (latestTotalEventsValue) latestTotalEventsValue.textContent = latestDailyData.count.toLocaleString();
 
-        const successfulEventsValue = document.getElementById('successful-events-value');
-        if (successfulEventsValue) successfulEventsValue.textContent = successfulEvents.toLocaleString();
+        const latestSuccessfulEventsValue = document.getElementById('latest-successful-events-value');
+        if (latestSuccessfulEventsValue) latestSuccessfulEventsValue.textContent = latestDailyData.successful.toLocaleString();
 
-        const errorEventsValue = document.getElementById('error-events-value');
-        if (errorEventsValue) errorEventsValue.textContent = errorEvents.toLocaleString();
+        const latestErrorEventsValue = document.getElementById('latest-error-events-value');
+        if (latestErrorEventsValue) latestErrorEventsValue.textContent = latestDailyData.error.toLocaleString();
 
-        const totalTokensValue = document.getElementById('total-tokens-value');
-        if (totalTokensValue) totalTokensValue.textContent = totalTokens.toLocaleString();
+        const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
+        if (latestTotalTokensValue) latestTotalTokensValue.textContent = latestDailyData.total.toLocaleString();
 
         const latestInputWithCacheValue = document.getElementById('latest-input-with-cache-value');
-        if (latestInputWithCacheValue) latestInputWithCacheValue.textContent = dailyInputTokens.toLocaleString();
+        if (latestInputWithCacheValue) latestInputWithCacheValue.textContent = latestDailyData.inputWithCacheTotal.toLocaleString();
 
         const latestInputWithoutCacheValue = document.getElementById('latest-input-without-cache-value');
-        if (latestInputWithoutCacheValue) latestInputWithoutCacheValue.textContent = '0';
+        if (latestInputWithoutCacheValue) latestInputWithoutCacheValue.textContent = latestDailyData.inputWithoutCacheTotal.toLocaleString();
 
         const latestCacheReadValue = document.getElementById('latest-cache-read-value');
-        if (latestCacheReadValue) latestCacheReadValue.textContent = dailyCacheReadTokens.toLocaleString();
+        if (latestCacheReadValue) latestCacheReadValue.textContent = latestDailyData.cacheReadTotal.toLocaleString();
 
         const latestOutputTokensValue = document.getElementById('latest-output-tokens-value');
-        if (latestOutputTokensValue) latestOutputTokensValue.textContent = dailyOutputTokens.toLocaleString();
+        if (latestOutputTokensValue) latestOutputTokensValue.textContent = latestDailyData.outputTotal.toLocaleString();
 
         const latestCostValue = document.getElementById('latest-cost-value');
-        if (latestCostValue) latestCostValue.textContent = 'Included';
+        if (latestCostValue) {
+            if (latestDailyData.cost > 0) {
+                latestCostValue.textContent = `$${latestDailyData.cost.toFixed(2)}`;
+            } else {
+                latestCostValue.textContent = '$0.00';
+            }
+        }
     }
 }
 
