@@ -301,6 +301,14 @@
   line-height: 1.2;
 }
 
+.stat-card .stat-subtitle {
+  font-size: 0.7rem;
+  color: #adb5bd;
+  font-weight: 400;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
 .stat-value-large {
   font-size: 1.2rem;
   color: #0d6efd;

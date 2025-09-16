@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursor使用記録　v0.5.4</title>
+    <title>Cursor使用記録　v0.5.5</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -18,7 +18,7 @@
         <div class="container">
             <span class="navbar-brand mb-0 h1">
                 <a href="https://github.com/KenichiroArai/Blog/issues/36" target="_blank" rel="noopener">
-                    Cursor使用記録　v0.5.4
+                    Cursor使用記録　v0.5.5
                 </a>
             </span>
             <div class="navbar-nav ms-auto">
@@ -201,24 +201,46 @@
                             <div class="usage-events-stats">
                                 <div class="card mb-3">
                                     <div class="card-body">
-                                        <h3 class="h5 mb-2">最新統計</h3>
+                                        <h3 class="h5 mb-2">最新使用日統計</h3>
                                         <div class="usage-stats-summary">
                                             <div class="stat-item">
-                                                <span class="stat-label">総イベント数:</span>
-                                                <span id="total-events-value" class="stat-value"></span>
+                                                <span class="stat-label">最新使用日:</span>
+                                                <span id="latest-usage-events-date-value" class="stat-value"></span>
                                             </div>
                                             <div class="stat-item">
-                                                <span class="stat-label">成功イベント:</span>
-                                                <span id="successful-events-value" class="stat-value"></span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <span class="stat-label">エラーイベント:</span>
-                                                <span id="error-events-value" class="stat-value"></span>
+                                                <span class="stat-label">イベント数（成功/総数）:</span>
+                                                <span id="latest-events-combined-value" class="stat-value"></span>
                                             </div>
                                             <div class="stat-item">
                                                 <span class="stat-label">総トークン数:</span>
-                                                <span id="total-tokens-value" class="stat-value"></span>
+                                                <span id="latest-total-tokens-value" class="stat-value"></span>
                                             </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Input (w/ Cache Write):</span>
+                                                <span id="latest-input-with-cache-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Input (w/o Cache Write):</span>
+                                                <span id="latest-input-without-cache-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Cache Read:</span>
+                                                <span id="latest-cache-read-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">Output Tokens:</span>
+                                                <span id="latest-output-tokens-value" class="stat-value"></span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <span class="stat-label">コスト:</span>
+                                                <span id="latest-cost-value" class="stat-value"></span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i>
+                                                括弧内の数値は前日との差です。<span class="text-success">緑色</span>は増加、<span class="text-danger">赤色</span>は減少、<span class="text-muted">グレー</span>は変化なしを示します。
+                                            </small>
                                         </div>
                                     </div>
                                 </div>

@@ -735,29 +735,109 @@ function updateUsageEventsStats() {
 
     console.log('Usage Events data:', usageEventsData);
 
-    // 統計情報を計算
-    const totalEvents = usageEventsData.length;
-    const successfulEvents = usageEventsData.filter(row => row.Kind === 'Included').length;
-    const errorEvents = usageEventsData.filter(row => row.Kind.includes('Errored')).length;
+    // データを日付順にソート
+    const sortedData = usageEventsData
+        .map(record => ({
+            ...record,
+            Date: new Date(record.Date),
+            'Input (w/ Cache Write)': parseInt(record['Input (w/ Cache Write)']) || 0,
+            'Input (w/o Cache Write)': parseInt(record['Input (w/o Cache Write)']) || 0,
+            'Cache Read': parseInt(record['Cache Read']) || 0,
+            'Output Tokens': parseInt(record['Output Tokens']) || 0,
+            'Total Tokens': parseInt(record['Total Tokens']) || 0,
+            'Cost': record['Cost'] || 'Included'
+        }))
+        .filter(record => !isNaN(record.Date.getTime()))
+        .sort((a, b) => a.Date - b.Date);
 
-    // 総トークン数を計算
-    const totalTokens = usageEventsData.reduce((sum, row) => {
-        const tokens = parseInt(row['Total Tokens']) || 0;
-        return sum + tokens;
-    }, 0);
+    // 最新使用日のデータを取得（最終データの日時から24時間前までを表示）
+    const latestRecord = sortedData[sortedData.length - 1];
+    if (!latestRecord) return;
 
-    // 統計情報を表示
-    const totalEventsValue = document.getElementById('total-events-value');
-    if (totalEventsValue) totalEventsValue.textContent = totalEvents.toLocaleString();
+    const latestActualDate = latestRecord.Date;
+    const twentyFourHoursAgo = new Date(latestActualDate.getTime() - (24 * 60 * 60 * 1000));
 
-    const successfulEventsValue = document.getElementById('successful-events-value');
-    if (successfulEventsValue) successfulEventsValue.textContent = successfulEvents.toLocaleString();
+    // 表示用の日付を決定（最終データの日時を表示）
+    const latestDateTime = latestActualDate.toLocaleDateString('ja-JP') + ' ' +
+                          latestActualDate.toLocaleTimeString('ja-JP', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                          });
 
-    const errorEventsValue = document.getElementById('error-events-value');
-    if (errorEventsValue) errorEventsValue.textContent = errorEvents.toLocaleString();
+    // 24時間以内のデータをフィルタリング
+    const filteredData = sortedData.filter(record => {
+        return record.Date >= twentyFourHoursAgo && record.Date <= latestActualDate;
+    });
 
-    const totalTokensValue = document.getElementById('total-tokens-value');
-    if (totalTokensValue) totalTokensValue.textContent = totalTokens.toLocaleString();
+    // フィルタリングされたデータから統計を計算
+    const latestDailyData = {
+        total: 0,
+        count: 0,
+        inputWithCacheTotal: 0,
+        inputWithoutCacheTotal: 0,
+        outputTotal: 0,
+        cacheReadTotal: 0,
+        successful: 0,
+        error: 0,
+        cost: 0
+    };
+
+    filteredData.forEach(record => {
+        latestDailyData.total += record['Total Tokens'] || 0;
+        latestDailyData.count += 1;
+        latestDailyData.inputWithCacheTotal += record['Input (w/ Cache Write)'] || 0;
+        latestDailyData.inputWithoutCacheTotal += record['Input (w/o Cache Write)'] || 0;
+        latestDailyData.outputTotal += record['Output Tokens'] || 0;
+        latestDailyData.cacheReadTotal += record['Cache Read'] || 0;
+
+        // コストの計算（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+        latestDailyData.cost += costValue;
+
+        if (record.Kind === 'Included') {
+            latestDailyData.successful++;
+        } else if (record.Kind.includes('Errored')) {
+            latestDailyData.error++;
+        }
+    });
+
+    // 最新使用日の統計を表示
+    const latestUsageEventsDateValue = document.getElementById('latest-usage-events-date-value');
+    if (latestUsageEventsDateValue) latestUsageEventsDateValue.textContent = latestDateTime;
+
+    // イベント数を統合表示（成功/総数）
+    const latestEventsCombinedValue = document.getElementById('latest-events-combined-value');
+    if (latestEventsCombinedValue) {
+        latestEventsCombinedValue.textContent = `${latestDailyData.successful.toLocaleString()}/${latestDailyData.count.toLocaleString()}`;
+    }
+
+    const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
+    if (latestTotalTokensValue) latestTotalTokensValue.textContent = latestDailyData.total.toLocaleString();
+
+    const latestInputWithCacheValue = document.getElementById('latest-input-with-cache-value');
+    if (latestInputWithCacheValue) latestInputWithCacheValue.textContent = latestDailyData.inputWithCacheTotal.toLocaleString();
+
+    const latestInputWithoutCacheValue = document.getElementById('latest-input-without-cache-value');
+    if (latestInputWithoutCacheValue) latestInputWithoutCacheValue.textContent = latestDailyData.inputWithoutCacheTotal.toLocaleString();
+
+    const latestCacheReadValue = document.getElementById('latest-cache-read-value');
+    if (latestCacheReadValue) latestCacheReadValue.textContent = latestDailyData.cacheReadTotal.toLocaleString();
+
+    const latestOutputTokensValue = document.getElementById('latest-output-tokens-value');
+    if (latestOutputTokensValue) latestOutputTokensValue.textContent = latestDailyData.outputTotal.toLocaleString();
+
+    const latestCostValue = document.getElementById('latest-cost-value');
+    if (latestCostValue) {
+        if (latestDailyData.cost > 0) {
+            latestCostValue.textContent = `$${latestDailyData.cost.toFixed(2)}`;
+        } else {
+            latestCostValue.textContent = '$0.00';
+        }
+    }
 
     // 最新の使用情報を表示（他のセクションと統一性を保つため削除）
     const latestUsageEventsInfo = document.getElementById('latest-usage-events-info');

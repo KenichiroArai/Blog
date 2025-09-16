@@ -1,304 +1,950 @@
-// Usage Events ページのJavaScript
-$(document).ready(function() {
-    let usageEventsData = [];
-    let dailyEventsChart = null;
-    let dailyTokensChart = null;
+// グローバル変数
+// usageEventsData は common.js で宣言済み
+let usageEventsTable;
+let costChart;
+let inputWithCacheChart;
+let inputWithoutCacheChart;
+let cacheReadChart;
+let outputTokensChart;
+let totalTokensChart;
+let kindChart;
 
-    // CSVファイルを読み込む
-    function loadUsageEventsData() {
-        showLoading(true);
-        hideError();
-
+// CSVファイル読み込み
+async function loadUsageEventsData() {
+    try {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
         const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
         const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-events.csv' : '../Tool/AllRawEvents/data/usage-events.csv';
 
-        fetch(csvPath)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(csvText => {
-                usageEventsData = parseCSV(csvText);
-                displayUsageEventsData();
-                updateStatistics();
-                createCharts();
-                showLoading(false);
-            })
-            .catch(error => {
-                console.error('Error loading usage events data:', error);
-                showError('データの読み込みに失敗しました: ' + error.message);
-                showLoading(false);
-            });
-    }
+        console.log('Current path:', currentPath);
+        console.log('Is top page:', isTopPage);
+        console.log('CSV path:', csvPath);
 
-    // CSVをパースする
-    function parseCSV(csvText) {
-        const lines = csvText.trim().split('\n');
-        const headers = lines[0].split(',');
-        const data = [];
+        const response = await fetch(csvPath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+        console.log('CSV loaded, length:', csvText.length);
+        const lines = csvText.split('\n').filter(line => line.trim());
+
+        if (lines.length < 2) {
+            throw new Error('CSVファイルが空またはヘッダーのみです');
+        }
+
+        const headers = lines[0].split(',').map(header => header.trim());
+        const rawData = [];
 
         for (let i = 1; i < lines.length; i++) {
-            const values = parseCSVLine(lines[i]);
-            if (values.length === headers.length) {
-                const row = {};
+            const line = lines[i].trim();
+            if (!line) continue;
+
+            // CSVの値を正しく分割（カンマを含む値に対応）
+            const values = parseCSVLine(line);
+            if (values.length >= headers.length) {
+                const record = {};
                 headers.forEach((header, index) => {
-                    row[header.trim()] = values[index].trim();
+                    record[header] = values[index] ? values[index].trim() : '';
                 });
-                data.push(row);
+                rawData.push(record);
             }
         }
 
-        return data;
+        // データの整形
+        usageEventsData = rawData.map(record => ({
+            ...record,
+            Date: new Date(record.Date),
+            'Input (w/ Cache Write)': parseInt(record['Input (w/ Cache Write)']) || 0,
+            'Input (w/o Cache Write)': parseInt(record['Input (w/o Cache Write)']) || 0,
+            'Cache Read': parseInt(record['Cache Read']) || 0,
+            'Output Tokens': parseInt(record['Output Tokens']) || 0,
+            'Total Tokens': parseInt(record['Total Tokens']) || 0,
+            'Cost': record['Cost'] || 'Included'
+        })).filter(record => !isNaN(record.Date.getTime())); // 無効な日付を除外
+
+        // 日付順にソート
+        usageEventsData.sort((a, b) => a.Date - b.Date);
+
+        console.log('Usage Events data loaded:', usageEventsData.length, 'records');
+    } catch (error) {
+        console.error('CSVファイルの読み込みに失敗しました:', error);
+        throw new Error('CSVファイルの読み込みに失敗しました: ' + error.message);
     }
+}
 
-    // CSV行をパースする（カンマ区切り、引用符対応）
-    function parseCSVLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
+// CSV行をパースする（カンマ区切り、引用符対応）
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
 
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
 
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                result.push(current);
-                current = '';
-            } else {
-                current += char;
-            }
-        }
-
-        result.push(current);
-        return result;
-    }
-
-    // データをテーブルに表示
-    function displayUsageEventsData() {
-        const tableBody = $('#usage-events-table tbody');
-        tableBody.empty();
-
-        usageEventsData.forEach((row, index) => {
-            const tr = $('<tr>');
-
-            // 日時のフォーマット
-            const date = new Date(row.Date);
-            const formattedDate = date.toLocaleString('ja-JP');
-
-            // 種別の色分け
-            let kindClass = '';
-            if (row.Kind === 'Included') {
-                kindClass = 'text-success';
-            } else if (row.Kind.includes('Errored')) {
-                kindClass = 'text-danger';
-            }
-
-            tr.append(`<td>${formattedDate}</td>`);
-            tr.append(`<td><span class="${kindClass}">${row.Kind}</span></td>`);
-            tr.append(`<td>${row.Model}</td>`);
-            tr.append(`<td>${row['Max Mode']}</td>`);
-            tr.append(`<td>${formatNumber(row['Input (w/ Cache Write)'])}</td>`);
-            tr.append(`<td>${formatNumber(row['Input (w/o Cache Write)'])}</td>`);
-            tr.append(`<td>${formatNumber(row['Cache Read'])}</td>`);
-            tr.append(`<td>${formatNumber(row['Output Tokens'])}</td>`);
-            tr.append(`<td>${formatNumber(row['Total Tokens'])}</td>`);
-            tr.append(`<td>${row.Cost}</td>`);
-
-            tableBody.append(tr);
-        });
-
-        // DataTablesを初期化
-        $('#usage-events-table').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json'
-            },
-            pageLength: 25,
-            order: [[0, 'desc']], // 日時で降順ソート
-            columnDefs: [
-                { targets: [4, 5, 6, 7, 8], className: 'text-end' } // 数値列を右寄せ
-            ]
-        });
-    }
-
-    // 統計情報を更新
-    function updateStatistics() {
-        const totalEvents = usageEventsData.length;
-        const successfulEvents = usageEventsData.filter(row => row.Kind === 'Included').length;
-        const errorEvents = usageEventsData.filter(row => row.Kind.includes('Errored')).length;
-
-        // 総トークン数を計算
-        const totalTokens = usageEventsData.reduce((sum, row) => {
-            const tokens = parseInt(row['Total Tokens']) || 0;
-            return sum + tokens;
-        }, 0);
-
-        $('#total-events').text(totalEvents.toLocaleString());
-        $('#successful-events').text(successfulEvents.toLocaleString());
-        $('#error-events').text(errorEvents.toLocaleString());
-        $('#total-tokens').text(totalTokens.toLocaleString());
-    }
-
-    // グラフを作成
-    function createCharts() {
-        createDailyEventsChart();
-        createDailyTokensChart();
-    }
-
-    // 日別イベント数グラフ
-    function createDailyEventsChart() {
-        const ctx = document.getElementById('daily-events-chart').getContext('2d');
-
-        // 日別データを集計
-        const dailyData = {};
-        usageEventsData.forEach(row => {
-            const date = new Date(row.Date).toLocaleDateString('ja-JP');
-            if (!dailyData[date]) {
-                dailyData[date] = { total: 0, successful: 0, error: 0 };
-            }
-            dailyData[date].total++;
-            if (row.Kind === 'Included') {
-                dailyData[date].successful++;
-            } else if (row.Kind.includes('Errored')) {
-                dailyData[date].error++;
-            }
-        });
-
-        const dates = Object.keys(dailyData).sort();
-        const totalData = dates.map(date => dailyData[date].total);
-        const successfulData = dates.map(date => dailyData[date].successful);
-        const errorData = dates.map(date => dailyData[date].error);
-
-        if (dailyEventsChart) {
-            dailyEventsChart.destroy();
-        }
-
-        dailyEventsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: dates,
-                datasets: [
-                    {
-                        label: '総イベント数',
-                        data: totalData,
-                        borderColor: 'rgb(54, 162, 235)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                        tension: 0.1
-                    },
-                    {
-                        label: '成功イベント',
-                        data: successfulData,
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                        tension: 0.1
-                    },
-                    {
-                        label: 'エラーイベント',
-                        data: errorData,
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                        tension: 0.1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                }
-            }
-        });
-    }
-
-    // 日別トークン使用量グラフ
-    function createDailyTokensChart() {
-        const ctx = document.getElementById('daily-tokens-chart').getContext('2d');
-
-        // 日別トークン数を集計
-        const dailyTokens = {};
-        usageEventsData.forEach(row => {
-            const date = new Date(row.Date).toLocaleDateString('ja-JP');
-            const tokens = parseInt(row['Total Tokens']) || 0;
-            if (!dailyTokens[date]) {
-                dailyTokens[date] = 0;
-            }
-            dailyTokens[date] += tokens;
-        });
-
-        const dates = Object.keys(dailyTokens).sort();
-        const tokenData = dates.map(date => dailyTokens[date]);
-
-        if (dailyTokensChart) {
-            dailyTokensChart.destroy();
-        }
-
-        dailyTokensChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: '総トークン数',
-                    data: tokenData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgb(54, 162, 235)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                }
-            }
-        });
-    }
-
-    // 数値をフォーマット
-    function formatNumber(num) {
-        const number = parseInt(num);
-        if (isNaN(number)) return num;
-        return number.toLocaleString();
-    }
-
-    // ローディング表示
-    function showLoading(show) {
-        if (show) {
-            $('#loading').removeClass('d-none');
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
         } else {
-            $('#loading').addClass('d-none');
+            current += char;
         }
     }
 
-    // エラー表示
-    function showError(message) {
-        $('#error-message').text(message).removeClass('d-none');
-    }
+    result.push(current);
+    return result;
+}
 
-    // エラー非表示
-    function hideError() {
-        $('#error-message').addClass('d-none');
-    }
+// 初期化処理
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM Content Loaded, starting initialization...');
+    try {
+        console.log('Loading usage events data...');
+        await loadUsageEventsData();
+        console.log('Initializing usage events table...');
+        initializeUsageEventsTable();
+        console.log('Updating usage events stats...');
+        updateUsageEventsStats();
+        console.log('Creating cost chart...');
+        createCostChart();
+        console.log('Creating column charts...');
+        createColumnCharts();
+        console.log('Initializing tooltips...');
+        initializeTooltips();
+        console.log('Initialization completed successfully');
+    } catch (error) {
+        console.error('初期化エラー:', error);
+        showError('データの読み込み中にエラーが発生しました: ' + error.message);
 
-    // データ読み込み開始
-    loadUsageEventsData();
+        // 部分的な初期化を試行
+        try {
+            if (usageEventsData.length > 0) {
+                initializeUsageEventsTable();
+                updateUsageEventsStats();
+                createCostChart();
+                createColumnCharts();
+                initializeTooltips();
+            }
+        } catch (partialError) {
+            console.error('部分的な初期化も失敗:', partialError);
+        }
+    }
 });
+
+// Usage Events DataTableの初期化
+function initializeUsageEventsTable() {
+    usageEventsTable = $('#usage-events-table').DataTable({
+        data: usageEventsData,
+        columns: [
+            {
+                data: 'Date',
+                render: function(data) {
+                    return data.toLocaleDateString('ja-JP') + ' ' + data.toLocaleTimeString('ja-JP', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                }
+            },
+            {
+                data: 'Kind',
+                render: function(data) {
+                    let kindClass = '';
+                    if (data === 'Included') {
+                        kindClass = 'text-success';
+                    } else if (data.includes('Errored')) {
+                        kindClass = 'text-danger';
+                    }
+                    return `<span class="${kindClass}">${data}</span>`;
+                }
+            },
+            { data: 'Model' },
+            { data: 'Max Mode' },
+            {
+                data: 'Input (w/ Cache Write)',
+                render: function(data) {
+                    return data ? data.toLocaleString() : '0';
+                }
+            },
+            {
+                data: 'Input (w/o Cache Write)',
+                render: function(data) {
+                    return data ? data.toLocaleString() : '0';
+                }
+            },
+            {
+                data: 'Cache Read',
+                render: function(data) {
+                    return data ? data.toLocaleString() : '0';
+                }
+            },
+            {
+                data: 'Output Tokens',
+                render: function(data) {
+                    return data ? data.toLocaleString() : '0';
+                }
+            },
+            {
+                data: 'Total Tokens',
+                render: function(data) {
+                    const className = data > 1000000 ? 'tokens-high' : data > 100000 ? 'tokens-medium' : 'tokens-low';
+                    return `<span class="${className}">${data.toLocaleString()}</span>`;
+                }
+            },
+            { data: 'Cost' }
+        ],
+        order: [[0, 'desc']],
+        language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/ja.json'
+        },
+        responsive: true,
+        pageLength: 25,
+        scrollX: true
+    });
+}
+
+// コストグラフの作成
+function createCostChart() {
+    // 日別データの集計
+    const dailyData = {};
+    usageEventsData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                cost: 0,
+                count: 0
+            };
+        }
+
+        // コストの値を数値に変換（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+
+        dailyData[dateStr].cost += costValue;
+        dailyData[dateStr].count += 1;
+    });
+
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
+
+    const dailyCosts = dates.map(date => dailyData[date].cost);
+
+    const ctx = document.getElementById('cost-chart').getContext('2d');
+    costChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: '日別コスト',
+                data: dailyCosts,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'コスト推移'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `コスト: $${value.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'コスト ($)'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// カラム別グラフの作成
+function createColumnCharts() {
+    console.log('createColumnCharts called, data length:', usageEventsData.length);
+
+    // 日別データの集計
+    const dailyData = {};
+    usageEventsData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                inputWithCache: 0,
+                inputWithoutCache: 0,
+                cacheRead: 0,
+                outputTokens: 0,
+                totalTokens: 0,
+                kindCounts: {}
+            };
+        }
+        dailyData[dateStr].inputWithCache += record['Input (w/ Cache Write)'] || 0;
+        dailyData[dateStr].inputWithoutCache += record['Input (w/o Cache Write)'] || 0;
+        dailyData[dateStr].cacheRead += record['Cache Read'] || 0;
+        dailyData[dateStr].outputTokens += record['Output Tokens'] || 0;
+        dailyData[dateStr].totalTokens += record['Total Tokens'] || 0;
+
+        // Kind別の集計
+        const kind = record.Kind || 'Unknown';
+        dailyData[dateStr].kindCounts[kind] = (dailyData[dateStr].kindCounts[kind] || 0) + 1;
+    });
+
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
+
+    console.log('Daily data keys:', Object.keys(dailyData));
+    console.log('Dates array:', dates);
+
+    // 各カラムのグラフを作成
+    console.log('Creating Input (w/ Cache Write) chart...');
+    createInputWithCacheChart(dates, dailyData);
+    console.log('Creating Input (w/o Cache Write) chart...');
+    createInputWithoutCacheChart(dates, dailyData);
+    console.log('Creating Cache Read chart...');
+    createCacheReadChart(dates, dailyData);
+    console.log('Creating Output Tokens chart...');
+    createOutputTokensChart(dates, dailyData);
+    console.log('Creating Total Tokens chart...');
+    createTotalTokensChart(dates, dailyData);
+    console.log('Creating Kind chart...');
+    createKindChart(dates, dailyData);
+}
+
+// Input (w/ Cache Write) グラフ
+function createInputWithCacheChart(dates, dailyData) {
+    const canvasElement = document.getElementById('input-with-cache-chart');
+    if (!canvasElement) {
+        console.error('Canvas element input-with-cache-chart not found');
+        return;
+    }
+    console.log('Chart.js available:', typeof Chart !== 'undefined');
+    const ctx = canvasElement.getContext('2d');
+    const data = dates.map(date => dailyData[date].inputWithCache);
+
+    inputWithCacheChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Input (w/ Cache Write)',
+                data: data,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1000
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Input (w/ Cache Write)'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Input (w/ Cache Write): ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Input (w/o Cache Write) グラフ
+function createInputWithoutCacheChart(dates, dailyData) {
+    const ctx = document.getElementById('input-without-cache-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].inputWithoutCache);
+
+    inputWithoutCacheChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Input (w/o Cache Write)',
+                data: data,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Input (w/o Cache Write)'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Input (w/o Cache Write): ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Cache Read グラフ
+function createCacheReadChart(dates, dailyData) {
+    const ctx = document.getElementById('cache-read-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].cacheRead);
+
+    cacheReadChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Cache Read',
+                data: data,
+                borderColor: '#fd7e14',
+                backgroundColor: 'rgba(253, 126, 20, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cache Read'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Cache Read: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Output Tokens グラフ
+function createOutputTokensChart(dates, dailyData) {
+    const ctx = document.getElementById('output-tokens-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].outputTokens);
+
+    outputTokensChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Output Tokens',
+                data: data,
+                borderColor: '#6f42c1',
+                backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Output Tokens'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Output Tokens: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Total Tokens グラフ
+function createTotalTokensChart(dates, dailyData) {
+    const ctx = document.getElementById('total-tokens-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].totalTokens);
+
+    totalTokensChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Total Tokens',
+                data: data,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total Tokens'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Total Tokens: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Kind グラフ（イベント種別）
+function createKindChart(dates, dailyData) {
+    const ctx = document.getElementById('kind-chart').getContext('2d');
+
+    // 全てのKindを取得
+    const allKinds = new Set();
+    dates.forEach(date => {
+        Object.keys(dailyData[date].kindCounts).forEach(kind => allKinds.add(kind));
+    });
+
+    const datasets = Array.from(allKinds).map((kind, index) => {
+        const colors = ['#20c997', '#e83e8c', '#ffc107', '#17a2b8', '#6c757d'];
+        const color = colors[index % colors.length];
+
+        return {
+            label: kind,
+            data: dates.map(date => dailyData[date].kindCounts[kind] || 0),
+            backgroundColor: color + '80',
+            borderColor: color,
+            borderWidth: 1
+        };
+    });
+
+    kindChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Kind (イベント種別)'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value.toLocaleString()}`;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'イベント数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// 統計情報の更新（usage-events.js専用）
+function updateUsageEventsStats() {
+    if (usageEventsData.length === 0) return;
+
+    // 日別データの集計
+    const dailyData = {};
+    usageEventsData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                total: 0,
+                count: 0,
+                max: 0,
+                inputWithCacheTotal: 0,
+                inputWithoutCacheTotal: 0,
+                outputTotal: 0,
+                cacheReadTotal: 0,
+                successful: 0,
+                error: 0,
+                cost: 0
+            };
+        }
+        dailyData[dateStr].total += record['Total Tokens'] || 0;
+        dailyData[dateStr].count += 1;
+        dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record['Total Tokens'] || 0);
+        dailyData[dateStr].inputWithCacheTotal += record['Input (w/ Cache Write)'] || 0;
+        dailyData[dateStr].inputWithoutCacheTotal += record['Input (w/o Cache Write)'] || 0;
+        dailyData[dateStr].outputTotal += record['Output Tokens'] || 0;
+        dailyData[dateStr].cacheReadTotal += record['Cache Read'] || 0;
+
+        // コストの計算（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+        dailyData[dateStr].cost += costValue;
+
+        if (record.Kind === 'Included') {
+            dailyData[dateStr].successful++;
+        } else if (record.Kind.includes('Errored')) {
+            dailyData[dateStr].error++;
+        }
+    });
+
+    // 最新使用日のデータを取得（最終データの日時から24時間前までを表示）
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
+
+    // 実際のデータから最新の日時を取得
+    const latestRecord = usageEventsData[usageEventsData.length - 1];
+    const latestActualDate = latestRecord ? latestRecord.Date : new Date();
+
+    // 最終行の日時から24時間前までのデータのみをフィルタリング
+    const twentyFourHoursAgo = new Date(latestActualDate.getTime() - (24 * 60 * 60 * 1000)); // 24時間前
+
+    // 表示用の日付を決定（最終データの日時を表示）
+    const latestDateTime = latestActualDate.toLocaleDateString('ja-JP') + ' ' +
+                          latestActualDate.toLocaleTimeString('ja-JP', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                          });
+
+    const filteredData = usageEventsData.filter(record => {
+        return record.Date >= twentyFourHoursAgo && record.Date <= latestActualDate;
+    });
+
+    // フィルタリングされたデータから統計を再計算
+    const latestDailyData = {
+        total: 0,
+        count: 0,
+        max: 0,
+        inputWithCacheTotal: 0,
+        inputWithoutCacheTotal: 0,
+        outputTotal: 0,
+        cacheReadTotal: 0,
+        successful: 0,
+        error: 0,
+        cost: 0
+    };
+
+    filteredData.forEach(record => {
+        latestDailyData.total += record['Total Tokens'] || 0;
+        latestDailyData.count += 1;
+        latestDailyData.max = Math.max(latestDailyData.max, record['Total Tokens'] || 0);
+        latestDailyData.inputWithCacheTotal += record['Input (w/ Cache Write)'] || 0;
+        latestDailyData.inputWithoutCacheTotal += record['Input (w/o Cache Write)'] || 0;
+        latestDailyData.outputTotal += record['Output Tokens'] || 0;
+        latestDailyData.cacheReadTotal += record['Cache Read'] || 0;
+
+        // コストの計算（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+        latestDailyData.cost += costValue;
+
+        if (record.Kind === 'Included') {
+            latestDailyData.successful++;
+        } else if (record.Kind.includes('Errored')) {
+            latestDailyData.error++;
+        }
+    });
+
+    if (latestDailyData) {
+        // 最新使用日の統計を表示
+        const latestUsageDateValue = document.getElementById('latest-usage-date-value');
+        if (latestUsageDateValue) latestUsageDateValue.textContent = latestDateTime;
+
+        // イベント数を統合表示（成功/総数）
+        const latestEventsCombinedValue = document.getElementById('latest-events-combined-value');
+        if (latestEventsCombinedValue) {
+            latestEventsCombinedValue.textContent = `${latestDailyData.successful.toLocaleString()}/${latestDailyData.count.toLocaleString()}`;
+        }
+
+        const latestTotalTokensValue = document.getElementById('latest-total-tokens-value');
+        if (latestTotalTokensValue) latestTotalTokensValue.textContent = latestDailyData.total.toLocaleString();
+
+        const latestInputWithCacheValue = document.getElementById('latest-input-with-cache-value');
+        if (latestInputWithCacheValue) latestInputWithCacheValue.textContent = latestDailyData.inputWithCacheTotal.toLocaleString();
+
+        const latestInputWithoutCacheValue = document.getElementById('latest-input-without-cache-value');
+        if (latestInputWithoutCacheValue) latestInputWithoutCacheValue.textContent = latestDailyData.inputWithoutCacheTotal.toLocaleString();
+
+        const latestCacheReadValue = document.getElementById('latest-cache-read-value');
+        if (latestCacheReadValue) latestCacheReadValue.textContent = latestDailyData.cacheReadTotal.toLocaleString();
+
+        const latestOutputTokensValue = document.getElementById('latest-output-tokens-value');
+        if (latestOutputTokensValue) latestOutputTokensValue.textContent = latestDailyData.outputTotal.toLocaleString();
+
+        const latestCostValue = document.getElementById('latest-cost-value');
+        if (latestCostValue) {
+            if (latestDailyData.cost > 0) {
+                latestCostValue.textContent = `$${latestDailyData.cost.toFixed(2)}`;
+            } else {
+                latestCostValue.textContent = '$0.00';
+            }
+        }
+    }
+}
+
+// エラーメッセージの表示
+function showError(message) {
+    const errorElement = document.getElementById('error-message');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('d-none');
+    }
+    console.error(message);
+}
+
+// ツールチップの初期化
+function initializeTooltips() {
+    // Bootstrap 5のツールチップを初期化
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+
