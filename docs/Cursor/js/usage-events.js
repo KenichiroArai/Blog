@@ -809,10 +809,13 @@ function updateUsageEventsStats() {
     // 最終行の日時から24時間前までのデータのみをフィルタリング
     const twentyFourHoursAgo = new Date(latestActualDate.getTime() - (24 * 60 * 60 * 1000)); // 24時間前
 
-    // 表示用の日付範囲を決定（24時間前から最終日時まで）
-    const startDate = twentyFourHoursAgo.toLocaleDateString('ja-JP');
-    const endDate = latestActualDate.toLocaleDateString('ja-JP');
-    const dateRange = startDate === endDate ? startDate : `${startDate} ～ ${endDate}`;
+    // 表示用の日付を決定（最終データの日時を表示）
+    const latestDateTime = latestActualDate.toLocaleDateString('ja-JP') + ' ' +
+                          latestActualDate.toLocaleTimeString('ja-JP', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit'
+                          });
 
     const filteredData = usageEventsData.filter(record => {
         return record.Date >= twentyFourHoursAgo && record.Date <= latestActualDate;
@@ -858,7 +861,7 @@ function updateUsageEventsStats() {
     if (latestDailyData) {
         // 最新使用日の統計を表示
         const latestUsageDateValue = document.getElementById('latest-usage-date-value');
-        if (latestUsageDateValue) latestUsageDateValue.textContent = dateRange;
+        if (latestUsageDateValue) latestUsageDateValue.textContent = latestDateTime;
 
         const latestTotalEventsValue = document.getElementById('latest-total-events-value');
         if (latestTotalEventsValue) latestTotalEventsValue.textContent = latestDailyData.count.toLocaleString();
