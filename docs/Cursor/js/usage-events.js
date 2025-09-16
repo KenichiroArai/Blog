@@ -3,6 +3,15 @@ $(document).ready(function() {
     let usageEventsData = [];
     let dailyEventsChart = null;
     let dailyTokensChart = null;
+    let inputWithCacheChart = null;
+    let inputWithoutCacheChart = null;
+    let cacheReadChart = null;
+    let outputChart = null;
+    let costChart = null;
+    let modelUsageChart = null;
+
+    // 共通の色パレット
+    const CHART_COLORS = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6c757d'];
 
     // CSVファイルを読み込む
     function loadUsageEventsData() {
@@ -147,6 +156,12 @@ $(document).ready(function() {
     function createCharts() {
         createDailyEventsChart();
         createDailyTokensChart();
+        createInputWithCacheChart();
+        createInputWithoutCacheChart();
+        createCacheReadChart();
+        createOutputChart();
+        createCostChart();
+        createModelUsageChart();
     }
 
     // 日別イベント数グラフ
@@ -297,6 +312,328 @@ $(document).ready(function() {
     // エラー非表示
     function hideError() {
         $('#error-message').addClass('d-none');
+    }
+
+    // Input W/CACHE WRITE グラフ
+    function createInputWithCacheChart() {
+        const ctx = document.getElementById('input-with-cache-chart').getContext('2d');
+
+        // 日別データを集計
+        const dailyData = {};
+        usageEventsData.forEach(row => {
+            const date = new Date(row.Date).toLocaleDateString('ja-JP');
+            const value = parseInt(row['Input (w/ Cache Write)']) || 0;
+            if (!dailyData[date]) {
+                dailyData[date] = 0;
+            }
+            dailyData[date] += value;
+        });
+
+        const dates = Object.keys(dailyData).sort();
+        const data = dates.map(date => dailyData[date]);
+
+        if (inputWithCacheChart) {
+            inputWithCacheChart.destroy();
+        }
+
+        inputWithCacheChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Input (w/ Cache Write)',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    // Input W/O CACHE WRITE グラフ
+    function createInputWithoutCacheChart() {
+        const ctx = document.getElementById('input-without-cache-chart').getContext('2d');
+
+        // 日別データを集計
+        const dailyData = {};
+        usageEventsData.forEach(row => {
+            const date = new Date(row.Date).toLocaleDateString('ja-JP');
+            const value = parseInt(row['Input (w/o Cache Write)']) || 0;
+            if (!dailyData[date]) {
+                dailyData[date] = 0;
+            }
+            dailyData[date] += value;
+        });
+
+        const dates = Object.keys(dailyData).sort();
+        const data = dates.map(date => dailyData[date]);
+
+        if (inputWithoutCacheChart) {
+            inputWithoutCacheChart.destroy();
+        }
+
+        inputWithoutCacheChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Input (w/o Cache Write)',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgb(75, 192, 192)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    // Cache Read グラフ
+    function createCacheReadChart() {
+        const ctx = document.getElementById('cache-read-chart').getContext('2d');
+
+        // 日別データを集計
+        const dailyData = {};
+        usageEventsData.forEach(row => {
+            const date = new Date(row.Date).toLocaleDateString('ja-JP');
+            const value = parseInt(row['Cache Read']) || 0;
+            if (!dailyData[date]) {
+                dailyData[date] = 0;
+            }
+            dailyData[date] += value;
+        });
+
+        const dates = Object.keys(dailyData).sort();
+        const data = dates.map(date => dailyData[date]);
+
+        if (cacheReadChart) {
+            cacheReadChart.destroy();
+        }
+
+        cacheReadChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Cache Read',
+                    data: data,
+                    backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                    borderColor: 'rgb(255, 206, 86)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    // Output グラフ
+    function createOutputChart() {
+        const ctx = document.getElementById('output-chart').getContext('2d');
+
+        // 日別データを集計
+        const dailyData = {};
+        usageEventsData.forEach(row => {
+            const date = new Date(row.Date).toLocaleDateString('ja-JP');
+            const value = parseInt(row['Output Tokens']) || 0;
+            if (!dailyData[date]) {
+                dailyData[date] = 0;
+            }
+            dailyData[date] += value;
+        });
+
+        const dates = Object.keys(dailyData).sort();
+        const data = dates.map(date => dailyData[date]);
+
+        if (outputChart) {
+            outputChart.destroy();
+        }
+
+        outputChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Output Tokens',
+                    data: data,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    // コスト グラフ
+    function createCostChart() {
+        const ctx = document.getElementById('cost-chart').getContext('2d');
+
+        // 日別データを集計
+        const dailyData = {};
+        usageEventsData.forEach(row => {
+            const date = new Date(row.Date).toLocaleDateString('ja-JP');
+            const cost = parseFloat(row.Cost) || 0;
+            if (!dailyData[date]) {
+                dailyData[date] = 0;
+            }
+            dailyData[date] += cost;
+        });
+
+        const dates = Object.keys(dailyData).sort();
+        const data = dates.map(date => dailyData[date]);
+
+        if (costChart) {
+            costChart.destroy();
+        }
+
+        costChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'コスト',
+                    data: data,
+                    borderColor: 'rgb(153, 102, 255)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + context.parsed.y.toFixed(4);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // モデル別使用量グラフ
+    function createModelUsageChart() {
+        const ctx = document.getElementById('model-usage-chart').getContext('2d');
+
+        // モデル別データを集計
+        const modelData = {};
+        usageEventsData.forEach(row => {
+            const model = row.Model;
+            const tokens = parseInt(row['Total Tokens']) || 0;
+            if (!modelData[model]) {
+                modelData[model] = 0;
+            }
+            modelData[model] += tokens;
+        });
+
+        const models = Object.keys(modelData);
+        const data = models.map(model => modelData[model]);
+
+        if (modelUsageChart) {
+            modelUsageChart.destroy();
+        }
+
+        modelUsageChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: models,
+                datasets: [{
+                    data: data,
+                    backgroundColor: CHART_COLORS.slice(0, models.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // データ読み込み開始
