@@ -2,7 +2,7 @@
 $(document).ready(function() {
     let usageEventsData = [];
     let dailyEventsChart = null;
-    let dailyTokensChart = null;
+    let totalTokensChart = null;
     let inputWithCacheChart = null;
     let inputWithoutCacheChart = null;
     let cacheReadChart = null;
@@ -402,7 +402,7 @@ $(document).ready(function() {
     // グラフを作成
     function createCharts() {
         createDailyEventsChart();
-        createDailyTokensChart();
+        createTotalTokensChart();
         createInputWithCacheChart();
         createInputWithoutCacheChart();
         createCacheReadChart();
@@ -411,8 +411,172 @@ $(document).ready(function() {
         createModelUsageChart();
     }
 
-    // 共通のグラフ作成関数（積立推移スタイル）
-    function createCumulativeChart(config) {
+    // 共通のグラフデータ作成関数（included-usage.jsスタイル）
+    function createChartDataWithReset(data, fieldName, uniqueDates) {
+        const modelData = {};
+        const currentData = {};
+        const previousData = {};
+
+        // データを整理
+        data.forEach(record => {
+            const model = record.Model;
+            const dateStr = new Date(record.Date).toLocaleDateString('ja-JP');
+
+            if (!modelData[model]) {
+                modelData[model] = { [fieldName]: {} };
+            }
+
+            if (!modelData[model][fieldName][dateStr]) {
+                modelData[model][fieldName][dateStr] = 0;
+            }
+
+            const value = parseFloat(record[fieldName]) || 0;
+            modelData[model][fieldName][dateStr] += value;
+        });
+
+        const models = Object.keys(modelData);
+
+        models.forEach(model => {
+            currentData[model] = { [fieldName]: [] };
+            previousData[model] = { [fieldName]: [] };
+
+            let cumulativeValue = 0;
+            let previousMonthValue = 0;
+
+            uniqueDates.forEach((dateStr, index) => {
+                const currentValue = modelData[model][fieldName][dateStr] || 0;
+                const previousDate = index > 0 ? uniqueDates[index - 1] : null;
+                const previousValue = previousDate ? (modelData[model][fieldName][previousDate] || 0) : 0;
+
+                // 月ごとのリセットをチェック
+                if (currentValue < previousValue && previousValue > 0) {
+                    cumulativeValue = currentValue;
+                    previousMonthValue = 0;
+                } else {
+                    cumulativeValue = currentValue;
+                    previousMonthValue = previousValue;
+                }
+
+                const previousPart = previousMonthValue;
+                const diffPart = cumulativeValue - previousMonthValue;
+
+                currentData[model][fieldName].push(cumulativeValue);
+                previousData[model][fieldName].push({
+                    previous: previousPart,
+                    diff: diffPart
+                });
+            });
+        });
+
+        return { modelData, currentData, previousData, models };
+    }
+
+    // 共通のグラフデータセット作成関数
+    function createChartDatasets(models, previousData, fieldName, fieldLabel, previousColorOpacity = '40', diffColorOpacity = '80') {
+        const datasets = [];
+
+        models.forEach((model, index) => {
+            const color = CHART_COLORS[index % CHART_COLORS.length];
+
+            datasets.push({
+                label: `${model} - ${fieldLabel} (前日分)`,
+                data: previousData[model][fieldName].map(item => item.previous),
+                backgroundColor: color + previousColorOpacity,
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_${fieldName}`
+            });
+
+            datasets.push({
+                label: `${model} - ${fieldLabel} (当日増分)`,
+                data: previousData[model][fieldName].map(item => item.diff),
+                backgroundColor: color + diffColorOpacity,
+                borderColor: color,
+                borderWidth: 1,
+                type: 'bar',
+                stack: `${model}_${fieldName}`
+            });
+        });
+
+        return datasets;
+    }
+
+    // 共通のグラフオプション作成関数
+    function createChartOptions(title, isCurrency = false) {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: title
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return isCurrency ?
+                                `${label}: $${value.toFixed(4)}` :
+                                `${label}: ${value.toLocaleString()}`;
+                        },
+                        afterBody: function(context) {
+                            const modelTotals = {};
+
+                            context.forEach(item => {
+                                const stack = item.dataset.stack;
+                                const model = stack.split('_')[0];
+                                if (!modelTotals[model]) {
+                                    modelTotals[model] = 0;
+                                }
+                                modelTotals[model] += item.parsed.y;
+                            });
+
+                            const totalLines = [];
+                            Object.keys(modelTotals).forEach(model => {
+                                const formattedValue = isCurrency ?
+                                    `$${modelTotals[model].toFixed(4)}` :
+                                    modelTotals[model].toLocaleString();
+                                totalLines.push(`${model}: ${formattedValue}`);
+                            });
+
+                            return totalLines;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    stacked: true
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    beginAtZero: true,
+                    stacked: true,
+                    ticks: {
+                        callback: function(value) {
+                            return isCurrency ?
+                                `$${value.toFixed(4)}` :
+                                value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    // 共通のグラフ作成関数（included-usage.jsスタイル）
+    function createIncludedUsageChart(config) {
         const {
             fieldName,
             fieldLabel,
@@ -433,39 +597,11 @@ $(document).ready(function() {
                 return date.toLocaleDateString('ja-JP');
             }))].sort((a, b) => new Date(a) - new Date(b));
 
-            // モデル別データを集計
-            const modelData = {};
-            usageEventsData.forEach(record => {
-                const model = record.Model;
-                const dateStr = new Date(record.Date).toLocaleDateString('ja-JP');
-                const value = isCurrency ? parseFloat(record[fieldName] || 0) : parseInt(record[fieldName] || 0);
+            // 共通のデータ処理関数を使用
+            const { previousData, models } = createChartDataWithReset(usageEventsData, fieldName, uniqueDates);
 
-                if (!modelData[model]) {
-                    modelData[model] = {};
-                }
-                if (!modelData[model][dateStr]) {
-                    modelData[model][dateStr] = 0;
-                }
-                modelData[model][dateStr] += value;
-            });
-
-            const models = Object.keys(modelData);
-            const datasets = [];
-
-            models.forEach((model, index) => {
-                const color = CHART_COLORS[index % CHART_COLORS.length];
-                const data = uniqueDates.map(dateStr => modelData[model][dateStr] || 0);
-
-                datasets.push({
-                    label: model,
-                    data: data,
-                    backgroundColor: color + diffColorOpacity,
-                    borderColor: color,
-                    borderWidth: 1,
-                    type: 'bar',
-                    stack: model
-                });
-            });
+            // 共通のデータセット作成関数を使用
+            const datasets = createChartDatasets(models, previousData, fieldName, fieldLabel, previousColorOpacity, diffColorOpacity);
 
             // グラフを作成
             const ctx = document.getElementById(chartId);
@@ -484,53 +620,7 @@ $(document).ready(function() {
                     labels: uniqueDates,
                     datasets: datasets
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: chartTitle
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.dataset.label || '';
-                                    const value = context.parsed.y;
-                                    return isCurrency ?
-                                        `${label}: $${value.toFixed(4)}` :
-                                        `${label}: ${value.toLocaleString()}`;
-                                }
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    },
-                    scales: {
-                        x: {
-                            stacked: true
-                        },
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            beginAtZero: true,
-                            stacked: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return isCurrency ?
-                                        `$${value.toFixed(4)}` :
-                                        value.toLocaleString();
-                                }
-                            }
-                        }
-                    }
-                }
+                options: createChartOptions(chartTitle, isCurrency)
             });
         } catch (error) {
             console.error(`${fieldLabel} chart creation error:`, error);
@@ -610,54 +700,15 @@ $(document).ready(function() {
         });
     }
 
-    // 日別トークン使用量グラフ
-    function createDailyTokensChart() {
-        const ctx = document.getElementById('daily-tokens-chart').getContext('2d');
-
-        // 日別トークン数を集計
-        const dailyTokens = {};
-        usageEventsData.forEach(row => {
-            const date = new Date(row.Date).toLocaleDateString('ja-JP');
-            const tokens = parseInt(row['Total Tokens']) || 0;
-            if (!dailyTokens[date]) {
-                dailyTokens[date] = 0;
-            }
-            dailyTokens[date] += tokens;
-        });
-
-        const dates = Object.keys(dailyTokens).sort();
-        const tokenData = dates.map(date => dailyTokens[date]);
-
-        if (dailyTokensChart) {
-            dailyTokensChart.destroy();
-        }
-
-        dailyTokensChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: dates,
-                datasets: [{
-                    label: '総トークン数',
-                    data: tokenData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgb(54, 162, 235)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                }
-            }
+    // Total Tokens グラフ
+    function createTotalTokensChart() {
+        createIncludedUsageChart({
+            fieldName: 'Total Tokens',
+            fieldLabel: 'Total Tokens',
+            chartId: 'total-tokens-chart',
+            chartTitle: 'Total Tokens 積立推移',
+            isCurrency: false,
+            chartVariable: 'totalTokensChart'
         });
     }
 
@@ -689,9 +740,9 @@ $(document).ready(function() {
 
     // Input W/CACHE WRITE グラフ
     function createInputWithCacheChart() {
-        createCumulativeChart({
+        createIncludedUsageChart({
             fieldName: 'Input (w/ Cache Write)',
-            fieldLabel: 'Input (w/ Cache Write)',
+            fieldLabel: 'Input W/CACHE WRITE',
             chartId: 'input-with-cache-chart',
             chartTitle: 'Input (W/CACHE WRITE) 積立推移',
             isCurrency: false,
@@ -701,9 +752,9 @@ $(document).ready(function() {
 
     // Input W/O CACHE WRITE グラフ
     function createInputWithoutCacheChart() {
-        createCumulativeChart({
+        createIncludedUsageChart({
             fieldName: 'Input (w/o Cache Write)',
-            fieldLabel: 'Input (w/o Cache Write)',
+            fieldLabel: 'Input W/O CACHE WRITE',
             chartId: 'input-without-cache-chart',
             chartTitle: 'Input (W/O CACHE WRITE) 積立推移',
             isCurrency: false,
@@ -713,31 +764,35 @@ $(document).ready(function() {
 
     // Cache Read グラフ
     function createCacheReadChart() {
-        createCumulativeChart({
+        createIncludedUsageChart({
             fieldName: 'Cache Read',
             fieldLabel: 'Cache Read',
             chartId: 'cache-read-chart',
             chartTitle: 'Cache Read 積立推移',
             isCurrency: false,
+            previousColorOpacity: '30',
+            diffColorOpacity: '70',
             chartVariable: 'cacheReadChart'
         });
     }
 
     // Output グラフ
     function createOutputChart() {
-        createCumulativeChart({
+        createIncludedUsageChart({
             fieldName: 'Output Tokens',
-            fieldLabel: 'Output Tokens',
+            fieldLabel: 'Output',
             chartId: 'output-chart',
             chartTitle: 'Output 積立推移',
             isCurrency: false,
+            previousColorOpacity: '20',
+            diffColorOpacity: '60',
             chartVariable: 'outputChart'
         });
     }
 
     // コスト グラフ
     function createCostChart() {
-        createCumulativeChart({
+        createIncludedUsageChart({
             fieldName: 'Cost',
             fieldLabel: 'コスト',
             chartId: 'cost-chart',
