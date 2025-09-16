@@ -229,10 +229,10 @@ function createUsageEventsCharts() {
     const dailyError = dates.map(date => dailyData[date].error);
 
     // 1. トークン使用量グラフ（大きな値）
-    createTokensLargeChart(dates, dailyTotals, dailyInputs, dailyOutputs);
+    createTokensLargeChart(dates, dailyTotals, dailyCacheReads);
 
     // 2. トークン使用量グラフ（小さな値）
-    createTokensSmallChart(dates, dailyCacheReads);
+    createTokensSmallChart(dates, dailyInputs, dailyOutputs);
 
     // 3. イベント数グラフ
     createCountChart(dates, dailySuccessful, dailyError);
@@ -242,7 +242,7 @@ function createUsageEventsCharts() {
 }
 
 // トークン使用量グラフ（大きな値）
-function createTokensLargeChart(dates, dailyTotals, dailyInputs, dailyOutputs) {
+function createTokensLargeChart(dates, dailyTotals, dailyCacheReads) {
     const ctx = document.getElementById('usage-events-tokens-large-chart').getContext('2d');
     usageEventsTokensLargeChart = new Chart(ctx, {
         type: 'line',
@@ -256,17 +256,10 @@ function createTokensLargeChart(dates, dailyTotals, dailyInputs, dailyOutputs) {
                 tension: 0.4,
                 fill: true
             }, {
-                label: '日別入力トークン数',
-                data: dailyInputs,
-                borderColor: '#dc3545',
-                backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                tension: 0.4,
-                fill: false
-            }, {
-                label: '日別出力トークン数',
-                data: dailyOutputs,
-                borderColor: '#6f42c1',
-                backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                label: '日別キャッシュ読み取り数',
+                data: dailyCacheReads,
+                borderColor: '#fd7e14',
+                backgroundColor: 'rgba(253, 126, 20, 0.1)',
                 tension: 0.4,
                 fill: false
             }]
@@ -277,7 +270,7 @@ function createTokensLargeChart(dates, dailyTotals, dailyInputs, dailyOutputs) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'トークン使用量（大きな値）'
+                    text: '総トークン数・キャッシュ読み取り数'
                 },
                 tooltip: {
                     mode: 'index',
@@ -330,19 +323,26 @@ function createTokensLargeChart(dates, dailyTotals, dailyInputs, dailyOutputs) {
 }
 
 // トークン使用量グラフ（小さな値）
-function createTokensSmallChart(dates, dailyCacheReads) {
+function createTokensSmallChart(dates, dailyInputs, dailyOutputs) {
     const ctx = document.getElementById('usage-events-tokens-small-chart').getContext('2d');
     usageEventsTokensSmallChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: dates,
             datasets: [{
-                label: '日別キャッシュ読み取り数',
-                data: dailyCacheReads,
-                borderColor: '#fd7e14',
-                backgroundColor: 'rgba(253, 126, 20, 0.1)',
+                label: '日別入力トークン数',
+                data: dailyInputs,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
                 tension: 0.4,
                 fill: true
+            }, {
+                label: '日別出力トークン数',
+                data: dailyOutputs,
+                borderColor: '#6f42c1',
+                backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                tension: 0.4,
+                fill: false
             }]
         },
         options: {
@@ -351,7 +351,7 @@ function createTokensSmallChart(dates, dailyCacheReads) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'トークン使用量（小さな値）'
+                    text: '入力・出力トークン数'
                 },
                 tooltip: {
                     mode: 'index',
