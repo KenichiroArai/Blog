@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateUsageEventsStats();
         createCostChart();
         createColumnCharts();
+        initializeTooltips();
     } catch (error) {
         console.error('初期化エラー:', error);
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
@@ -109,6 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 updateUsageEventsStats();
                 createCostChart();
                 createColumnCharts();
+                initializeTooltips();
             }
         } catch (partialError) {
             console.error('部分的な初期化も失敗:', partialError);
@@ -794,18 +796,69 @@ function updateUsageEventsStats() {
         }
     });
 
-    // 最新使用日のデータを取得
+    // 最新使用日のデータを取得（最終データの日時から24時間前までを表示）
     const dates = Object.keys(dailyData)
         .map(dateStr => new Date(dateStr))
         .sort((a, b) => a - b)
         .map(date => date.toLocaleDateString('ja-JP'));
-    const latestDate = dates[dates.length - 1];
-    const latestDailyData = dailyData[latestDate];
+
+    // 実際のデータから最新の日時を取得
+    const latestRecord = usageEventsData[usageEventsData.length - 1];
+    const latestActualDate = latestRecord ? latestRecord.Date : new Date();
+
+    // 最終行の日時から24時間前までのデータのみをフィルタリング
+    const twentyFourHoursAgo = new Date(latestActualDate.getTime() - (24 * 60 * 60 * 1000)); // 24時間前
+
+    // 表示用の日付範囲を決定（24時間前から最終日時まで）
+    const startDate = twentyFourHoursAgo.toLocaleDateString('ja-JP');
+    const endDate = latestActualDate.toLocaleDateString('ja-JP');
+    const dateRange = startDate === endDate ? startDate : `${startDate} ～ ${endDate}`;
+
+    const filteredData = usageEventsData.filter(record => {
+        return record.Date >= twentyFourHoursAgo && record.Date <= latestActualDate;
+    });
+
+    // フィルタリングされたデータから統計を再計算
+    const latestDailyData = {
+        total: 0,
+        count: 0,
+        max: 0,
+        inputWithCacheTotal: 0,
+        inputWithoutCacheTotal: 0,
+        outputTotal: 0,
+        cacheReadTotal: 0,
+        successful: 0,
+        error: 0,
+        cost: 0
+    };
+
+    filteredData.forEach(record => {
+        latestDailyData.total += record['Total Tokens'] || 0;
+        latestDailyData.count += 1;
+        latestDailyData.max = Math.max(latestDailyData.max, record['Total Tokens'] || 0);
+        latestDailyData.inputWithCacheTotal += record['Input (w/ Cache Write)'] || 0;
+        latestDailyData.inputWithoutCacheTotal += record['Input (w/o Cache Write)'] || 0;
+        latestDailyData.outputTotal += record['Output Tokens'] || 0;
+        latestDailyData.cacheReadTotal += record['Cache Read'] || 0;
+
+        // コストの計算（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+        latestDailyData.cost += costValue;
+
+        if (record.Kind === 'Included') {
+            latestDailyData.successful++;
+        } else if (record.Kind.includes('Errored')) {
+            latestDailyData.error++;
+        }
+    });
 
     if (latestDailyData) {
         // 最新使用日の統計を表示
         const latestUsageDateValue = document.getElementById('latest-usage-date-value');
-        if (latestUsageDateValue) latestUsageDateValue.textContent = latestDate;
+        if (latestUsageDateValue) latestUsageDateValue.textContent = dateRange;
 
         const latestTotalEventsValue = document.getElementById('latest-total-events-value');
         if (latestTotalEventsValue) latestTotalEventsValue.textContent = latestDailyData.count.toLocaleString();
@@ -840,5 +893,14 @@ function updateUsageEventsStats() {
             }
         }
     }
+}
+
+// ツールチップの初期化
+function initializeTooltips() {
+    // Bootstrap 5のツールチップを初期化
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 }
 
