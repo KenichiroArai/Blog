@@ -1,9 +1,11 @@
 // グローバル変数
 let usageEventsTable;
-let usageEventsTokensLargeChart;
-let usageEventsTokensSmallChart;
-let usageEventsCountChart;
-let usageEventsAvgMaxChart;
+let inputWithCacheChart;
+let inputWithoutCacheChart;
+let cacheReadChart;
+let outputTokensChart;
+let totalTokensChart;
+let kindChart;
 
 // CSVファイル読み込み
 async function loadUsageEventsData() {
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadUsageEventsData();
         initializeUsageEventsTable();
         updateUsageEventsStats();
-        createUsageEventsCharts();
+        createColumnCharts();
     } catch (error) {
         console.error('初期化エラー:', error);
         showError('データの読み込み中にエラーが発生しました: ' + error.message);
@@ -103,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (usageEventsData.length > 0) {
                 initializeUsageEventsTable();
                 updateUsageEventsStats();
-                createUsageEventsCharts();
+                createColumnCharts();
             }
         } catch (partialError) {
             console.error('部分的な初期化も失敗:', partialError);
@@ -183,85 +185,63 @@ function initializeUsageEventsTable() {
     });
 }
 
-// Usage Events グラフの作成
-function createUsageEventsCharts() {
+// カラム別グラフの作成
+function createColumnCharts() {
     // 日別データの集計
     const dailyData = {};
     usageEventsData.forEach(record => {
         const dateStr = record.Date.toLocaleDateString('ja-JP');
         if (!dailyData[dateStr]) {
             dailyData[dateStr] = {
-                total: 0,
-                count: 0,
-                max: 0,
-                inputTotal: 0,
-                outputTotal: 0,
-                cacheReadTotal: 0,
-                successful: 0,
-                error: 0
+                inputWithCache: 0,
+                inputWithoutCache: 0,
+                cacheRead: 0,
+                outputTokens: 0,
+                totalTokens: 0,
+                kindCounts: {}
             };
         }
-        dailyData[dateStr].total += record['Total Tokens'] || 0;
-        dailyData[dateStr].count += 1;
-        dailyData[dateStr].max = Math.max(dailyData[dateStr].max, record['Total Tokens'] || 0);
-        dailyData[dateStr].inputTotal += (record['Input (w/ Cache Write)'] || 0) + (record['Input (w/o Cache Write)'] || 0);
-        dailyData[dateStr].outputTotal += record['Output Tokens'] || 0;
-        dailyData[dateStr].cacheReadTotal += record['Cache Read'] || 0;
+        dailyData[dateStr].inputWithCache += record['Input (w/ Cache Write)'] || 0;
+        dailyData[dateStr].inputWithoutCache += record['Input (w/o Cache Write)'] || 0;
+        dailyData[dateStr].cacheRead += record['Cache Read'] || 0;
+        dailyData[dateStr].outputTokens += record['Output Tokens'] || 0;
+        dailyData[dateStr].totalTokens += record['Total Tokens'] || 0;
 
-        if (record.Kind === 'Included') {
-            dailyData[dateStr].successful++;
-        } else if (record.Kind.includes('Errored')) {
-            dailyData[dateStr].error++;
-        }
+        // Kind別の集計
+        const kind = record.Kind || 'Unknown';
+        dailyData[dateStr].kindCounts[kind] = (dailyData[dateStr].kindCounts[kind] || 0) + 1;
     });
 
     const dates = Object.keys(dailyData)
         .map(dateStr => new Date(dateStr))
         .sort((a, b) => a - b)
         .map(date => date.toLocaleDateString('ja-JP'));
-    const dailyTotals = dates.map(date => dailyData[date].total);
-    const dailyAverages = dates.map(date => Math.round(dailyData[date].total / dailyData[date].count));
-    const dailyMaxs = dates.map(date => dailyData[date].max);
-    const dailyInputs = dates.map(date => dailyData[date].inputTotal);
-    const dailyOutputs = dates.map(date => dailyData[date].outputTotal);
-    const dailyCacheReads = dates.map(date => dailyData[date].cacheReadTotal);
-    const dailySuccessful = dates.map(date => dailyData[date].successful);
-    const dailyError = dates.map(date => dailyData[date].error);
 
-    // 1. トークン使用量グラフ（大きな値）
-    createTokensLargeChart(dates, dailyTotals, dailyCacheReads);
-
-    // 2. トークン使用量グラフ（小さな値）
-    createTokensSmallChart(dates, dailyInputs, dailyOutputs);
-
-    // 3. イベント数グラフ
-    createCountChart(dates, dailySuccessful, dailyError);
-
-    // 4. 平均・最大値グラフ
-    createAvgMaxChart(dates, dailyAverages, dailyMaxs);
+    // 各カラムのグラフを作成
+    createInputWithCacheChart(dates, dailyData);
+    createInputWithoutCacheChart(dates, dailyData);
+    createCacheReadChart(dates, dailyData);
+    createOutputTokensChart(dates, dailyData);
+    createTotalTokensChart(dates, dailyData);
+    createKindChart(dates, dailyData);
 }
 
-// トークン使用量グラフ（大きな値）
-function createTokensLargeChart(dates, dailyTotals, dailyCacheReads) {
-    const ctx = document.getElementById('usage-events-tokens-large-chart').getContext('2d');
-    usageEventsTokensLargeChart = new Chart(ctx, {
+// Input (w/ Cache Write) グラフ
+function createInputWithCacheChart(dates, dailyData) {
+    const ctx = document.getElementById('input-with-cache-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].inputWithCache);
+
+    inputWithCacheChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: dates,
             datasets: [{
-                label: '日別総トークン数',
-                data: dailyTotals,
+                label: 'Input (w/ Cache Write)',
+                data: data,
                 borderColor: '#007bff',
                 backgroundColor: 'rgba(0, 123, 255, 0.1)',
                 tension: 0.4,
                 fill: true
-            }, {
-                label: '日別キャッシュ読み取り数',
-                data: dailyCacheReads,
-                borderColor: '#fd7e14',
-                backgroundColor: 'rgba(253, 126, 20, 0.1)',
-                tension: 0.4,
-                fill: false
             }]
         },
         options: {
@@ -270,24 +250,16 @@ function createTokensLargeChart(dates, dailyTotals, dailyCacheReads) {
             plugins: {
                 title: {
                     display: true,
-                    text: '総トークン数・キャッシュ読み取り数'
+                    text: 'Input (w/ Cache Write)'
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
                     callbacks: {
                         label: function(context) {
-                            const label = context.dataset.label || '';
                             const value = context.parsed.y;
-                            return `${label}: ${value.toLocaleString()}`;
+                            return `Input (w/ Cache Write): ${value.toLocaleString()}`;
                         }
-                    }
-                },
-                legend: {
-                    position: 'top',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20
                     }
                 }
             },
@@ -322,27 +294,22 @@ function createTokensLargeChart(dates, dailyTotals, dailyCacheReads) {
     });
 }
 
-// トークン使用量グラフ（小さな値）
-function createTokensSmallChart(dates, dailyInputs, dailyOutputs) {
-    const ctx = document.getElementById('usage-events-tokens-small-chart').getContext('2d');
-    usageEventsTokensSmallChart = new Chart(ctx, {
+// Input (w/o Cache Write) グラフ
+function createInputWithoutCacheChart(dates, dailyData) {
+    const ctx = document.getElementById('input-without-cache-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].inputWithoutCache);
+
+    inputWithoutCacheChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: dates,
             datasets: [{
-                label: '日別入力トークン数',
-                data: dailyInputs,
+                label: 'Input (w/o Cache Write)',
+                data: data,
                 borderColor: '#dc3545',
                 backgroundColor: 'rgba(220, 53, 69, 0.1)',
                 tension: 0.4,
                 fill: true
-            }, {
-                label: '日別出力トークン数',
-                data: dailyOutputs,
-                borderColor: '#6f42c1',
-                backgroundColor: 'rgba(111, 66, 193, 0.1)',
-                tension: 0.4,
-                fill: false
             }]
         },
         options: {
@@ -351,24 +318,16 @@ function createTokensSmallChart(dates, dailyInputs, dailyOutputs) {
             plugins: {
                 title: {
                     display: true,
-                    text: '入力・出力トークン数'
+                    text: 'Input (w/o Cache Write)'
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
                     callbacks: {
                         label: function(context) {
-                            const label = context.dataset.label || '';
                             const value = context.parsed.y;
-                            return `${label}: ${value.toLocaleString()}`;
+                            return `Input (w/o Cache Write): ${value.toLocaleString()}`;
                         }
-                    }
-                },
-                legend: {
-                    position: 'top',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20
                     }
                 }
             },
@@ -403,25 +362,22 @@ function createTokensSmallChart(dates, dailyInputs, dailyOutputs) {
     });
 }
 
-// イベント数グラフ
-function createCountChart(dates, dailySuccessful, dailyError) {
-    const ctx = document.getElementById('usage-events-count-chart').getContext('2d');
-    usageEventsCountChart = new Chart(ctx, {
-        type: 'bar',
+// Cache Read グラフ
+function createCacheReadChart(dates, dailyData) {
+    const ctx = document.getElementById('cache-read-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].cacheRead);
+
+    cacheReadChart = new Chart(ctx, {
+        type: 'line',
         data: {
             labels: dates,
             datasets: [{
-                label: '日別成功イベント数',
-                data: dailySuccessful,
-                backgroundColor: 'rgba(32, 201, 151, 0.8)',
-                borderColor: '#20c997',
-                borderWidth: 1
-            }, {
-                label: '日別エラーイベント数',
-                data: dailyError,
-                backgroundColor: 'rgba(232, 62, 140, 0.8)',
-                borderColor: '#e83e8c',
-                borderWidth: 1
+                label: 'Cache Read',
+                data: data,
+                borderColor: '#fd7e14',
+                backgroundColor: 'rgba(253, 126, 20, 0.1)',
+                tension: 0.4,
+                fill: true
             }]
         },
         options: {
@@ -430,7 +386,222 @@ function createCountChart(dates, dailySuccessful, dailyError) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'イベント数'
+                    text: 'Cache Read'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Cache Read: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Output Tokens グラフ
+function createOutputTokensChart(dates, dailyData) {
+    const ctx = document.getElementById('output-tokens-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].outputTokens);
+
+    outputTokensChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Output Tokens',
+                data: data,
+                borderColor: '#6f42c1',
+                backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Output Tokens'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Output Tokens: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Total Tokens グラフ
+function createTotalTokensChart(dates, dailyData) {
+    const ctx = document.getElementById('total-tokens-chart').getContext('2d');
+    const data = dates.map(date => dailyData[date].totalTokens);
+
+    totalTokensChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Total Tokens',
+                data: data,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total Tokens'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `Total Tokens: ${value.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'トークン数'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Kind グラフ（イベント種別）
+function createKindChart(dates, dailyData) {
+    const ctx = document.getElementById('kind-chart').getContext('2d');
+
+    // 全てのKindを取得
+    const allKinds = new Set();
+    dates.forEach(date => {
+        Object.keys(dailyData[date].kindCounts).forEach(kind => allKinds.add(kind));
+    });
+
+    const datasets = Array.from(allKinds).map((kind, index) => {
+        const colors = ['#20c997', '#e83e8c', '#ffc107', '#17a2b8', '#6c757d'];
+        const color = colors[index % colors.length];
+
+        return {
+            label: kind,
+            data: dates.map(date => dailyData[date].kindCounts[kind] || 0),
+            backgroundColor: color + '80',
+            borderColor: color,
+            borderWidth: 1
+        };
+    });
+
+    kindChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Kind (イベント種別)'
                 },
                 tooltip: {
                     mode: 'index',
@@ -469,87 +640,6 @@ function createCountChart(dates, dailySuccessful, dailyError) {
                     title: {
                         display: true,
                         text: 'イベント数'
-                    },
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString();
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-// 平均・最大値グラフ
-function createAvgMaxChart(dates, dailyAverages, dailyMaxs) {
-    const ctx = document.getElementById('usage-events-avg-max-chart').getContext('2d');
-    usageEventsAvgMaxChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: '日別平均トークン数',
-                data: dailyAverages,
-                borderColor: '#28a745',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                tension: 0.4,
-                fill: true
-            }, {
-                label: '日別最大トークン数',
-                data: dailyMaxs,
-                borderColor: '#ffc107',
-                backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                tension: 0.4,
-                fill: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: '平均・最大値'
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.dataset.label || '';
-                            const value = context.parsed.y;
-                            return `${label}: ${value.toLocaleString()}`;
-                        }
-                    }
-                },
-                legend: {
-                    position: 'top',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20
-                    }
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
-            },
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: '日付'
-                    }
-                },
-                y: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: 'トークン数'
                     },
                     beginAtZero: true,
                     ticks: {

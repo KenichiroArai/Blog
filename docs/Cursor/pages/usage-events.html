@@ -126,28 +126,28 @@
         <!-- Usage Events グラフ（2行目） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <!-- トークン使用量グラフ（大きな値） -->
+                <!-- Input (w/ Cache Write) グラフ -->
                 <div class="col-xl-6 col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">総トークン数・キャッシュ読み取り数</h3>
+                            <h3 class="card-title mb-0">Input (w/ Cache Write)</h3>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="usage-events-tokens-large-chart"></canvas>
+                                <canvas id="input-with-cache-chart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- トークン使用量グラフ（小さな値） -->
+                <!-- Input (w/o Cache Write) グラフ -->
                 <div class="col-xl-6 col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">入力・出力トークン数</h3>
+                            <h3 class="card-title mb-0">Input (w/o Cache Write)</h3>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="usage-events-tokens-small-chart"></canvas>
+                                <canvas id="input-without-cache-chart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -158,28 +158,60 @@
         <!-- Usage Events グラフ（3行目） -->
         <div class="dashboard-container mb-4">
             <div class="row g-3">
-                <!-- イベント数グラフ -->
+                <!-- Cache Read グラフ -->
                 <div class="col-xl-6 col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">イベント数</h3>
+                            <h3 class="card-title mb-0">Cache Read</h3>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="usage-events-count-chart"></canvas>
+                                <canvas id="cache-read-chart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- 平均・最大値グラフ -->
+                <!-- Output Tokens グラフ -->
                 <div class="col-xl-6 col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">平均・最大値</h3>
+                            <h3 class="card-title mb-0">Output Tokens</h3>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
-                                <canvas id="usage-events-avg-max-chart"></canvas>
+                                <canvas id="output-tokens-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Events グラフ（4行目） -->
+        <div class="dashboard-container mb-4">
+            <div class="row g-3">
+                <!-- Total Tokens グラフ -->
+                <div class="col-xl-6 col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">Total Tokens</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="total-tokens-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kind グラフ -->
+                <div class="col-xl-6 col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">Kind (イベント種別)</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="kind-chart"></canvas>
                             </div>
                         </div>
                     </div>
