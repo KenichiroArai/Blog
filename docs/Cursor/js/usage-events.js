@@ -1,5 +1,6 @@
 // グローバル変数
 let usageEventsTable;
+let costChart;
 let inputWithCacheChart;
 let inputWithoutCacheChart;
 let cacheReadChart;
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadUsageEventsData();
         initializeUsageEventsTable();
         updateUsageEventsStats();
+        createCostChart();
         createColumnCharts();
     } catch (error) {
         console.error('初期化エラー:', error);
@@ -105,6 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (usageEventsData.length > 0) {
                 initializeUsageEventsTable();
                 updateUsageEventsStats();
+                createCostChart();
                 createColumnCharts();
             }
         } catch (partialError) {
@@ -182,6 +185,100 @@ function initializeUsageEventsTable() {
         responsive: true,
         pageLength: 25,
         scrollX: true
+    });
+}
+
+// コストグラフの作成
+function createCostChart() {
+    // 日別データの集計
+    const dailyData = {};
+    usageEventsData.forEach(record => {
+        const dateStr = record.Date.toLocaleDateString('ja-JP');
+        if (!dailyData[dateStr]) {
+            dailyData[dateStr] = {
+                cost: 0,
+                count: 0
+            };
+        }
+
+        // コストの値を数値に変換（"Included"の場合は0として扱う）
+        let costValue = 0;
+        if (record.Cost && record.Cost !== 'Included') {
+            costValue = parseFloat(record.Cost) || 0;
+        }
+
+        dailyData[dateStr].cost += costValue;
+        dailyData[dateStr].count += 1;
+    });
+
+    const dates = Object.keys(dailyData)
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b)
+        .map(date => date.toLocaleDateString('ja-JP'));
+
+    const dailyCosts = dates.map(date => dailyData[date].cost);
+
+    const ctx = document.getElementById('cost-chart').getContext('2d');
+    costChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: '日別コスト',
+                data: dailyCosts,
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'コスト推移'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed.y;
+                            return `コスト: $${value.toFixed(2)}`;
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: '日付'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'コスト ($)'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toFixed(2);
+                        }
+                    }
+                }
+            }
+        }
     });
 }
 
