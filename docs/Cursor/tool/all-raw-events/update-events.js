@@ -117,11 +117,11 @@ function writeCSV(filePath, data, headers) {
 }
 
 /**
- * Inputフォルダから最新の日付のusage-events-*.csvファイルを検索する
- * @param {string} inputDir - Inputフォルダのパス
- * @returns {string|null} 最新の日付のCSVファイルのパス、見つからない場合はnull
+ * inputフォルダから全てのusage-events-*.csvファイルを検索する
+ * @param {string} inputDir - inputフォルダのパス
+ * @returns {Array} CSVファイル情報の配列
  */
-function findLatestInputCSVFile(inputDir) {
+function findAllInputCSVFiles(inputDir) {
     try {
         const files = fs.readdirSync(inputDir);
         const csvFiles = files
@@ -132,25 +132,70 @@ function findLatestInputCSVFile(inputDir) {
                     return {
                         file: file,
                         path: path.join(inputDir, file),
-                        date: new Date(dateMatch[1])
+                        date: new Date(dateMatch[1]),
+                        dateString: dateMatch[1]
                     };
                 }
                 return null;
             })
             .filter(item => item !== null)
-            .sort((a, b) => b.date - a.date); // 最新順でソート
+            .sort((a, b) => a.date - b.date); // 古い順でソート
 
-        if (csvFiles.length > 0) {
-            const latestFile = csvFiles[0];
-            console.log(`最新のCSVファイルを発見: ${latestFile.file} (日付: ${latestFile.date.toISOString().split('T')[0]})`);
-            return latestFile.path;
-        } else {
-            console.log('Inputフォルダにusage-events CSVファイルが見つかりませんでした');
-            return null;
-        }
+        console.log(`${csvFiles.length}個のusage-events CSVファイルを発見しました`);
+        return csvFiles;
     } catch (error) {
-        console.error(`Inputフォルダの読み込みエラー: ${inputDir}`, error.message);
-        return null;
+        console.error(`inputフォルダの読み込みエラー: ${inputDir}`, error.message);
+        return [];
+    }
+}
+
+/**
+ * 日付文字列からアーカイブフォルダパスを生成する
+ * @param {string} dateString - YYYY-MM-DD形式の日付文字列
+ * @returns {string} YYYY/MM形式のフォルダパス
+ */
+function getArchiveFolderPath(dateString) {
+    const [year, month] = dateString.split('-');
+    return `${year}/${month}`;
+}
+
+/**
+ * アーカイブフォルダを作成する
+ * @param {string} archiveDir - アーカイブディレクトリのベースパス
+ * @param {string} folderPath - 作成するフォルダパス（YYYY/MM形式）
+ */
+function createArchiveFolder(archiveDir, folderPath) {
+    const fullPath = path.join(archiveDir, folderPath);
+    try {
+        fs.mkdirSync(fullPath, { recursive: true });
+        console.log(`アーカイブフォルダを作成しました: ${fullPath}`);
+    } catch (error) {
+        console.error(`アーカイブフォルダの作成エラー: ${fullPath}`, error.message);
+    }
+}
+
+/**
+ * ファイルをアーカイブフォルダに移動する
+ * @param {string} sourceFile - 移動元ファイルパス
+ * @param {string} archiveDir - アーカイブディレクトリのベースパス
+ * @param {string} dateString - YYYY-MM-DD形式の日付文字列
+ */
+function moveToArchive(sourceFile, archiveDir, dateString) {
+    try {
+        const folderPath = getArchiveFolderPath(dateString);
+        const targetDir = path.join(archiveDir, folderPath);
+
+        // アーカイブフォルダを作成
+        createArchiveFolder(archiveDir, folderPath);
+
+        // ファイルを移動
+        const fileName = path.basename(sourceFile);
+        const targetFile = path.join(targetDir, fileName);
+
+        fs.renameSync(sourceFile, targetFile);
+        console.log(`ファイルをアーカイブに移動しました: ${fileName} → ${folderPath}/`);
+    } catch (error) {
+        console.error(`ファイルの移動エラー: ${sourceFile}`, error.message);
     }
 }
 
@@ -215,9 +260,10 @@ function isNewData(existingData, newData) {
  * メイン処理
  */
 function main() {
-    const inputDir = path.join(__dirname, 'Input');
+    const inputDir = path.join(__dirname, 'input');
     const dataDir = path.join(__dirname, 'data');
     const outputFile = path.join(dataDir, 'usage-events.csv');
+    const archiveDir = path.join(inputDir, 'archive', 'usage-events');
 
     console.log('usage-events CSVファイルの更新を開始します...');
 
@@ -228,45 +274,66 @@ function main() {
         console.log(`既存のデータを読み込みました: ${existingData.length}件`);
     }
 
-    // Inputフォルダから最新のCSVファイルを検索
-    const inputFile = findLatestInputCSVFile(inputDir);
-    if (inputFile) {
-        console.log(`最新のCSVファイルを処理中: ${path.basename(inputFile)}`);
-        const inputData = readCSV(inputFile);
+    // inputフォルダから全てのusage-events CSVファイルを検索
+    const csvFiles = findAllInputCSVFiles(inputDir);
+
+    if (csvFiles.length === 0) {
+        console.log('処理するCSVファイルが見つかりませんでした');
+        return;
+    }
+
+    let allNewData = [];
+    const filesToArchive = [];
+
+    // 各CSVファイルを処理
+    for (const csvFile of csvFiles) {
+        console.log(`CSVファイルを処理中: ${csvFile.file} (日付: ${csvFile.dateString})`);
+        const inputData = readCSV(csvFile.path);
 
         if (inputData.length > 0) {
-            // 先頭データを比較して新しいデータかどうかを判定
-            if (isNewData(existingData, inputData)) {
-                // 既存のデータと新しいデータを結合
-                let allData = [...existingData, ...inputData];
-                console.log(`  ${inputData.length}件のデータを追加しました`);
+            // 新しいデータを結合
+            allNewData = [...allNewData, ...inputData];
+            console.log(`  ${inputData.length}件のデータを読み込みました`);
 
-                // 重複を排除
-                const uniqueData = removeDuplicates(allData);
-                console.log(`重複排除後: ${uniqueData.length}件`);
-
-                // 日付順にソート（最新順）
-                const sortedData = sortByDate(uniqueData);
-                console.log(`日付順にソートしました（最新順）`);
-
-                // ヘッダーを決定（既存のデータのヘッダーを使用）
-                const headers = existingData.length > 0
-                    ? Object.keys(existingData[0])
-                    : ['Date', 'Kind', 'Model', 'Max Mode', 'Input (w/ Cache Write)', 'Input (w/o Cache Write)', 'Cache Read', 'Output Tokens', 'Total Tokens', 'Cost'];
-
-                // CSVファイルに書き込み
-                writeCSV(outputFile, sortedData, headers);
-
-                console.log('usage-events CSVファイルの更新が完了しました！');
-                console.log(`最終的なデータ件数: ${sortedData.length}件`);
-            } else {
-                console.log('新しいデータではないため、取り込みをスキップしました');
-            }
+            // アーカイブ対象として記録
+            filesToArchive.push(csvFile);
         } else {
-            console.log('最新のCSVファイルにデータが含まれていませんでした');
+            console.log(`  ${csvFile.file}にはデータが含まれていませんでした`);
         }
+    }
+
+    if (allNewData.length > 0) {
+        // 全てのデータを結合
+        let allData = [...existingData, ...allNewData];
+        console.log(`合計 ${allNewData.length}件の新しいデータを追加しました`);
+
+        // 重複を排除
+        const uniqueData = removeDuplicates(allData);
+        console.log(`重複排除後: ${uniqueData.length}件`);
+
+        // 日付順にソート（最新順）
+        const sortedData = sortByDate(uniqueData);
+        console.log(`日付順にソートしました（最新順）`);
+
+        // ヘッダーを決定（既存のデータのヘッダーを使用）
+        const headers = existingData.length > 0
+            ? Object.keys(existingData[0])
+            : ['Date', 'Kind', 'Model', 'Max Mode', 'Input (w/ Cache Write)', 'Input (w/o Cache Write)', 'Cache Read', 'Output Tokens', 'Total Tokens', 'Cost'];
+
+        // CSVファイルに書き込み
+        writeCSV(outputFile, sortedData, headers);
+
+        console.log('usage-events CSVファイルの更新が完了しました！');
+        console.log(`最終的なデータ件数: ${sortedData.length}件`);
+
+        // 処理済みファイルをアーカイブに移動
+        console.log('\n処理済みファイルをアーカイブに移動しています...');
+        for (const csvFile of filesToArchive) {
+            moveToArchive(csvFile.path, archiveDir, csvFile.dateString);
+        }
+        console.log('アーカイブ処理が完了しました！');
     } else {
-        console.log('処理するCSVファイルが見つかりませんでした');
+        console.log('処理対象となるデータが見つかりませんでした');
     }
 }
 
@@ -281,7 +348,10 @@ module.exports = {
     sortByDate,
     removeDuplicates,
     writeCSV,
-    findLatestInputCSVFile,
+    findAllInputCSVFiles,
+    getArchiveFolderPath,
+    createArchiveFolder,
+    moveToArchive,
     isNewData,
     main
 };

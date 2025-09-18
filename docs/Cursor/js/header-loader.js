@@ -69,6 +69,71 @@ class HeaderLoader {
     }
 
     /**
+     * バージョン情報モーダルのパスを取得
+     */
+    getVersionModalPath() {
+        const level = this.getHierarchyLevel();
+        if (level === 1) {
+            return '../../components/version-modal.html';
+        }
+        return '../components/version-modal.html';
+    }
+
+    /**
+     * バージョン情報モーダルを読み込む
+     */
+    async loadVersionModal() {
+        try {
+            console.log('🔄 バージョン情報モーダルの読み込みを開始 (header-loader)');
+            const modalPath = this.getVersionModalPath();
+            const response = await fetch(modalPath);
+
+            if (!response.ok) {
+                throw new Error(`バージョン情報モーダルの読み込みに失敗しました: ${response.status}`);
+            }
+
+            const modalHtml = await response.text();
+
+            // モーダルコンテナを取得または作成
+            let modalContainer = document.getElementById('version-modal-container');
+            if (!modalContainer) {
+                modalContainer = document.createElement('div');
+                modalContainer.id = 'version-modal-container';
+                document.body.appendChild(modalContainer);
+            }
+
+            // モーダルHTMLを挿入
+            modalContainer.innerHTML = modalHtml;
+            console.log('✅ バージョン情報モーダルのHTMLを読み込み完了 (header-loader)');
+
+            // スクリプトを実行するために、scriptタグを再作成
+            const scripts = modalContainer.querySelectorAll('script');
+            scripts.forEach((script, index) => {
+                console.log(`📝 スクリプト ${index + 1} を処理中... (header-loader)`);
+                if (script.src) {
+                    // 外部スクリプトの場合
+                    const newScript = document.createElement('script');
+                    newScript.src = script.src;
+                    document.head.appendChild(newScript);
+                    console.log('✅ 外部スクリプトを読み込み:', script.src);
+                } else {
+                    // インラインスクリプトの場合
+                    try {
+                        console.log('🔧 インラインスクリプトを実行開始 (header-loader)');
+                        eval(script.textContent);
+                        console.log('✅ インラインスクリプトの実行完了 (header-loader)');
+                    } catch (error) {
+                        console.error('❌ インラインスクリプトの実行エラー (header-loader):', error);
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('❌ バージョン情報モーダルの読み込みエラー:', error);
+        }
+    }
+
+    /**
      * ヘッダーを読み込む
      */
     async loadHeader() {
@@ -97,6 +162,9 @@ class HeaderLoader {
             // アクティブなナビゲーションを設定
             this.setActiveNavigation();
 
+            // バージョン情報モーダルを読み込む
+            await this.loadVersionModal();
+
         } catch (error) {
             console.error('ヘッダーの読み込みエラー:', error);
             // エラー時はフォールバック用のヘッダーを表示
@@ -112,8 +180,8 @@ class HeaderLoader {
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
                 <div class="container">
                     <span class="navbar-brand mb-0 h1">
-                        <a href="https://github.com/KenichiroArai/Blog/issues/36" target="_blank" rel="noopener">
-                            Cursor使用記録　v0.5.5
+                        <a href="#" target="_blank" rel="noopener">
+                            読み込み中...
                         </a>
                     </span>
                     <div class="navbar-nav ms-auto">
