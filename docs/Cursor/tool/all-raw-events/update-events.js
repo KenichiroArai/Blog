@@ -117,8 +117,8 @@ function writeCSV(filePath, data, headers) {
 }
 
 /**
- * Inputフォルダから全てのusage-events-*.csvファイルを検索する
- * @param {string} inputDir - Inputフォルダのパス
+ * inputフォルダから全てのusage-events-*.csvファイルを検索する
+ * @param {string} inputDir - inputフォルダのパス
  * @returns {Array} CSVファイル情報の配列
  */
 function findAllInputCSVFiles(inputDir) {
@@ -144,7 +144,7 @@ function findAllInputCSVFiles(inputDir) {
         console.log(`${csvFiles.length}個のusage-events CSVファイルを発見しました`);
         return csvFiles;
     } catch (error) {
-        console.error(`Inputフォルダの読み込みエラー: ${inputDir}`, error.message);
+        console.error(`inputフォルダの読み込みエラー: ${inputDir}`, error.message);
         return [];
     }
 }
@@ -260,7 +260,7 @@ function isNewData(existingData, newData) {
  * メイン処理
  */
 function main() {
-    const inputDir = path.join(__dirname, 'Input');
+    const inputDir = path.join(__dirname, 'input');
     const dataDir = path.join(__dirname, 'data');
     const outputFile = path.join(dataDir, 'usage-events.csv');
     const archiveDir = path.join(inputDir, 'archive', 'usage-events');
@@ -274,7 +274,7 @@ function main() {
         console.log(`既存のデータを読み込みました: ${existingData.length}件`);
     }
 
-    // Inputフォルダから全てのusage-events CSVファイルを検索
+    // inputフォルダから全てのusage-events CSVファイルを検索
     const csvFiles = findAllInputCSVFiles(inputDir);
 
     if (csvFiles.length === 0) {
