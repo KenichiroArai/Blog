@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="versionModalLabel">
-                    <i class="bi bi-info-circle"></i> アプリケーション情報
+                    <i class="bi bi-info-circle"></i> <span id="app-title">アプリケーション情報</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -17,12 +17,12 @@
                                     <i class="bi bi-tag"></i> バージョン情報
                                 </h6>
                                 <p class="card-text mb-2">
-                                    <strong>現在のバージョン:</strong> v0.6.0
+                                    <strong>現在のバージョン:</strong> <span id="current-version">v0.6.0</span>
                                 </p>
                                 <p class="card-text mb-0">
                                     <strong>開発・管理:</strong>
-                                    <a href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener" class="link-primary">
-                                        <i class="bi bi-github"></i> GitHub Issue #60
+                                    <a id="github-link" href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener" class="link-primary">
+                                        <i class="bi bi-github"></i> <span id="github-text">GitHub Issue #60</span>
                                     </a>
                                 </p>
                             </div>
@@ -34,7 +34,7 @@
                                 <h6 class="card-title">
                                     <i class="bi bi-graph-up"></i> 機能概要
                                 </h6>
-                                <ul class="mb-0">
+                                <ul id="features-list" class="mb-0">
                                     <li>Cursor使用状況の総合的な記録・分析</li>
                                     <li>使用統計とグラフによる可視化</li>
                                     <li>コスト分析とトークン使用量の追跡</li>
@@ -47,10 +47,76 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-                <a href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener" class="btn btn-primary">
+                <a id="github-footer-link" href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener" class="btn btn-primary">
                     <i class="bi bi-github"></i> GitHub で詳細を見る
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+/**
+ * バージョンモーダルの内容を動的に更新する
+ */
+function updateVersionModal() {
+    if (window.versionLoader && window.versionLoader.getVersionInfo()) {
+        const versionInfo = window.versionLoader.getVersionInfo();
+
+        // タイトルを更新
+        const titleElement = document.getElementById('app-title');
+        if (titleElement) {
+            titleElement.textContent = window.versionLoader.getTitle();
+        }
+
+        // バージョンを更新
+        const versionElement = document.getElementById('current-version');
+        if (versionElement) {
+            versionElement.textContent = window.versionLoader.getCurrentVersion();
+        }
+
+        // GitHubリンクを更新
+        const githubLink = document.getElementById('github-link');
+        const githubFooterLink = document.getElementById('github-footer-link');
+        const githubText = document.getElementById('github-text');
+        const githubUrl = window.versionLoader.getGitHubUrl();
+
+        if (githubLink) {
+            githubLink.href = githubUrl;
+        }
+        if (githubFooterLink) {
+            githubFooterLink.href = githubUrl;
+        }
+        if (githubText && versionInfo.github?.issue_number) {
+            githubText.textContent = `GitHub Issue #${versionInfo.github.issue_number}`;
+        }
+
+        // 機能リストを更新
+        const featuresList = document.getElementById('features-list');
+        if (featuresList) {
+            const features = window.versionLoader.getFeatures();
+            if (features.length > 0) {
+                featuresList.innerHTML = features.map(feature => `<li>${feature}</li>`).join('');
+            }
+        }
+
+        console.log('バージョンモーダルが正常に更新されました');
+    } else {
+        console.warn('バージョン情報がまだ読み込まれていません。デフォルト値を使用します。');
+    }
+}
+
+// モーダルが表示される際にバージョン情報を更新
+document.addEventListener('DOMContentLoaded', function() {
+    const versionModal = document.getElementById('versionModal');
+    if (versionModal) {
+        versionModal.addEventListener('show.bs.modal', function() {
+            // 少し遅延させてからバージョン情報を更新（非同期読み込み対応）
+            setTimeout(updateVersionModal, 100);
+        });
+    }
+
+    // 初期読み込み時にも更新を試行
+    setTimeout(updateVersionModal, 500);
+});
+</script>
