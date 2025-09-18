@@ -180,8 +180,8 @@ class HeaderLoader {
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
                 <div class="container">
                     <span class="navbar-brand mb-0 h1">
-                        <a href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener">
-                            Cursor使用記録　v0.6.0
+                        <a href="#" target="_blank" rel="noopener">
+                            読み込み中...
                         </a>
                     </span>
                     <div class="navbar-nav ms-auto">

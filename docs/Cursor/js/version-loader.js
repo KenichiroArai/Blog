@@ -156,21 +156,18 @@ class VersionLoader {
     getDefaultVersionInfo() {
         return {
             version: {
-                current: "v0.6.0"
+                current: "読み込み中..."
             },
             github: {
-                issue_url: "https://github.com/KenichiroArai/Blog/issues/60",
-                issue_number: 60
+                issue_url: "読み込み中...",
+                issue_number: 0
             },
             features: [
-                "Cursor使用状況の総合的な記録・分析",
-                "使用統計とグラフによる可視化",
-                "コスト分析とトークン使用量の追跡",
-                "使用イベントの詳細な記録"
+                "読み込み中..."
             ],
             metadata: {
-                title: "アプリケーション情報",
-                description: "Cursor使用状況管理アプリケーション"
+                title: "読み込み中...",
+                description: "読み込み中..."
             }
         };
     }
@@ -188,7 +185,7 @@ class VersionLoader {
      * @returns {string} 現在のバージョン
      */
     getCurrentVersion() {
-        return this.versionInfo?.version?.current || "v0.6.0";
+        return this.versionInfo?.version?.current || "読み込み中...";
     }
 
     /**
@@ -196,7 +193,7 @@ class VersionLoader {
      * @returns {string} GitHub URL
      */
     getGitHubUrl() {
-        return this.versionInfo?.github?.issue_url || "https://github.com/KenichiroArai/Blog/issues/60";
+        return this.versionInfo?.github?.issue_url || "読み込み中...";
     }
 
     /**
@@ -212,7 +209,7 @@ class VersionLoader {
      * @returns {string} アプリケーションタイトル
      */
     getTitle() {
-        return this.versionInfo?.metadata?.title || "アプリケーション情報";
+        return this.versionInfo?.metadata?.title || "読み込み中...";
     }
 }
 
