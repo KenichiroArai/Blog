@@ -4,7 +4,28 @@
 class VersionLoader {
     constructor() {
         this.versionInfo = null;
-        this.yamlPath = './data/version-info.yaml';
+        this.yamlPath = this.determineYamlPath();
+    }
+
+    /**
+     * 現在のページの階層に応じてYAMLファイルのパスを決定する
+     * @returns {string} YAMLファイルのパス
+     */
+    determineYamlPath() {
+        const currentPath = window.location.pathname;
+        console.log('現在のパス:', currentPath);
+
+        // パスの階層数を判定
+        if (currentPath.includes('/pages/old/')) {
+            // pages/old/ 配下の場合（2階層下）
+            return '../../data/version-info.yaml';
+        } else if (currentPath.includes('/pages/')) {
+            // pages/ 配下の場合（1階層下）
+            return '../data/version-info.yaml';
+        } else {
+            // ルート配下の場合
+            return './data/version-info.yaml';
+        }
     }
 
     /**
