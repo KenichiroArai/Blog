@@ -259,14 +259,40 @@
         // バージョン情報モーダルを読み込む
         async function loadVersionModal() {
             try {
+                console.log('🔄 バージョン情報モーダルの読み込みを開始');
                 const response = await fetch('components/version-modal.html');
                 if (!response.ok) {
                     throw new Error(`バージョン情報モーダルの読み込みに失敗しました: ${response.status}`);
                 }
                 const modalHtml = await response.text();
-                document.getElementById('version-modal-container').innerHTML = modalHtml;
+                const container = document.getElementById('version-modal-container');
+                container.innerHTML = modalHtml;
+                console.log('✅ バージョン情報モーダルのHTMLを読み込み完了');
+
+                // スクリプトを実行するために、scriptタグを再作成
+                const scripts = container.querySelectorAll('script');
+                scripts.forEach((script, index) => {
+                    console.log(`📝 スクリプト ${index + 1} を処理中...`);
+                    if (script.src) {
+                        // 外部スクリプトの場合
+                        const newScript = document.createElement('script');
+                        newScript.src = script.src;
+                        document.head.appendChild(newScript);
+                        console.log('✅ 外部スクリプトを読み込み:', script.src);
+                    } else {
+                        // インラインスクリプトの場合
+                        try {
+                            console.log('🔧 インラインスクリプトを実行開始');
+                            eval(script.textContent);
+                            console.log('✅ インラインスクリプトの実行完了');
+                        } catch (error) {
+                            console.error('❌ インラインスクリプトの実行エラー:', error);
+                        }
+                    }
+                });
+
             } catch (error) {
-                console.error('バージョン情報モーダルの読み込みエラー:', error);
+                console.error('❌ バージョン情報モーダルの読み込みエラー:', error);
             }
         }
 

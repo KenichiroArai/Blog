@@ -20,11 +20,20 @@ class VersionLoader {
 
             const yamlText = await response.text();
             this.versionInfo = this.parseYaml(yamlText);
+            console.log('バージョン情報を正常に読み込みました');
+
+            // 解析結果が空の場合はデフォルト値を使用
+            if (!this.versionInfo || Object.keys(this.versionInfo).length === 0) {
+                console.warn('YAML解析結果が空です。デフォルト値を使用します。');
+                this.versionInfo = this.getDefaultVersionInfo();
+            }
+
             return this.versionInfo;
         } catch (error) {
             console.error('バージョン情報の読み込みエラー:', error);
-            // フォールバック値を返す
-            return this.getDefaultVersionInfo();
+            // フォールバック値を設定して返す
+            this.versionInfo = this.getDefaultVersionInfo();
+            return this.versionInfo;
         }
     }
 
@@ -37,43 +46,86 @@ class VersionLoader {
         const lines = yamlText.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
         const result = {};
         let currentSection = result;
-        let sectionStack = [result];
-        let currentKey = null;
+        let currentArrayKey = null;
 
-        for (const line of lines) {
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
             const trimmedLine = line.trim();
             const indent = line.length - line.trimStart().length;
 
             // リスト項目の場合
             if (trimmedLine.startsWith('- ')) {
-                const value = trimmedLine.substring(2).replace(/^"(.*)"$/, '$1');
-                if (currentKey && Array.isArray(currentSection[currentKey])) {
-                    currentSection[currentKey].push(value);
-                } else if (currentKey) {
-                    currentSection[currentKey] = [value];
+                const value = this.parseValue(trimmedLine.substring(2));
+
+                if (currentArrayKey) {
+                    // トップレベルの配列の場合
+                    if (result[currentArrayKey] && typeof result[currentArrayKey] === 'object' && !Array.isArray(result[currentArrayKey]) && Object.keys(result[currentArrayKey]).length === 0) {
+                        result[currentArrayKey] = [];
+                    }
+
+                    if (Array.isArray(result[currentArrayKey])) {
+                        result[currentArrayKey].push(value);
+                    } else if (!Array.isArray(currentSection[currentArrayKey])) {
+                        currentSection[currentArrayKey] = [];
+                        currentSection[currentArrayKey].push(value);
+                    } else {
+                        currentSection[currentArrayKey].push(value);
+                    }
                 }
                 continue;
             }
 
             // キー:値のペアの場合
             if (trimmedLine.includes(':')) {
-                const [key, ...valueParts] = trimmedLine.split(':');
-                const value = valueParts.join(':').trim();
+                const colonIndex = trimmedLine.indexOf(':');
+                const key = trimmedLine.substring(0, colonIndex).trim();
+                const value = trimmedLine.substring(colonIndex + 1).trim();
 
-                if (value) {
-                    // 値がある場合
-                    currentSection[key.trim()] = value.replace(/^"(.*)"$/, '$1');
-                    currentKey = key.trim();
-                } else {
-                    // セクションの開始
-                    currentSection[key.trim()] = {};
-                    currentSection = currentSection[key.trim()];
-                    currentKey = key.trim();
+                if (indent === 0) {
+                    // トップレベルのキー
+                    currentSection = result;
+                    if (value) {
+                        result[key] = this.parseValue(value);
+                        currentArrayKey = null;
+                    } else {
+                        result[key] = {};
+                        currentSection = result[key];
+                        // 次の行がリスト項目の可能性があるので、currentArrayKeyを設定
+                        currentArrayKey = key;
+                    }
+                } else if (indent === 2) {
+                    // セカンドレベルのキー
+                    if (value) {
+                        currentSection[key] = this.parseValue(value);
+                        // 通常の値なので配列キーをクリア
+                        currentArrayKey = null;
+                    } else {
+                        currentArrayKey = key;
+                    }
                 }
             }
         }
-
         return result;
+    }
+
+    /**
+     * YAML値を適切な型に変換する
+     * @param {string} value - YAML値の文字列
+     * @returns {string|number} 変換された値
+     */
+    parseValue(value) {
+        // 引用符で囲まれた文字列の場合は引用符を除去
+        if (value.match(/^".*"$/)) {
+            return value.replace(/^"(.*)"$/, '$1');
+        }
+
+        // 数値の場合は数値に変換
+        if (value.match(/^\d+$/)) {
+            return parseInt(value, 10);
+        }
+
+        // そのまま文字列として返す
+        return value;
     }
 
     /**
