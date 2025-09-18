@@ -84,6 +84,7 @@ class HeaderLoader {
      */
     async loadVersionModal() {
         try {
+            console.log('🔄 バージョン情報モーダルの読み込みを開始 (header-loader)');
             const modalPath = this.getVersionModalPath();
             const response = await fetch(modalPath);
 
@@ -103,9 +104,32 @@ class HeaderLoader {
 
             // モーダルHTMLを挿入
             modalContainer.innerHTML = modalHtml;
+            console.log('✅ バージョン情報モーダルのHTMLを読み込み完了 (header-loader)');
+
+            // スクリプトを実行するために、scriptタグを再作成
+            const scripts = modalContainer.querySelectorAll('script');
+            scripts.forEach((script, index) => {
+                console.log(`📝 スクリプト ${index + 1} を処理中... (header-loader)`);
+                if (script.src) {
+                    // 外部スクリプトの場合
+                    const newScript = document.createElement('script');
+                    newScript.src = script.src;
+                    document.head.appendChild(newScript);
+                    console.log('✅ 外部スクリプトを読み込み:', script.src);
+                } else {
+                    // インラインスクリプトの場合
+                    try {
+                        console.log('🔧 インラインスクリプトを実行開始 (header-loader)');
+                        eval(script.textContent);
+                        console.log('✅ インラインスクリプトの実行完了 (header-loader)');
+                    } catch (error) {
+                        console.error('❌ インラインスクリプトの実行エラー (header-loader):', error);
+                    }
+                }
+            });
 
         } catch (error) {
-            console.error('バージョン情報モーダルの読み込みエラー:', error);
+            console.error('❌ バージョン情報モーダルの読み込みエラー:', error);
         }
     }
 
