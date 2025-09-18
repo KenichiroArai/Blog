@@ -15,7 +15,7 @@ async function loadUsageEventsData() {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
         const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
-        const csvPath = isTopPage ? 'Tool/AllRawEvents/data/usage-events.csv' : '../Tool/AllRawEvents/data/usage-events.csv';
+        const csvPath = isTopPage ? 'tool/all-raw-events/data/usage-events.csv' : '../tool/all-raw-events/data/usage-events.csv';
 
         console.log('Current path:', currentPath);
         console.log('Is top page:', isTopPage);
