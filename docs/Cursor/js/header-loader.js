@@ -69,6 +69,47 @@ class HeaderLoader {
     }
 
     /**
+     * バージョン情報モーダルのパスを取得
+     */
+    getVersionModalPath() {
+        const level = this.getHierarchyLevel();
+        if (level === 1) {
+            return '../../components/version-modal.html';
+        }
+        return '../components/version-modal.html';
+    }
+
+    /**
+     * バージョン情報モーダルを読み込む
+     */
+    async loadVersionModal() {
+        try {
+            const modalPath = this.getVersionModalPath();
+            const response = await fetch(modalPath);
+
+            if (!response.ok) {
+                throw new Error(`バージョン情報モーダルの読み込みに失敗しました: ${response.status}`);
+            }
+
+            const modalHtml = await response.text();
+
+            // モーダルコンテナを取得または作成
+            let modalContainer = document.getElementById('version-modal-container');
+            if (!modalContainer) {
+                modalContainer = document.createElement('div');
+                modalContainer.id = 'version-modal-container';
+                document.body.appendChild(modalContainer);
+            }
+
+            // モーダルHTMLを挿入
+            modalContainer.innerHTML = modalHtml;
+
+        } catch (error) {
+            console.error('バージョン情報モーダルの読み込みエラー:', error);
+        }
+    }
+
+    /**
      * ヘッダーを読み込む
      */
     async loadHeader() {
@@ -96,6 +137,9 @@ class HeaderLoader {
 
             // アクティブなナビゲーションを設定
             this.setActiveNavigation();
+
+            // バージョン情報モーダルを読み込む
+            await this.loadVersionModal();
 
         } catch (error) {
             console.error('ヘッダーの読み込みエラー:', error);

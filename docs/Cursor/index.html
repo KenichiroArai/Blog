@@ -30,62 +30,8 @@
         </div>
     </nav>
 
-    <!-- バージョン情報モーダル -->
-    <div class="modal fade" id="versionModal" tabindex="-1" aria-labelledby="versionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="versionModalLabel">
-                        <i class="bi bi-info-circle"></i> アプリケーション情報
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="bi bi-tag"></i> バージョン情報
-                                    </h6>
-                                    <p class="card-text mb-2">
-                                        <strong>現在のバージョン:</strong> v0.6.0
-                                    </p>
-                                    <p class="card-text mb-0">
-                                        <strong>開発・管理:</strong>
-                                        <a href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener" class="link-primary">
-                                            <i class="bi bi-github"></i> GitHub Issue #60
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="bi bi-graph-up"></i> 機能概要
-                                    </h6>
-                                    <ul class="mb-0">
-                                        <li>Cursor使用状況の総合的な記録・分析</li>
-                                        <li>使用統計とグラフによる可視化</li>
-                                        <li>コスト分析とトークン使用量の追跡</li>
-                                        <li>使用イベントの詳細な記録</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-                    <a href="https://github.com/KenichiroArai/Blog/issues/60" target="_blank" rel="noopener" class="btn btn-primary">
-                        <i class="bi bi-github"></i> GitHub で詳細を見る
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- バージョン情報モーダル読み込み用コンテナ -->
+    <div id="version-modal-container"></div>
 
     <div class="container-fluid mt-3">
         <!-- ローディング表示 -->
@@ -309,8 +255,25 @@
     <script src="js/common.js?v=1.0.2"></script>
     <script src="js/index.js?v=1.0.2"></script>
     <script>
+        // バージョン情報モーダルを読み込む
+        async function loadVersionModal() {
+            try {
+                const response = await fetch('components/version-modal.html');
+                if (!response.ok) {
+                    throw new Error(`バージョン情報モーダルの読み込みに失敗しました: ${response.status}`);
+                }
+                const modalHtml = await response.text();
+                document.getElementById('version-modal-container').innerHTML = modalHtml;
+            } catch (error) {
+                console.error('バージョン情報モーダルの読み込みエラー:', error);
+            }
+        }
+
         // ツールチップを初期化
         document.addEventListener('DOMContentLoaded', function() {
+            // バージョン情報モーダルを読み込む
+            loadVersionModal();
+
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
