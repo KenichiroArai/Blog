@@ -21,14 +21,14 @@
 | **A006** | サマリー機能 | 使用状況のサマリー表示と分析 | `pages/summary.html`<br>`js/summary.js` |
 | **A007** | 使用イベント管理 | 詳細な使用イベントの記録と分析 | `pages/usage-events.html`<br>`js/usage-events.js` |
 
-### 2️⃣ 共通機能 (F001-F099)
+### 2️⃣ 共通機能 (C001-C099)
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **F001** | 共通スタイル | アプリケーション全体のスタイリング | `css/common.css` |
-| **F002** | 共通JavaScript | 共通で使用されるJavaScript機能 | `js/common.js` |
-| **F003** | ヘッダー管理 | ナビゲーションヘッダーの動的読み込み | `components/header-main.html`<br>`components/header-old.html`<br>`js/header-loader.js` |
-| **F004** | バージョン情報管理 | アプリケーションのバージョン情報表示 | `components/version-modal.html`<br>`js/version-loader.js`<br>`data/version-info.yaml` |
+| **C001** | 共通スタイル | アプリケーション全体のスタイリング | `css/common.css` |
+| **C002** | 共通JavaScript | 共通で使用されるJavaScript機能 | `js/common.js` |
+| **C003** | ヘッダー管理 | ナビゲーションヘッダーの動的読み込み | `components/header-main.html`<br>`components/header-old.html`<br>`js/header-loader.js` |
+| **C004** | バージョン情報管理 | アプリケーションのバージョン情報表示 | `components/version-modal.html`<br>`js/version-loader.js`<br>`data/version-info.yaml` |
 
 ### 3️⃣ ツール機能 (T001-T099)
 
@@ -45,11 +45,11 @@
 | 範囲 | カテゴリ | 説明 |
 |------|----------|------|
 | **A001-A099** | アプリ機能 | メインのアプリケーション機能 |
-| **F001-F099** | 共通機能 | 複数の機能で共有される機能 |
+| **C001-C099** | 共通機能 | 複数の機能で共有される機能 |
 | **T001-T099** | ツール機能 | データの処理・変換・更新 |
 
 ### 📋 命名規則
 
-- ✅ 機能番号は `A`（アプリ機能）、`F`（共通機能）、または `T`（ツール機能） + 3桁の数字で構成
+- ✅ 機能番号は `A`（アプリ機能）、`C`（共通機能）、または `T`（ツール機能） + 3桁の数字で構成
 - ✅ ファイル名は「機能番号 + `-` + 機能名 + 拡張子」とするが、ファイル名内の機能番号は小文字（例: `a001-XXX.html`）にする
 - ✅ 関連ファイルは機能番号の下にリスト化
