@@ -14,39 +14,41 @@
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
 | **F001** | メインダッシュボード | アプリケーションのメインエントリーポイント | `index.html`<br>`js/index.js` |
-| **F002** | 使用記録管理 | Cursor使用状況の記録と表示 | `pages/records.html`<br>`js/records.js` |
-| **F003** | サマリー機能 | 使用状況のサマリー表示と分析 | `pages/summary.html`<br>`js/summary.js` |
-| **F004** | 使用イベント管理 | 詳細な使用イベントの記録と分析 | `pages/usage-events.html`<br>`js/usage-events.js` |
-| **F005** | 旧形式サポート | 旧形式データの表示と管理 | `pages/old-format.html`<br>`pages/old/included-usage.html`<br>`pages/old/usage.html`<br>`js/old/included-usage.js`<br>`js/old/usage.js` |
+| **F002** | レコード管理 | Cursor使用状況の記録と表示 | `pages/records.html`<br>`js/records.js` |
+| **F003** | 使用状況表示 | 使用状況データの表示 | `pages/old/usage.html`<br>`js/old/usage.js` |
+| **F004** | 含まれる使用状況表示 | 含まれる使用状況データの表示 | `pages/old/included-usage.html`<br>`js/old/included-usage.js` |
+| **F005** | サマリー機能 | 使用状況のサマリー表示と分析 | `pages/summary.html`<br>`js/summary.js` |
+| **F006** | 使用イベント管理 | 詳細な使用イベントの記録と分析 | `pages/usage-events.html`<br>`js/usage-events.js` |
+| **F007** | 旧形式 | 旧形式の一覧の表示 | `pages/old-format.html` |
 
 ### 2️⃣ 共通機能 (F100-F199)
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **F100** | 共通スタイル | アプリケーション全体のスタイリング | `css/common.css` |
-| **F101** | 共通JavaScript | 共通で使用されるJavaScript機能 | `js/common.js` |
-| **F102** | ヘッダー管理 | ナビゲーションヘッダーの動的読み込み | `components/header-main.html`<br>`components/header-old.html`<br>`js/header-loader.js` |
-| **F103** | バージョン情報管理 | アプリケーションのバージョン情報表示 | `components/version-modal.html`<br>`js/version-loader.js`<br>`data/version-info.yaml` |
+| **F108** | 共通スタイル | アプリケーション全体のスタイリング | `css/common.css` |
+| **F109** | 共通JavaScript | 共通で使用されるJavaScript機能 | `js/common.js` |
+| **F110** | ヘッダー管理 | ナビゲーションヘッダーの動的読み込み | `components/header-main.html`<br>`components/header-old.html`<br>`js/header-loader.js` |
+| **F111** | バージョン情報管理 | アプリケーションのバージョン情報表示 | `components/version-modal.html`<br>`js/version-loader.js`<br>`data/version-info.yaml` |
 
 ### 3️⃣ データ管理機能 (F200-F299)
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **F200** | データファイル | アプリケーションで使用するデータファイル | `record.xlsx` |
-| **F201** | 統合データ | 統合された使用データ | `tool/all-raw-events/data/usage-events.csv`<br>`tool/all-raw-events/data/old/usage-tokens.csv`<br>`tool/all-raw-events/data/old/usage-details.csv` |
-| **F202** | アーカイブデータ | 過去のデータのアーカイブ | `tool/all-raw-events/input/archive/usage-events/`<br>`tool/all-raw-events/input/old/usage-details/`<br>`tool/all-raw-events/input/old/usage-tokens/` |
+| **F212** | データファイル | アプリケーションで使用するデータファイル | `record.xlsx` |
+| **F213** | 統合データ | 統合された使用データ | `tool/all-raw-events/data/usage-events.csv`<br>`tool/all-raw-events/data/old/usage-tokens.csv`<br>`tool/all-raw-events/data/old/usage-details.csv` |
+| **F214** | アーカイブデータ | 過去のデータのアーカイブ | `tool/all-raw-events/input/archive/usage-events/`<br>`tool/all-raw-events/input/old/usage-details/`<br>`tool/all-raw-events/input/old/usage-tokens/` |
 
 ### 4️⃣ データ処理機能 (F300-F399)
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **F300** | データ更新ツール | データの自動更新と処理 | `tool/all-raw-events/update-events.js`<br>`tool/all-raw-events/old/update-details.js`<br>`tool/all-raw-events/old/update-tokens.js` |
+| **F315** | データ更新ツール | データの自動更新と処理 | `tool/all-raw-events/update-events.js`<br>`tool/all-raw-events/old/update-details.js`<br>`tool/all-raw-events/old/update-tokens.js` |
 
 ### 5️⃣ ドキュメント機能 (F400-F499)
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **F400** | プロジェクトドキュメント | プロジェクトの説明と管理情報 | `README.md`<br>`FEATURE_MAPPING.md` |
+| **F416** | プロジェクトドキュメント | プロジェクトの説明と管理情報 | `README.md`<br>`FEATURE_MAPPING.md` |
 
 ---
 
