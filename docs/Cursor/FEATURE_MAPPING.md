@@ -16,8 +16,8 @@
 | **FA001** | メインダッシュボード | アプリケーションのメインエントリーポイント | `index.html`<br>`js/index.js` |
 | **FA002** | レコード管理 | Cursor使用状況の記録と表示 | `pages/records.html`<br>`js/records.js` |
 | **FA003** | 使用状況表示 | 使用状況データの表示 | `pages/old/usage.html`<br>`js/old/usage.js` |
-| **FA004** | 旧形式 | 旧形式の一覧の表示 | `pages/old-format.html` |
-| **FA005** | 含まれる使用状況表示 | 含まれる使用状況データの表示 | `pages/old/included-usage.html`<br>`js/old/included-usage.js` |
+| **FA004** | 含まれる使用状況表示 | 含まれる使用状況データの表示 | `pages/old/included-usage.html`<br>`js/old/included-usage.js` |
+| **FA005** | 旧形式 | 旧形式の一覧の表示 | `pages/old-format.html` |
 | **FA006** | サマリー機能 | 使用状況のサマリー表示と分析 | `pages/summary.html`<br>`js/summary.js` |
 | **FA007** | 使用イベント管理 | 詳細な使用イベントの記録と分析 | `pages/usage-events.html`<br>`js/usage-events.js` |
 
@@ -25,10 +25,9 @@
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **FC001** | 共通スタイル | アプリケーション全体のスタイリング | `css/common.css` |
-| **FC002** | 共通JavaScript | 共通で使用されるJavaScript機能 | `js/common.js` |
-| **FC003** | ヘッダー管理 | ナビゲーションヘッダーの動的読み込み | `components/header-main.html`<br>`components/header-old.html`<br>`js/header-loader.js` |
-| **FC004** | バージョン情報管理 | アプリケーションのバージョン情報表示 | `components/version-modal.html`<br>`js/version-loader.js`<br>`data/version-info.yaml` |
+| **FC001** | 共通機能 | アプリケーション全体の共通スタイルとJavaScript機能 | `css/common.css`<br>`js/common.js` |
+| **FC002** | ヘッダー管理 | ナビゲーションヘッダーの動的読み込み | `components/header-main.html`<br>`components/header-old.html`<br>`js/header-loader.js` |
+| **FC003** | バージョン情報管理 | アプリケーションのバージョン情報表示 | `components/version-modal.html`<br>`js/version-loader.js`<br>`data/version-info.yaml` |
 
 ### 3️⃣ ツール機能 (FT001-FT999)
 
