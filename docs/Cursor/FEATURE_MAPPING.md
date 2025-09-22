@@ -14,9 +14,9 @@
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
 | **A001** | メインダッシュボード | アプリケーションのメインエントリーポイント | `index.html`<br>`js/index.js` |
-| **A002** | 旧形式 | 旧形式の一覧の表示 | `pages/old-format.html` |
-| **A003** | レコード管理 | Cursor使用状況の記録と表示 | `pages/records.html`<br>`js/records.js` |
-| **A004** | 使用状況表示 | 使用状況データの表示 | `pages/old/usage.html`<br>`js/old/usage.js` |
+| **A002** | レコード管理 | Cursor使用状況の記録と表示 | `pages/records.html`<br>`js/records.js` |
+| **A003** | 使用状況表示 | 使用状況データの表示 | `pages/old/usage.html`<br>`js/old/usage.js` |
+| **A004** | 旧形式 | 旧形式の一覧の表示 | `pages/old-format.html` |
 | **A005** | 含まれる使用状況表示 | 含まれる使用状況データの表示 | `pages/old/included-usage.html`<br>`js/old/included-usage.js` |
 | **A006** | サマリー機能 | 使用状況のサマリー表示と分析 | `pages/summary.html`<br>`js/summary.js` |
 | **A007** | 使用イベント管理 | 詳細な使用イベントの記録と分析 | `pages/usage-events.html`<br>`js/usage-events.js` |
