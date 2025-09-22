@@ -10,7 +10,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="css/common.css?v=1.0.2" rel="stylesheet">
+    <link href="css/fc001-common.css?v=1.0.2" rel="stylesheet">
 </head>
 
 <body class="bg-light">
@@ -21,10 +21,10 @@
             </span>
             <div class="navbar-nav ms-auto">
                 <a class="nav-link active" href="index.html">トップページ</a>
-                <a class="nav-link" href="pages/records.html">使用記録</a>
-                <a class="nav-link" href="pages/summary.html">サマリー</a>
-                <a class="nav-link" href="pages/usage-events.html">Usage Events</a>
-                <a class="nav-link" href="pages/old-format.html">旧形式</a>
+                <a class="nav-link" href="pages/fa002-records.html">使用記録</a>
+                <a class="nav-link" href="pages/fa006-summary.html">サマリー</a>
+                <a class="nav-link" href="pages/fa007-usage-events.html">Usage Events</a>
+                <a class="nav-link" href="pages/fa005-old-format.html">旧形式</a>
                 <button class="nav-link btn btn-link text-light" data-bs-toggle="modal" data-bs-target="#versionModal">情報</button>
             </div>
         </div>
@@ -72,7 +72,7 @@
                             <div class="d-flex flex-column">
                                 <h2 class="card-title mb-2">使用記録</h2>
                                 <div class="d-flex justify-content-end">
-                                    <a href="pages/records.html" class="btn btn-primary btn-sm"
+                                    <a href="pages/fa002-records.html" class="btn btn-primary btn-sm"
                                        data-bs-toggle="tooltip"
                                        data-bs-placement="top"
                                        title="使用状況の詳細な記録とグラフを確認できます。日別の使用統計、Suggested Lines、Accepted Lines、Tabs Acceptedの推移をグラフで表示し、使用傾向を分析できます。また、月別・週別の集計データも確認できます。">詳細を見る</a>
@@ -125,7 +125,7 @@
                             <div class="d-flex flex-column">
                                 <h2 class="card-title mb-2">Summary</h2>
                                 <div class="d-flex justify-content-end">
-                                    <a href="pages/summary.html" class="btn btn-primary btn-sm"
+                                    <a href="pages/fa006-summary.html" class="btn btn-primary btn-sm"
                                        data-bs-toggle="tooltip"
                                        data-bs-placement="top"
                                        title="Summaryの詳細な記録とグラフを確認できます。Total、Cache Read、Cache Write、Input、Output、API Cost、Cost to Youの推移をグラフで表示し、総合的な使用状況分析ができます。">詳細を見る</a>
@@ -192,7 +192,7 @@
                             <div class="d-flex flex-column">
                                 <h2 class="card-title mb-2">Usage Events</h2>
                                 <div class="d-flex justify-content-end">
-                                    <a href="pages/usage-events.html" class="btn btn-primary btn-sm"
+                                    <a href="pages/fa007-usage-events.html" class="btn btn-primary btn-sm"
                                        data-bs-toggle="tooltip"
                                        data-bs-placement="top"
                                        title="Usage Eventsの詳細な記録とグラフを確認できます。日別イベント数、日別トークン使用量、成功/エラーイベントの分析、使用イベント一覧を確認できます。">詳細を見る</a>
@@ -252,15 +252,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="js/common.js?v=1.0.2"></script>
-    <script src="js/version-loader.js?v=1.0.0"></script>
+    <script src="js/fc001-common.js?v=1.0.2"></script>
+    <script src="js/fc200-version-loader.js?v=1.0.0"></script>
     <script src="js/index.js?v=1.0.2"></script>
     <script>
         // バージョン情報モーダルを読み込む
         async function loadVersionModal() {
             try {
                 console.log('🔄 バージョン情報モーダルの読み込みを開始');
-                const response = await fetch('components/version-modal.html');
+                const response = await fetch('components/fc200-version-modal.html');
                 if (!response.ok) {
                     throw new Error(`バージョン情報モーダルの読み込みに失敗しました: ${response.status}`);
                 }
