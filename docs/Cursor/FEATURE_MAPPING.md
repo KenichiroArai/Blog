@@ -34,7 +34,9 @@
 
 | 機能番号 | 機能名 | 目的 | ファイル |
 |---------|--------|------|----------|
-| **FT001** | データ更新ツール | データの自動更新と処理 | `tool/all-raw-events/update-events.js`<br>`tool/all-raw-events/old/update-details.js`<br>`tool/all-raw-events/old/update-tokens.js` |
+| **FT001** | トークン更新ツール | トークンデータの自動更新と処理 | `tool/all-raw-events/old/update-tokens.js` |
+| **FT002** | 詳細更新ツール | 詳細データの自動更新と処理 | `tool/all-raw-events/old/update-details.js` |
+| **FT003** | イベント更新ツール | イベントデータの自動更新と処理 | `tool/all-raw-events/update-events.js` |
 
 ---
 
