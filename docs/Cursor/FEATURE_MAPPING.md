@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # Cursor使用記録アプリケーション - 機能マッピング
 
 ## 📋 概要
