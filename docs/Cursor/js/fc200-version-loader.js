@@ -18,13 +18,13 @@ class VersionLoader {
         // パスの階層数を判定
         if (currentPath.includes('/pages/old/')) {
             // pages/old/ 配下の場合（2階層下）
-            return '../../data/version-info.yaml';
+            return '../../data/fc200-version-info.yaml';
         } else if (currentPath.includes('/pages/')) {
             // pages/ 配下の場合（1階層下）
-            return '../data/version-info.yaml';
+            return '../data/fc200-version-info.yaml';
         } else {
             // ルート配下の場合
-            return './data/version-info.yaml';
+            return './data/fc200-version-info.yaml';
         }
     }
 

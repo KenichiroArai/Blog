@@ -35,9 +35,9 @@ class HeaderLoader {
     getHeaderPath() {
         const level = this.getHierarchyLevel();
         if (level === 1) {
-            return '../../components/header-old.html';
+            return '../../components/fc100-header-old.html';
         }
-        return '../components/header-main.html';
+        return '../components/fc100-header-main.html';
     }
 
     /**
@@ -74,9 +74,9 @@ class HeaderLoader {
     getVersionModalPath() {
         const level = this.getHierarchyLevel();
         if (level === 1) {
-            return '../../components/version-modal.html';
+            return '../../components/fc200-version-modal.html';
         }
-        return '../components/version-modal.html';
+        return '../components/fc200-version-modal.html';
     }
 
     /**

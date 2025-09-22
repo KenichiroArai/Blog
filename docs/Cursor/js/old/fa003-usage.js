@@ -7,7 +7,7 @@ async function loadUsageData() {
     try {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
-        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
+        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
         const csvPath = isTopPage ? 'tool/all-raw-events/data/old/usage-tokens.csv' : '../../tool/all-raw-events/data/old/usage-tokens.csv';
 
         const response = await fetch(csvPath);
@@ -70,7 +70,7 @@ async function loadUsageDetailsData() {
     try {
         // 現在のページのパスに基づいて相対パスを決定
         const currentPath = window.location.pathname;
-        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
+        const isTopPage = currentPath.endsWith('index.html') || currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath.endsWith('/Cursor');
         const csvPath = isTopPage ? 'tool/all-raw-events/data/old/usage-details.csv' : '../../tool/all-raw-events/data/old/usage-details.csv';
 
         const response = await fetch(csvPath);
