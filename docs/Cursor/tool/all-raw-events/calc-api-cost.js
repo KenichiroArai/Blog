@@ -250,23 +250,27 @@ async function main() {
 		}
 
 		if (opts.daily) {
-			console.log('\n日別合計:');
+			console.log('\n日別累計:');
 			// 期間内の全日を表示（合計0も表示）
 			let cursor = (startUtcMs != null) ? Date.UTC(new Date(startUtcMs).getUTCFullYear(), new Date(startUtcMs).getUTCMonth(), new Date(startUtcMs).getUTCDate(), 0, 0, 0, 0) : null;
 			const last = (endUtcMs != null) ? Date.UTC(new Date(endUtcMs).getUTCFullYear(), new Date(endUtcMs).getUTCMonth(), new Date(endUtcMs).getUTCDate(), 0, 0, 0, 0) : null;
 			if (cursor != null && last != null) {
+				let running = 0;
 				while (cursor <= last) {
 					const key = formatYmdSlashFromUtcMs(cursor);
 					const v = perDay.get(key) || 0;
-					console.log(`  ${key}: ${v.toFixed(2)}`);
+					running += v;
+					console.log(`  ${key}: ${running.toFixed(2)}`);
 					// 翌日へ（UTCで1日進める）
 					cursor = cursor + 24 * 60 * 60 * 1000;
 				}
 			} else {
 				// 日付未指定の場合は、存在するキーのみ表示
 				const sorted = Array.from(perDay.entries()).sort((a, b) => (a[0] < b[0] ? -1 : 1));
+				let running = 0;
 				for (const [k, v] of sorted) {
-					console.log(`  ${k}: ${v.toFixed(2)}`);
+					running += v;
+					console.log(`  ${k}: ${running.toFixed(2)}`);
 				}
 			}
 		}
