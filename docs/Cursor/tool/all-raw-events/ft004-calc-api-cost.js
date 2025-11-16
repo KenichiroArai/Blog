@@ -6,11 +6,12 @@ const path = require('path');
 const readline = require('readline');
 
 const CSV_PATH = path.resolve(__dirname, 'data', 'usage-events.csv');
+const SCRIPT_NAME = path.basename(process.argv[1] || __filename);
 
 function printHelp() {
 	console.log([
 		'使用方法:',
-		'  node calc-api-cost.js [オプション] [開始日付] [終了日付]',
+		`  node ${SCRIPT_NAME} [オプション] [開始日付] [終了日付]`,
 		'',
 		'日付形式:',
 		'  YYYY/MM/DD （例: 2025/11/01）',
@@ -23,10 +24,10 @@ function printHelp() {
 		'  -d, --daily    日別合計を出力（期間指定時に有効）',
 		'',
 		'例:',
-		'  node calc-api-cost.js 2025/11/01 2025/11/30',
-		'  node calc-api-cost.js 2025/11/01               # 終了日は実行日',
-		'  node calc-api-cost.js --daily 2025/11/01 2025/11/30',
-		'  node calc-api-cost.js --all                    # 全期間を即時集計',
+		`  node ${SCRIPT_NAME} 2025/11/01 2025/11/30`,
+		`  node ${SCRIPT_NAME} 2025/11/01               # 終了日は実行日`,
+		`  node ${SCRIPT_NAME} --daily 2025/11/01 2025/11/30`,
+		`  node ${SCRIPT_NAME} --all                    # 全期間を即時集計`,
 	].join('\n'));
 }
 
