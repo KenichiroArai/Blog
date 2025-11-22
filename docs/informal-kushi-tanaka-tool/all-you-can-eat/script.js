@@ -2,6 +2,7 @@
 let menuData = [];
 let originalMenuData = [];
 let currentSelections = {};
+let taxRate = 0.1; // デフォルト税率10%
 
 // DOM要素の取得
 const loadingMessage = document.getElementById('loadingMessage');
@@ -9,9 +10,11 @@ const menuContent = document.getElementById('menuContent');
 const totalAmount = document.getElementById('totalAmount');
 const clearBtn = document.getElementById('clearBtn');
 const resetBtn = document.getElementById('resetBtn');
+let taxRateInput = null;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function() {
+    taxRateInput = document.getElementById('taxRateInput');
     loadExcelData();
     setupEventListeners();
     loadFromLocalStorage();
@@ -21,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupEventListeners() {
     clearBtn.addEventListener('click', clearSelections);
     resetBtn.addEventListener('click', resetToOriginal);
+    if (taxRateInput) {
+        taxRateInput.addEventListener('change', updateTaxRate);
+        taxRateInput.addEventListener('input', updateTaxRate);
+    }
 }
 
 // Excelファイル読み込み機能
@@ -44,7 +51,8 @@ async function loadExcelData() {
             number: row[0] || index + 1,
             category: row[1] || 'その他',
             name: row[2] || '',
-            price: parseFloat(row[3]) || 0
+            price: parseFloat(row[3]) || 0,
+            priceWithTax: parseFloat(row[4]) || 0
         })).filter(item => item.name.trim() !== ''); // 空の行を除外
 
         // 元データを保存
@@ -56,6 +64,9 @@ async function loadExcelData() {
         // ローカルストレージから復元
         restoreFromLocalStorage();
 
+        // 税率を読み込み
+        loadTaxRate();
+
         // 合計金額を計算
         calculateTotal();
 
@@ -65,6 +76,11 @@ async function loadExcelData() {
     }
 }
 
+
+// 税込み価格計算関数
+function calculatePriceWithTax(price) {
+    return Math.round(price * (1 + taxRate));
+}
 
 // メニュー表示機能
 function displayMenu() {
@@ -79,13 +95,14 @@ function displayMenu() {
     Object.keys(groupedData).forEach(category => {
         html += `
             <div class="category-section category-${category}">
-                <div class="category-header">${category}</div>
+                <div class="category-header" data-category="${category}">${category}</div>
                 <table class="menu-table">
                     <thead>
                         <tr>
                             <th>番号</th>
                             <th>名称</th>
                             <th>単価</th>
+                            <th>税込み価格</th>
                             <th>個数</th>
                         </tr>
                     </thead>
@@ -95,9 +112,10 @@ function displayMenu() {
         groupedData[category].forEach(item => {
             const currentQuantity = currentSelections[item.id]?.quantity || 0;
             const currentPrice = currentSelections[item.id]?.price || item.price;
+            const priceWithTax = calculatePriceWithTax(currentPrice);
 
             html += `
-                <tr>
+                <tr data-item-id="${item.id}">
                     <td class="item-number">${item.number}</td>
                     <td class="item-name">${item.name}</td>
                     <td class="item-price">
@@ -109,6 +127,7 @@ function displayMenu() {
                                data-item-id="${item.id}"
                                onchange="updatePrice(${item.id}, this.value)">
                     </td>
+                    <td class="item-price-with-tax" data-item-id="${item.id}">¥${priceWithTax.toLocaleString()}</td>
                     <td>
                         <select class="quantity-select"
                                 data-item-id="${item.id}"
@@ -195,6 +214,9 @@ function updatePrice(itemId, price) {
 
     currentSelections[itemId].price = numPrice;
 
+    // 税込み価格を更新
+    updatePriceWithTaxDisplay(itemId, numPrice);
+
     // ローカルストレージに保存
     saveToLocalStorage();
 
@@ -202,21 +224,71 @@ function updatePrice(itemId, price) {
     calculateTotal();
 }
 
+// 税込み価格表示を更新
+function updatePriceWithTaxDisplay(itemId, price) {
+    const priceWithTaxElement = document.querySelector(`.item-price-with-tax[data-item-id="${itemId}"]`);
+    if (priceWithTaxElement) {
+        const priceWithTax = calculatePriceWithTax(price);
+        priceWithTaxElement.textContent = `¥${priceWithTax.toLocaleString()}`;
+    }
+}
+
+// 税率更新機能
+function updateTaxRate() {
+    if (!taxRateInput) return;
+
+    const taxRatePercent = parseInt(taxRateInput.value);
+
+    if (isNaN(taxRatePercent) || taxRatePercent < 0) {
+        alert('正しい税率を入力してください。');
+        return;
+    }
+
+    // 入力値を整数に丸める
+    taxRateInput.value = taxRatePercent;
+
+    const newTaxRate = taxRatePercent / 100;
+
+    taxRate = newTaxRate;
+
+    // ローカルストレージに保存
+    saveTaxRate();
+
+    // すべての税込み価格表示を更新
+    updateAllPriceWithTaxDisplays();
+
+    // 合計金額を再計算
+    calculateTotal();
+}
+
+// すべての税込み価格表示を更新
+function updateAllPriceWithTaxDisplays() {
+    menuData.forEach(item => {
+        const currentPrice = currentSelections[item.id]?.price || item.price;
+        updatePriceWithTaxDisplay(item.id, currentPrice);
+    });
+}
+
 // 合計金額計算機能
 function calculateTotal() {
     let total = 0;
+    let totalWithTax = 0;
 
     Object.keys(currentSelections).forEach(itemId => {
         const selection = currentSelections[itemId];
         if (selection.quantity > 0) {
-            // 価格が変更されている場合はselection.price、そうでなければ元のmenuDataから取得
-            const price = selection.price !== undefined ? selection.price :
-                         menuData.find(item => item.id == itemId)?.price || 0;
-            total += selection.quantity * price;
+            const item = menuData.find(item => item.id == itemId);
+            if (item) {
+                // 価格が変更されている場合はselection.price、そうでなければ元のmenuDataから取得
+                const price = selection.price !== undefined ? selection.price : item.price || 0;
+                total += selection.quantity * price;
+                // 税込み価格の合計（計算値を使用）
+                totalWithTax += selection.quantity * calculatePriceWithTax(price);
+            }
         }
     });
 
-    totalAmount.textContent = `¥${total.toLocaleString()}`;
+    totalAmount.innerHTML = `¥${total.toLocaleString()} <span class="total-with-tax">(税込: ¥${totalWithTax.toLocaleString()})</span>`;
 
     // 分類ごとの合計金額も更新
     updateCategoryTotals();
@@ -225,6 +297,7 @@ function calculateTotal() {
 // 分類ごとの合計金額計算機能
 function calculateCategoryTotal(category) {
     let categoryTotal = 0;
+    let categoryTotalWithTax = 0;
 
     const categoryItems = menuData.filter(item => item.category === category);
 
@@ -233,10 +306,12 @@ function calculateCategoryTotal(category) {
         if (selection && selection.quantity > 0) {
             const price = selection.price !== undefined ? selection.price : item.price;
             categoryTotal += selection.quantity * price;
+            // 税込み価格の合計（計算値を使用）
+            categoryTotalWithTax += selection.quantity * calculatePriceWithTax(price);
         }
     });
 
-    return categoryTotal;
+    return { total: categoryTotal, totalWithTax: categoryTotalWithTax };
 }
 
 // 分類ごとの合計金額表示更新
@@ -250,17 +325,17 @@ function updateCategoryTotals() {
             existingTotal.remove();
         }
 
-        // 分類名を取得
-        const categoryName = header.textContent.trim();
+        // 分類名を取得（data属性から）
+        const categoryName = header.getAttribute('data-category');
 
         // 分類ごとの合計金額を計算
-        const categoryTotal = calculateCategoryTotal(categoryName);
+        const totals = calculateCategoryTotal(categoryName);
 
         // 合計金額が0より大きい場合のみ表示
-        if (categoryTotal > 0) {
+        if (totals.total > 0) {
             const totalElement = document.createElement('span');
             totalElement.className = 'category-total';
-            totalElement.textContent = ` ¥${categoryTotal.toLocaleString()}`;
+            totalElement.innerHTML = ` ¥${totals.total.toLocaleString()} <span class="category-total-with-tax">(税込: ¥${totals.totalWithTax.toLocaleString()})</span>`;
             header.appendChild(totalElement);
         }
     });
@@ -270,6 +345,24 @@ function updateCategoryTotals() {
 function saveToLocalStorage() {
     localStorage.setItem('kushikatsuSelections', JSON.stringify(currentSelections));
     localStorage.setItem('kushikatsuMenuData', JSON.stringify(menuData));
+}
+
+// 税率をローカルストレージに保存
+function saveTaxRate() {
+    localStorage.setItem('kushikatsuTaxRate', taxRate.toString());
+}
+
+// 税率をローカルストレージから読み込み
+function loadTaxRate() {
+    const savedTaxRate = localStorage.getItem('kushikatsuTaxRate');
+    if (savedTaxRate) {
+        taxRate = parseFloat(savedTaxRate);
+        if (taxRateInput) {
+            // 整数のパーセント値に丸める
+            const taxRatePercent = Math.round(taxRate * 100);
+            taxRateInput.value = taxRatePercent;
+        }
+    }
 }
 
 // ローカルストレージ読み込み
@@ -314,10 +407,16 @@ function clearSelections() {
 
 // 初期化ボタン機能
 function resetToOriginal() {
-    if (confirm('価格と個数を初期状態に戻しますか？')) {
+    if (confirm('価格、個数、税率を初期状態に戻しますか？')) {
         // 価格と個数を初期化（Excelデータに戻す）
         menuData = JSON.parse(JSON.stringify(originalMenuData));
         currentSelections = {};
+        // 税率を初期値（10%）にリセット
+        taxRate = 0.1;
+        if (taxRateInput) {
+            taxRateInput.value = '10';
+        }
+        saveTaxRate();
         saveToLocalStorage();
         displayMenu();
         calculateTotal();
