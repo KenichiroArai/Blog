@@ -400,7 +400,7 @@ function clearSelections() {
 
 // 初期化ボタン機能
 function resetToOriginal() {
-    if (confirm('価格と個数を初期状態に戻しますか？')) {
+    if (confirm('価格、個数、税率を初期状態に戻しますか？')) {
         // 価格と個数を初期化（Excelデータに戻す）
         menuData = JSON.parse(JSON.stringify(originalMenuData));
         currentSelections = {};
