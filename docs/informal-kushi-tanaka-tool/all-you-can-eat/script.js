@@ -404,6 +404,12 @@ function resetToOriginal() {
         // 価格と個数を初期化（Excelデータに戻す）
         menuData = JSON.parse(JSON.stringify(originalMenuData));
         currentSelections = {};
+        // 税率を初期値（10%）にリセット
+        taxRate = 0.1;
+        if (taxRateInput) {
+            taxRateInput.value = '10';
+        }
+        saveTaxRate();
         saveToLocalStorage();
         displayMenu();
         calculateTotal();
