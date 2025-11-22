@@ -237,12 +237,17 @@ function updatePriceWithTaxDisplay(itemId, price) {
 function updateTaxRate() {
     if (!taxRateInput) return;
 
-    const newTaxRate = parseFloat(taxRateInput.value) / 100;
+    const taxRatePercent = parseInt(taxRateInput.value);
 
-    if (isNaN(newTaxRate) || newTaxRate < 0) {
+    if (isNaN(taxRatePercent) || taxRatePercent < 0) {
         alert('正しい税率を入力してください。');
         return;
     }
+
+    // 入力値を整数に丸める
+    taxRateInput.value = taxRatePercent;
+
+    const newTaxRate = taxRatePercent / 100;
 
     taxRate = newTaxRate;
 
@@ -353,7 +358,9 @@ function loadTaxRate() {
     if (savedTaxRate) {
         taxRate = parseFloat(savedTaxRate);
         if (taxRateInput) {
-            taxRateInput.value = (taxRate * 100).toFixed(1);
+            // 整数のパーセント値に丸める
+            const taxRatePercent = Math.round(taxRate * 100);
+            taxRateInput.value = taxRatePercent;
         }
     }
 }
