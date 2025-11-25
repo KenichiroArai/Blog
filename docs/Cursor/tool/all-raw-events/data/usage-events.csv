@@ -1,4 +1,5 @@
 Date,Kind,Model,Max Mode,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output Tokens,Total Tokens,Cost
+2025-11-24T15:30:44.219Z,"Errored, No Charge",auto,No,0,0,0,0,0,0.00
 2025-11-23T14:53:08.100Z,Included,auto,No,6583,0,249344,2698,258625,0.09
 2025-11-23T14:49:37.275Z,Included,auto,No,14032,0,210432,3509,227973,0.09
 2025-11-23T14:42:47.155Z,Included,auto,No,33122,0,374272,7439,414833,0.18
