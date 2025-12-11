@@ -286,8 +286,28 @@ function setupXShareButton() {
     }
 }
 
+// OGPメタタグを動的に更新する関数
+function updateOGPMetaTags() {
+    const currentUrl = window.location.href;
+
+    // og:urlを更新（現在のURLに確実に設定）
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+        ogUrl.setAttribute('content', currentUrl);
+    } else {
+        // 存在しない場合は作成
+        ogUrl = document.createElement('meta');
+        ogUrl.setAttribute('property', 'og:url');
+        ogUrl.setAttribute('content', currentUrl);
+        document.head.appendChild(ogUrl);
+    }
+}
+
 // DOMContentLoaded時にXシェアボタンを設定
 document.addEventListener('DOMContentLoaded', function() {
+    // OGPメタタグを更新
+    updateOGPMetaTags();
+
     // ヘッダーが動的に読み込まれる場合があるため、少し遅延させて設定
     setTimeout(setupXShareButton, 100);
     // MutationObserverでヘッダーコンテナの変更を監視
