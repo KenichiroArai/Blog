@@ -1,4 +1,6 @@
 Date,Kind,Model,Max Mode,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output Tokens,Total Tokens,Cost
+2025-12-10T11:28:42.786Z,Included,auto,No,17511,0,109056,2830,129397,0.07
+2025-12-10T10:53:55.403Z,Included,auto,No,0,11443,56192,2694,70329,0.04
 2025-12-08T15:40:58.402Z,Included,auto,No,22265,0,1189888,9139,1221292,0.38
 2025-12-08T15:38:20.756Z,Included,auto,No,12465,0,277760,5217,295442,0.12
 2025-12-08T15:33:51.429Z,Included,auto,No,21438,0,767488,8285,797211,0.27
