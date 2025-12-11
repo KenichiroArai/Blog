@@ -20,8 +20,8 @@ function printHelp() {
 		'',
 		'オプション:',
 		'  -h, --help     このヘルプを表示',
-		'  -a, --all      引数なし時に確認なしで全期間の合計を算出',
-		'  -d, --daily    日別合計を出力（期間指定時に有効）',
+		'  -a, --all      引数なし時に確認なしで全期間のモデル別コストを算出',
+		'  -d, --daily    日別累計を出力（期間指定時に有効）',
 		'',
 		'例:',
 		`  node ${SCRIPT_NAME} 2025/11/01 2025/11/30`,
@@ -35,57 +35,29 @@ function isNumeric(value) {
 	return typeof value === 'number' || (typeof value === 'string' && value.trim() !== '' && !isNaN(Number(value)));
 }
 
-// CSVは途中列にカンマを含むことがあるため、先頭列(Date)と末尾列(Cost)のみを安全に取得する
-function parseFirstAndLastColumns(line) {
-	// 先頭列（最初のカンマまで）
-	let firstComma = -1;
+// CSV 1行を簡易パースして列配列を返す（ダブルクォートで囲まれたカンマに対応）
+function parseCsvLine(line) {
+	const cols = [];
+	let cur = '';
 	let inQuotes = false;
 	for (let i = 0; i < line.length; i++) {
 		const ch = line[i];
 		if (ch === '"') {
-			// 連続する "" はエスケープ（スキップ）として扱う
 			if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
-				i++; // skip escaped quote
+				cur += '"';
+				i++; // エスケープされた二重引用符を1つとして扱う
 			} else {
 				inQuotes = !inQuotes;
 			}
 		} else if (ch === ',' && !inQuotes) {
-			firstComma = i;
-			break;
+			cols.push(cur.trim());
+			cur = '';
+		} else {
+			cur += ch;
 		}
 	}
-	const firstCol = firstComma >= 0 ? line.slice(0, firstComma) : line;
-
-	// 末尾列（最後のカンマ以降）
-	let lastComma = -1;
-	inQuotes = false;
-	for (let i = line.length - 1; i >= 0; i--) {
-		const ch = line[i];
-		if (ch === '"') {
-			// 後方走査での "" エスケープ対応：直前も " のときは1つ戻る
-			if (inQuotes && i - 1 >= 0 && line[i - 1] === '"') {
-				i--; // skip escaped quote
-			} else {
-				inQuotes = !inQuotes;
-			}
-		} else if (ch === ',' && !inQuotes) {
-			lastComma = i;
-			break;
-		}
-	}
-	const lastCol = lastComma >= 0 ? line.slice(lastComma + 1) : line;
-
-	return [stripCsvQuotes(firstCol), stripCsvQuotes(lastCol)];
-}
-
-function stripCsvQuotes(field) {
-	let s = field.trim();
-	if (s.startsWith('"') && s.endsWith('"')) {
-		s = s.slice(1, -1);
-		// エスケープされた二重引用符を1つに戻す
-		s = s.replace(/""/g, '"');
-	}
-	return s;
+	cols.push(cur.trim());
+	return cols;
 }
 
 function parseInputDate(dateStr) {
@@ -124,11 +96,17 @@ function readCsvLines(filePath) {
 }
 
 function computeTotals(lines, startUtcMs, endUtcMs, wantDaily) {
-	let total = 0;
-	const perDay = new Map(); // key: 'YYYY/MM/DD', value: sum
+	const perDay = new Map();   // key: 'YYYY/MM/DD', value: sum
+	const perModel = new Map(); // key: model, value: sum
 
 	for (const line of lines) {
-		const [dateStr, costStr] = parseFirstAndLastColumns(line);
+		const cols = parseCsvLine(line);
+		if (cols.length < 10) continue;
+
+		const dateStr = cols[0];
+		const model = cols[2] || 'Unknown';
+		const costStr = cols[9];
+
 		if (!dateStr) continue;
 		const rowDateMs = Date.parse(dateStr); // ISO (Z) を想定
 		if (isNaN(rowDateMs)) continue;
@@ -136,20 +114,38 @@ function computeTotals(lines, startUtcMs, endUtcMs, wantDaily) {
 		if (endUtcMs != null && rowDateMs > endUtcMs) continue;
 
 		const cost = isNumeric(costStr) ? Number(costStr) : 0;
-		if (Number.isFinite(cost)) {
-			total += cost;
-			if (wantDaily) {
-				// UTC日付基準
-				const dayKey = formatYmdSlashFromUtcMs(Date.UTC(
-					new Date(rowDateMs).getUTCFullYear(),
-					new Date(rowDateMs).getUTCMonth(),
-					new Date(rowDateMs).getUTCDate(), 0, 0, 0, 0
-				));
-				perDay.set(dayKey, (perDay.get(dayKey) || 0) + cost);
-			}
+		if (!Number.isFinite(cost)) continue;
+
+		perModel.set(model, (perModel.get(model) || 0) + cost);
+
+		if (wantDaily) {
+			// UTC日付基準
+			const dayKey = formatYmdSlashFromUtcMs(Date.UTC(
+				new Date(rowDateMs).getUTCFullYear(),
+				new Date(rowDateMs).getUTCMonth(),
+				new Date(rowDateMs).getUTCDate(), 0, 0, 0, 0
+			));
+			perDay.set(dayKey, (perDay.get(dayKey) || 0) + cost);
 		}
 	}
-	return { total, perDay };
+
+	const total = Array.from(perModel.values()).reduce((sum, v) => sum + v, 0);
+	return { total, perDay, perModel };
+}
+
+function printPerModel(perModel) {
+	console.log('\nモデル別コスト:');
+	if (perModel.size === 0) {
+		console.log('  該当データがありません。');
+		return;
+	}
+	const sorted = Array.from(perModel.entries()).sort((a, b) => {
+		if (b[1] !== a[1]) return b[1] - a[1];
+		return a[0].localeCompare(b[0]);
+	});
+	for (const [model, cost] of sorted) {
+		console.log(`  ${model}: ${cost.toFixed(2)}`);
+	}
 }
 
 function parseArgs(argv) {
@@ -195,18 +191,20 @@ async function main() {
 			// 引数なし
 			printHelp();
 			if (opts.all) {
-				const { total } = computeTotals(lines, null, null, false);
+				const { perModel, total } = computeTotals(lines, null, null, false);
 				console.log('');
-				console.log('全期間の合計: ', total.toFixed(2));
+				printPerModel(perModel);
+				console.log('\n合計(total): ', total.toFixed(2));
 				return;
 			}
-			const ok = await promptYesNo('\n全期間の合計を算出しますか？ (y/N): ');
+			const ok = await promptYesNo('\n全期間のモデル別コストを算出しますか？ (y/N): ');
 			if (!ok) {
 				console.log('キャンセルしました。');
 				return;
 			}
-			const { total } = computeTotals(lines, null, null, false);
-			console.log('全期間の合計: ', total.toFixed(2));
+			const { perModel, total } = computeTotals(lines, null, null, false);
+			printPerModel(perModel);
+			console.log('\n合計(total): ', total.toFixed(2));
 			return;
 		} else if (opts.dates.length === 1) {
 			const start = parseInputDate(opts.dates[0]);
@@ -239,7 +237,7 @@ async function main() {
 			}
 		}
 
-		const { total, perDay } = computeTotals(lines, startUtcMs, endUtcMs, opts.daily);
+		const { perDay, perModel, total } = computeTotals(lines, startUtcMs, endUtcMs, opts.daily);
 
 		// 出力
 		if (startUtcMs != null || endUtcMs != null) {
@@ -276,7 +274,8 @@ async function main() {
 			}
 		}
 
-		console.log('\n合計: ', total.toFixed(2));
+		printPerModel(perModel);
+		console.log('\n合計(total): ', total.toFixed(2));
 	} catch (err) {
 		console.error('エラーが発生しました:', err && err.message ? err.message : err);
 		process.exitCode = 1;
