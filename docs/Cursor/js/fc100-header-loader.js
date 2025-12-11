@@ -80,6 +80,23 @@ class HeaderLoader {
     }
 
     /**
+     * Xシェアボタンのイベントリスナーを設定
+     */
+    setupXShareButton() {
+        const xShareBtn = this.headerContainer.querySelector('#x-share-btn');
+        if (xShareBtn) {
+            xShareBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageTitle = document.title || 'Cursor使用記録';
+                const pageUrl = window.location.href;
+                const text = encodeURIComponent(`${pageTitle} ${pageUrl}`);
+                const shareUrl = `https://x.com/intent/tweet?text=${text}`;
+                window.open(shareUrl, '_blank', 'width=550,height=420');
+            });
+        }
+    }
+
+    /**
      * バージョン情報モーダルを読み込む
      */
     async loadVersionModal() {
@@ -161,6 +178,9 @@ class HeaderLoader {
 
             // アクティブなナビゲーションを設定
             this.setActiveNavigation();
+
+            // Xシェアボタンのイベントリスナーを設定
+            this.setupXShareButton();
 
             // バージョン情報モーダルを読み込む
             await this.loadVersionModal();

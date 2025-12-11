@@ -265,3 +265,37 @@ function showError(message) {
     errorElement.textContent = message;
     errorElement.classList.remove('d-none');
 }
+
+// Xでシェアする関数
+function shareOnX() {
+    const pageTitle = document.title || 'Cursor使用記録';
+    const pageUrl = window.location.href;
+    const text = encodeURIComponent(`${pageTitle} ${pageUrl}`);
+    const shareUrl = `https://x.com/intent/tweet?text=${text}`;
+    window.open(shareUrl, '_blank', 'width=550,height=420');
+}
+
+// Xシェアボタンのイベントリスナーを設定
+function setupXShareButton() {
+    const xShareBtn = document.getElementById('x-share-btn');
+    if (xShareBtn) {
+        xShareBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            shareOnX();
+        });
+    }
+}
+
+// DOMContentLoaded時にXシェアボタンを設定
+document.addEventListener('DOMContentLoaded', function() {
+    // ヘッダーが動的に読み込まれる場合があるため、少し遅延させて設定
+    setTimeout(setupXShareButton, 100);
+    // MutationObserverでヘッダーコンテナの変更を監視
+    const headerContainer = document.getElementById('header-container');
+    if (headerContainer) {
+        const observer = new MutationObserver(function(mutations) {
+            setupXShareButton();
+        });
+        observer.observe(headerContainer, { childList: true, subtree: true });
+    }
+});
