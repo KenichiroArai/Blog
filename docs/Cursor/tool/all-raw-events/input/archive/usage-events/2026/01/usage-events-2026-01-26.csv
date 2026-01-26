@@ -1,4 +1,5 @@
 Date,Kind,Model,Max Mode,Input (w/ Cache Write),Input (w/o Cache Write),Cache Read,Output Tokens,Total Tokens,Cost
+"2026-01-26T15:15:43.071Z","Included","auto","No","15065","0","85504","1972","102541","0.05"
 "2026-01-25T14:52:20.998Z","Included","auto","No","8609","0","424960","2515","436084","0.13"
 "2026-01-25T14:47:19.873Z","Included","auto","No","9240","0","800512","3054","812806","0.23"
 "2026-01-25T14:46:26.343Z","Included","auto","No","4740","0","377088","1022","382850","0.11"
